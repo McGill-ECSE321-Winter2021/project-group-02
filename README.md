@@ -4,10 +4,10 @@ This system helps a local car repair shop by hosting a website that supports the
 # Meet the Team!
 
 ### Adel Ahram
-A second year computer engineering student who loves hardware just as much as software. If he's not busy trying his best to get out of bed at 8:30 to attend the lectures on Tuesdays and Thursdays, he's probably talking about pc parts and helping friends build a new computer.
+A second year computer engineering student who loves hardware just as much as software. If he's not busy trying his best to get out of bed at 8:30 to attend the lectures on Tuesdays and Thursdays, he's probably talking about pc parts and helping friends build a new computer. He also clearly had too much fun writing these teammate descriptions, so enjoy!
 
 ### Alexandra Gafencu
-Another second year computer engineering student with a fun and artistic side! Not only is she fluent in 5 languages, but she also learned to speak and read Korean all on her own. Alex is a fun person to be around and a great teammate!
+Another second year computer engineering student with a fun and artistic side! Not only is she fluent in 5 languages, but she also learned to speak and read Korean all on her own. Alex is a fun person to be around and a great teammate! Just watch out when joking around with her though. If you make a joke that's too on point, you might want to reduce the volume on your speakers.
 
 ### Alix Routhier-Lalonde
 Yet another second year computer engineering student with a passion for learning on his own and developing his technical side. Alix is the tinkerer of the group, often found surrounded by Arduinos and raspberry PI's. When he's not getting on Adel's nerves, he's probably telling someone about how much switching to Linux can change their life.
@@ -18,6 +18,14 @@ Just when you thought this team had enough second year computer engineers, you f
 ### Simon Nakane Marcil
 If you haven't realized yet, there are only second year computer engineering students on this team. Simon is no exception to this rule. A silent and somewhat mysterious man, Simon can often be found lurking around the team discord server. His expertise in board games is second to none, and his propensity to complete his tasks before anyone even starts theirs make him an S+ tier teammate.
    
+# Deliverable 1
+## Links
+* [Wiki Home Page](https://github.com/McGill-ECSE321-Winter2021/project-group-02/wiki)
+* [Meeting Minutes](https://github.com/McGill-ECSE321-Winter2021/project-group-02/wiki/Sprint-1-Meeting-Minutes)
+* [Requirements](https://github.com/McGill-ECSE321-Winter2021/project-group-02/wiki/Requirements)   
+* [Use Case Diagrams and Specifications](https://github.com/McGill-ECSE321-Winter2021/project-group-02/wiki/Use-Case-Diagrams-and-Specifications)   
+* [Domain Model](https://github.com/McGill-ECSE321-Winter2021/project-group-02/wiki/Domain-Model)   
+
 ## Effort Table (D1)
 | Team Member | Responsibilities | Est. Time Spent (h) |
 | --- | --- | --- |
