@@ -7,41 +7,26 @@ import javax.persistence.Id;
 @Entity
 public class Assistant extends User {
 
-	// ------------------------
-	// MEMBER VARIABLES
-	// ------------------------
-
-	// Assistant Attributes
+	//=============ID==============
 	private String assistantID;
 
-	// ------------------------
-	// CONSTRUCTOR
-	// ------------------------
+	@Id
+	public String getAssistantID() {
+		return assistantID;
+	}
+
+	public void setAssistantID(String aAssistantID) {
+		assistantID = aAssistantID;
+	}
+
+	//=========Constructor=========
 
 	public Assistant(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs, String aAssistantID) {
 		super(aName, aPassword, aEmail, aPhone, aScrs);
 		assistantID = aAssistantID;
 	}
 
-	// ------------------------
-	// INTERFACE
-	// ------------------------
-
-	public boolean setAssistantID(String aAssistantID) {
-		boolean wasSet = false;
-		assistantID = aAssistantID;
-		wasSet = true;
-		return wasSet;
-	}
-	
-	@Id
-	public String getAssistantID() {
-		return assistantID;
-	}
-
-	public void delete() {
-		super.delete();
-	}
+	//=======Other Methods========
 
 	public String toString() {
 		return super.toString() + "[" + "assistantID" + ":" + getAssistantID() + "]";
