@@ -10,14 +10,14 @@ public class Technician extends User {
 
 	//============ID==============
 
-	private String technicianID;
+	private int technicianID;
 
 	@Id
-	public String getTechnicianID() {
+	public int getTechnicianID() {
 		return technicianID;
 	}
 
-	public void setTechnicianID(String aTechnicianID) {
+	public void setTechnicianID(int aTechnicianID) {
 		technicianID = aTechnicianID;
 	}
 
@@ -36,7 +36,7 @@ public class Technician extends User {
 
 	//========Constructor========
 
-	public Technician(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs, String aTechnicianID) {
+	public Technician(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs, int aTechnicianID) {
 		super(aName, aPassword, aEmail, aPhone, aScrs);
 		technicianID = aTechnicianID;
 		availabilities = new ArrayList<Timeslot>();

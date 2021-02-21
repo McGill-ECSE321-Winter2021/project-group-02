@@ -4,7 +4,7 @@ package ca.mcgill.ecse321.scrs.model;
 import java.util.*;
 import java.sql.Date;
 import java.sql.Time;
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 @Entity
 public class Workspace {
@@ -14,7 +14,7 @@ public class Workspace {
 	// ------------------------
 
 	// Workspace Attributes
-	private String workspaceID;
+	private int workspaceID;
 	private String spaceType;
 
 	// Workspace Associations
@@ -25,7 +25,7 @@ public class Workspace {
 	// CONSTRUCTOR
 	// ------------------------
 
-	public Workspace(String aWorkspaceID, String aSpaceType, SCRS aScrs) {
+	public Workspace(int aWorkspaceID, String aSpaceType, SCRS aScrs) {
 		workspaceID = aWorkspaceID;
 		spaceType = aSpaceType;
 		availabilities = new ArrayList<Timeslot>();
@@ -40,7 +40,7 @@ public class Workspace {
 	// INTERFACE
 	// ------------------------
 
-	public boolean setWorkspaceID(String aWorkspaceID) {
+	public boolean setWorkspaceID(int aWorkspaceID) {
 		boolean wasSet = false;
 		workspaceID = aWorkspaceID;
 		wasSet = true;
@@ -54,7 +54,8 @@ public class Workspace {
 		return wasSet;
 	}
 
-	public String getWorkspaceID() {
+	@Id
+	public int getWorkspaceID() {
 		return workspaceID;
 	}
 
@@ -68,6 +69,7 @@ public class Workspace {
 		return aAvailability;
 	}
 
+	@OneToMany
 	public List<Timeslot> getAvailabilities() {
 		List<Timeslot> newAvailabilities = Collections.unmodifiableList(availabilities);
 		return newAvailabilities;
@@ -88,7 +90,7 @@ public class Workspace {
 		return index;
 	}
 
-	/* Code from template association_GetOne */
+	@ManyToOne /* Code from template association_GetOne */
 	public SCRS getScrs() {
 		return scrs;
 	}
@@ -99,7 +101,7 @@ public class Workspace {
 	}
 
 	/* Code from template association_AddManyToOne */
-	public Timeslot addAvailability(String aTimeSlotID, Date aStartDate, Date aEndDate, Time aStartTime,
+	public Timeslot addAvailability(int aTimeSlotID, Date aStartDate, Date aEndDate, Time aStartTime,
 			Time aEndTime) {
 		return new Timeslot(aTimeSlotID, aStartDate, aEndDate, aStartTime, aEndTime, this);
 	}

@@ -8,20 +8,20 @@ import javax.persistence.Id;
 public class Assistant extends User {
 
 	//=============ID==============
-	private String assistantID;
+	private int assistantID;
 
 	@Id
-	public String getAssistantID() {
+	public int getAssistantID() {
 		return assistantID;
 	}
 
-	public void setAssistantID(String aAssistantID) {
+	public void setAssistantID(int aAssistantID) {
 		assistantID = aAssistantID;
 	}
 
 	//=========Constructor=========
 
-	public Assistant(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs, String aAssistantID) {
+	public Assistant(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs, int aAssistantID) {
 		super(aName, aPassword, aEmail, aPhone, aScrs);
 		assistantID = aAssistantID;
 	}

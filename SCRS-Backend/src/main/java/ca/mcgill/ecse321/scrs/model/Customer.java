@@ -9,18 +9,18 @@ import javax.persistence.OneToMany;
 public class Customer extends User {
 
 	// Customer Attributes
-	private String customerID;
+	private int customerID;
 
 	// Customer Associations
 	private List<Appointment> appointments;
 
-	public Customer(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs, String aCustomerID) {
+	public Customer(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs, int aCustomerID) {
 		super(aName, aPassword, aEmail, aPhone, aScrs);
 		customerID = aCustomerID;
 		appointments = new ArrayList<Appointment>();
 	}
 
-	public boolean setCustomerID(String aCustomerID) {
+	public boolean setCustomerID(int aCustomerID) {
 		boolean wasSet = false;
 		customerID = aCustomerID;
 		wasSet = true;
@@ -28,7 +28,7 @@ public class Customer extends User {
 	}
 
 	@Id
-	public String getCustomerID() {
+	public int getCustomerID() {
 		return customerID;
 	}
 
@@ -65,7 +65,7 @@ public class Customer extends User {
 	}
 
 	/* Code from template association_AddManyToOne */
-	public Appointment addAppointment(String aAppointmentID,
+	public Appointment addAppointment(int aAppointmentID,
 			ca.mcgill.ecse321.scrs.model.Appointment.AppointmentType aAppointmentType, String aService, String aNote,
 			int aRating, String aFeedback, boolean aPaid, SCRS aScrs, Timeslot... allTimeslots) {
 		return new Appointment(aAppointmentID, aAppointmentType, aService, aNote, aRating, aFeedback, aPaid, this,

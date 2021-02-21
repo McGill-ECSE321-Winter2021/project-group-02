@@ -3,11 +3,14 @@ package ca.mcgill.ecse321.scrs.model;
 import java.util.List;
 import java.util.ArrayList;
 import javax.persistence.CascadeType;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Entity;
 
+@Entity
 public class SCRS
 {
+  private int id;
 
   //SCRS Associations
   private List<Workspace> workspaces;
@@ -28,6 +31,16 @@ public class SCRS
   //------------------------
   // INTERFACE
   //------------------------
+
+  @Id
+  public int getId() {
+    return this.id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
+
   /* Code from template association_GetMany */
   public Workspace getWorkspace(int index)
   {
@@ -65,9 +78,9 @@ public class SCRS
   }
 
   @OneToMany(cascade = { CascadeType.ALL })
-	public List<User> getUsers() {
-		return this.users;
-	}
+  public List<User> getUsers() {
+      return this.users;
+  }
 
   public int numberOfUsers()
   {
@@ -94,9 +107,9 @@ public class SCRS
   }
 
   @OneToMany(cascade= { CascadeType.ALL})
-	public List<Appointment> getAppointments() {
-		return this.appointments;
-	}
+  public List<Appointment> getAppointments() {
+      return this.appointments;
+  }
 
   public int numberOfAppointments()
   {
@@ -121,7 +134,7 @@ public class SCRS
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Workspace addWorkspace(String aWorkspaceID, String aSpaceType)
+  public Workspace addWorkspace(int aWorkspaceID, String aSpaceType)
   {
     return new Workspace(aWorkspaceID, aSpaceType, this);
   }
@@ -262,7 +275,7 @@ public class SCRS
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Appointment addAppointment(String aAppointmentID, ca.mcgill.ecse321.scrs.model.Appointment.AppointmentType aAppointmentType, String aService, String aNote, int aRating, String aFeedback, boolean aPaid, Customer aCustomer, Timeslot... allTimeslots)
+  public Appointment addAppointment(int aAppointmentID, ca.mcgill.ecse321.scrs.model.Appointment.AppointmentType aAppointmentType, String aService, String aNote, int aRating, String aFeedback, boolean aPaid, Customer aCustomer, Timeslot... allTimeslots)
   {
     return new Appointment(aAppointmentID, aAppointmentType, aService, aNote, aRating, aFeedback, aPaid, aCustomer, this, allTimeslots);
   }

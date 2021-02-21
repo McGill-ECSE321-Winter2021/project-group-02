@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.*;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
@@ -15,7 +16,7 @@ public class Timeslot {
 	// ------------------------
 
 	// Timeslot Attributes
-	private String timeSlotID;
+	private int timeSlotID;
 	private Date startDate;
 	private Date endDate;
 	private Time startTime;
@@ -30,7 +31,7 @@ public class Timeslot {
 	// CONSTRUCTOR
 	// ------------------------
 
-	public Timeslot(String aTimeSlotID, Date aStartDate, Date aEndDate, Time aStartTime, Time aEndTime,
+	public Timeslot(int aTimeSlotID, Date aStartDate, Date aEndDate, Time aStartTime, Time aEndTime,
 			Workspace aWorkspace) {
 		timeSlotID = aTimeSlotID;
 		startDate = aStartDate;
@@ -49,7 +50,7 @@ public class Timeslot {
 	// INTERFACE
 	// ------------------------
 
-	public boolean setTimeSlotID(String aTimeSlotID) {
+	public boolean setTimeSlotID(int aTimeSlotID) {
 		boolean wasSet = false;
 		timeSlotID = aTimeSlotID;
 		wasSet = true;
@@ -84,7 +85,8 @@ public class Timeslot {
 		return wasSet;
 	}
 
-	public String getTimeSlotID() {
+	@Id
+	public int getTimeSlotID() {
 		return timeSlotID;
 	}
 

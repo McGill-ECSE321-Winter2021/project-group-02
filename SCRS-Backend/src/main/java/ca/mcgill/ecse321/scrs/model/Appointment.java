@@ -22,7 +22,7 @@ public class Appointment {
 	// ------------------------
 
 	// Appointment Attributes
-	private String appointmentID;
+	private int appointmentID;
 	private AppointmentType appointmentType;
 	private String service;
 	private String note;
@@ -39,7 +39,7 @@ public class Appointment {
 	// CONSTRUCTOR
 	// ------------------------
 
-	public Appointment(String aAppointmentID, AppointmentType aAppointmentType, String aService, String aNote,
+	public Appointment(int aAppointmentID, AppointmentType aAppointmentType, String aService, String aNote,
 			int aRating, String aFeedback, boolean aPaid, Customer aCustomer, SCRS aScrs, Timeslot... allTimeslots) {
 		appointmentID = aAppointmentID;
 		appointmentType = aAppointmentType;
@@ -66,7 +66,7 @@ public class Appointment {
 		}
 	}
 
-	public boolean setAppointmentID(String aAppointmentID) {
+	public boolean setAppointmentID(int aAppointmentID) {
 		boolean wasSet = false;
 		appointmentID = aAppointmentID;
 		wasSet = true;
@@ -116,7 +116,7 @@ public class Appointment {
 	}
 	
 	@Id
-	public String getAppointmentID() {
+	public int getAppointmentID() {
 		return appointmentID;
 	}
 
