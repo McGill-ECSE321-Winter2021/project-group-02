@@ -3,13 +3,10 @@ package ca.mcgill.ecse321.scrs.model;
 import java.util.*;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Customer extends User {
-
-	// ------------------------
-	// MEMBER VARIABLES
-	// ------------------------
 
 	// Customer Attributes
 	private String customerID;
@@ -17,19 +14,11 @@ public class Customer extends User {
 	// Customer Associations
 	private List<Appointment> appointments;
 
-	// ------------------------
-	// CONSTRUCTOR
-	// ------------------------
-
 	public Customer(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs, String aCustomerID) {
 		super(aName, aPassword, aEmail, aPhone, aScrs);
 		customerID = aCustomerID;
 		appointments = new ArrayList<Appointment>();
 	}
-
-	// ------------------------
-	// INTERFACE
-	// ------------------------
 
 	public boolean setCustomerID(String aCustomerID) {
 		boolean wasSet = false;
@@ -48,7 +37,8 @@ public class Customer extends User {
 		Appointment aAppointment = appointments.get(index);
 		return aAppointment;
 	}
-
+	
+	@OneToMany
 	public List<Appointment> getAppointments() {
 		List<Appointment> newAppointments = Collections.unmodifiableList(appointments);
 		return newAppointments;

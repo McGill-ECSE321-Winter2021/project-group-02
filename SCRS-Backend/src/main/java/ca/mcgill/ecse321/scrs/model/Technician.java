@@ -61,6 +61,12 @@ public class Technician extends User {
 		}
 		return wasAdded;
 	}
+	
+	 public int indexOfAvailability(Timeslot aAvailability)
+	  {
+	    int index = availabilities.indexOf(aAvailability);
+	    return index;
+	  }
 
 	public boolean removeAvailability(Timeslot aAvailability) {
 		boolean wasRemoved = false;

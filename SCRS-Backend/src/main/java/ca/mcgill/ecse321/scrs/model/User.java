@@ -2,6 +2,7 @@ package ca.mcgill.ecse321.scrs.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public abstract class User {
@@ -85,6 +86,7 @@ public abstract class User {
 	}
 
 	/* Code from template association_GetOne */
+	@ManyToOne
 	public SCRS getScrs() {
 		return scrs;
 	}
