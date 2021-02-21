@@ -23,7 +23,7 @@ public class Timeslot {
 	private Time endTime;
 
 	// Timeslot Associations
-	private List<Technician> technician;
+	private List<Technician> technicians;
 	private Appointment appointment;
 	private Workspace workspace;
 
@@ -38,7 +38,7 @@ public class Timeslot {
 		endDate = aEndDate;
 		startTime = aStartTime;
 		endTime = aEndTime;
-		technician = new ArrayList<Technician>();
+		technicians = new ArrayList<Technician>();
 		boolean didAddWorkspace = setWorkspace(aWorkspace);
 		if (!didAddWorkspace) {
 			throw new RuntimeException(
@@ -107,28 +107,32 @@ public class Timeslot {
 	}
 
 	/* Code from template association_GetMany */
-	public Technician getTechnician(int index) {
-		Technician aTechnician = technician.get(index);
+	public Technician getTechnicians(int index) {
+		Technician aTechnician = technicians.get(index);
 		return aTechnician;
 	}
+	
 	@ManyToMany
-	public List<Technician> getTechnician() {
-		List<Technician> newTechnician = Collections.unmodifiableList(technician);
-		return newTechnician;
+	public List<Technician> getTechnicians() {
+		return technicians;
+	}
+	
+	public void setTechnicians(List<Technician> technician) {
+		this.technicians=technician;
 	}
 
-	public int numberOfTechnician() {
-		int number = technician.size();
+	public int numberOfTechnicians() {
+		int number = technicians.size();
 		return number;
 	}
 
-	public boolean hasTechnician() {
-		boolean has = technician.size() > 0;
+	public boolean hasTechnicians() {
+		boolean has = technicians.size() > 0;
 		return has;
 	}
 
 	public int indexOfTechnician(Technician aTechnician) {
-		int index = technician.indexOf(aTechnician);
+		int index = technicians.indexOf(aTechnician);
 		return index;
 	}
 
@@ -157,16 +161,16 @@ public class Timeslot {
 	/* Code from template association_AddManyToManyMethod */
 	public boolean addTechnician(Technician aTechnician) {
 		boolean wasAdded = false;
-		if (technician.contains(aTechnician)) {
+		if (technicians.contains(aTechnician)) {
 			return false;
 		}
-		technician.add(aTechnician);
+		technicians.add(aTechnician);
 		if (aTechnician.indexOfAvailability(this) != -1) {
 			wasAdded = true;
 		} else {
 			wasAdded = aTechnician.addAvailability(this);
 			if (!wasAdded) {
-				technician.remove(aTechnician);
+				technicians.remove(aTechnician);
 			}
 		}
 		return wasAdded;
@@ -175,18 +179,18 @@ public class Timeslot {
 	/* Code from template association_RemoveMany */
 	public boolean removeTechnician(Technician aTechnician) {
 		boolean wasRemoved = false;
-		if (!technician.contains(aTechnician)) {
+		if (!technicians.contains(aTechnician)) {
 			return wasRemoved;
 		}
 
-		int oldIndex = technician.indexOf(aTechnician);
-		technician.remove(oldIndex);
+		int oldIndex = technicians.indexOf(aTechnician);
+		technicians.remove(oldIndex);
 		if (aTechnician.indexOfAvailability(this) == -1) {
 			wasRemoved = true;
 		} else {
 			wasRemoved = aTechnician.removeAvailability(this);
 			if (!wasRemoved) {
-				technician.add(oldIndex, aTechnician);
+				technicians.add(oldIndex, aTechnician);
 			}
 		}
 		return wasRemoved;
@@ -199,11 +203,11 @@ public class Timeslot {
 			if (index < 0) {
 				index = 0;
 			}
-			if (index > numberOfTechnician()) {
-				index = numberOfTechnician() - 1;
+			if (index > numberOfTechnicians()) {
+				index = numberOfTechnicians() - 1;
 			}
-			technician.remove(aTechnician);
-			technician.add(index, aTechnician);
+			technicians.remove(aTechnician);
+			technicians.add(index, aTechnician);
 			wasAdded = true;
 		}
 		return wasAdded;
@@ -211,15 +215,15 @@ public class Timeslot {
 
 	public boolean addOrMoveTechnicianAt(Technician aTechnician, int index) {
 		boolean wasAdded = false;
-		if (technician.contains(aTechnician)) {
+		if (technicians.contains(aTechnician)) {
 			if (index < 0) {
 				index = 0;
 			}
-			if (index > numberOfTechnician()) {
-				index = numberOfTechnician() - 1;
+			if (index > numberOfTechnicians()) {
+				index = numberOfTechnicians() - 1;
 			}
-			technician.remove(aTechnician);
-			technician.add(index, aTechnician);
+			technicians.remove(aTechnician);
+			technicians.add(index, aTechnician);
 			wasAdded = true;
 		} else {
 			wasAdded = addTechnicianAt(aTechnician, index);
@@ -286,8 +290,8 @@ public class Timeslot {
 	}
 
 	public void delete() {
-		ArrayList<Technician> copyOfTechnician = new ArrayList<Technician>(technician);
-		technician.clear();
+		ArrayList<Technician> copyOfTechnician = new ArrayList<Technician>(technicians);
+		technicians.clear();
 		for (Technician aTechnician : copyOfTechnician) {
 			aTechnician.removeAvailability(this);
 		}

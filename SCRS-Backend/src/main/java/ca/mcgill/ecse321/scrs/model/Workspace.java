@@ -71,8 +71,11 @@ public class Workspace {
 
 	@OneToMany
 	public List<Timeslot> getAvailabilities() {
-		List<Timeslot> newAvailabilities = Collections.unmodifiableList(availabilities);
-		return newAvailabilities;
+		return availabilities;
+	}
+	
+	public void setAvailabilities(List<Timeslot> timeslots) {
+		availabilities=timeslots;
 	}
 
 	public int numberOfAvailabilities() {
@@ -94,6 +97,7 @@ public class Workspace {
 	public SCRS getScrs() {
 		return scrs;
 	}
+	
 
 	/* Code from template association_MinimumNumberOfMethod */
 	public static int minimumNumberOfAvailabilities() {

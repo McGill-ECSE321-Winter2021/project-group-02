@@ -1,34 +1,26 @@
 package ca.mcgill.ecse321.scrs.model;
 
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 
 
 @Entity
+@Inheritance(strategy=InheritanceType.JOINED)
+@DiscriminatorColumn(name="TYPE")
 public class Assistant extends User {
-
-	//=============ID==============
-	private int assistantID;
-
-	@Id
-	public int getAssistantID() {
-		return assistantID;
-	}
-
-	public void setAssistantID(int aAssistantID) {
-		assistantID = aAssistantID;
-	}
 
 	//=========Constructor=========
 
-	public Assistant(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs, int aAssistantID) {
-		super(aName, aPassword, aEmail, aPhone, aScrs);
-		assistantID = aAssistantID;
-	}
+	public Assistant(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs, int id) {
+		super(aName, aPassword, aEmail, aPhone, aScrs, id);
+		}
 
 	//=======Other Methods========
 
 	public String toString() {
-		return super.toString() + "[" + "assistantID" + ":" + getAssistantID() + "]";
+		return super.toString();
 	}
 }

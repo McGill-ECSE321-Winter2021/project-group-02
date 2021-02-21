@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+@Entity
 public abstract class User {
 
 	// ------------------------
@@ -18,16 +19,18 @@ public abstract class User {
 
 	// User Associations
 	private SCRS scrs;
+	private int userID;
 
 	// ------------------------
 	// CONSTRUCTOR
 	// ------------------------
 
-	public User(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs) {
+	public User(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs, int id) {
 		name = aName;
 		password = aPassword;
 		email = aEmail;
 		phone = aPhone;
+		userID= id;
 		boolean didAddScrs = setScrs(aScrs);
 		if (!didAddScrs) {
 			throw new RuntimeException(
@@ -38,6 +41,15 @@ public abstract class User {
 	// ------------------------
 	// INTERFACE
 	// ------------------------
+
+	@Id
+	public int getId() {
+		return this.userID;
+	}
+
+	public void setId(int id) {
+		this.userID = id;
+	}
 
 	public boolean setName(String aName) {
 		boolean wasSet = false;
@@ -66,7 +78,7 @@ public abstract class User {
 		wasSet = true;
 		return wasSet;
 	}
-	
+
 	public String getName() {
 		return name;
 	}

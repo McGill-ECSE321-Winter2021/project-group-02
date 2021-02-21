@@ -1,35 +1,25 @@
 package ca.mcgill.ecse321.scrs.model;
 
 import java.util.*;
+
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 
 @Entity
+@Inheritance(strategy=InheritanceType.JOINED)
+@DiscriminatorColumn(name="TYPE")
 public class Customer extends User {
-
-	// Customer Attributes
-	private int customerID;
 
 	// Customer Associations
 	private List<Appointment> appointments;
 
-	public Customer(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs, int aCustomerID) {
-		super(aName, aPassword, aEmail, aPhone, aScrs);
-		customerID = aCustomerID;
+	public Customer(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs, int id) {
+		super(aName, aPassword, aEmail, aPhone, aScrs, id);
 		appointments = new ArrayList<Appointment>();
-	}
-
-	public boolean setCustomerID(int aCustomerID) {
-		boolean wasSet = false;
-		customerID = aCustomerID;
-		wasSet = true;
-		return wasSet;
-	}
-
-	@Id
-	public int getCustomerID() {
-		return customerID;
 	}
 
 	/* Code from template association_GetMany */
@@ -38,10 +28,13 @@ public class Customer extends User {
 		return aAppointment;
 	}
 	
-	@OneToMany
+	@OneToMany(mappedBy="customer")
 	public List<Appointment> getAppointments() {
-		List<Appointment> newAppointments = Collections.unmodifiableList(appointments);
-		return newAppointments;
+		return appointments;
+	}
+	
+	public void setAppointments(List<Appointment> appointments) {
+		this.appointments=appointments;
 	}
 
 	public int numberOfAppointments() {
@@ -59,12 +52,10 @@ public class Customer extends User {
 		return index;
 	}
 
-	/* Code from template association_MinimumNumberOfMethod */
 	public static int minimumNumberOfAppointments() {
 		return 0;
 	}
 
-	/* Code from template association_AddManyToOne */
 	public Appointment addAppointment(int aAppointmentID,
 			ca.mcgill.ecse321.scrs.model.Appointment.AppointmentType aAppointmentType, String aService, String aNote,
 			int aRating, String aFeedback, boolean aPaid, SCRS aScrs, Timeslot... allTimeslots) {
@@ -142,6 +133,6 @@ public class Customer extends User {
 	}
 
 	public String toString() {
-		return super.toString() + "[" + "customerID" + ":" + getCustomerID() + "]";
+		return super.toString();
 	}
 }
