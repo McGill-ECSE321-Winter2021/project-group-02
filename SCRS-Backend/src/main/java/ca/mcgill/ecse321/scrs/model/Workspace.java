@@ -14,11 +14,14 @@ public class Workspace {
 	// ------------------------
 
 	// Workspace Attributes
+	@Id
 	private int workspaceID;
 	private String spaceType;
 
 	// Workspace Associations
+	@OneToMany(mappedBy = "workspace")
 	private List<Timeslot> availabilities;
+	@ManyToOne /* Code from template association_GetOne */
 	private SCRS scrs;
 
 	// ------------------------
@@ -56,7 +59,6 @@ public class Workspace {
 		return wasSet;
 	}
 
-	@Id
 	public int getWorkspaceID() {
 		return workspaceID;
 	}
@@ -71,7 +73,6 @@ public class Workspace {
 		return aAvailability;
 	}
 
-	@OneToMany
 	public List<Timeslot> getAvailabilities() {
 		return availabilities;
 	}
@@ -95,7 +96,6 @@ public class Workspace {
 		return index;
 	}
 
-	@ManyToOne /* Code from template association_GetOne */
 	public SCRS getScrs() {
 		return scrs;
 	}

@@ -9,11 +9,15 @@ import javax.persistence.Entity;
 
 @Entity
 public class SCRS {
-	private int id;
+	@Id
+	private int scrsId;
 
 	// SCRS Associations
+	@OneToMany(cascade = { CascadeType.ALL }, mappedBy="scrs")
 	private List<Workspace> workspaces;
-	private List<User> users;
+	@OneToMany(cascade = { CascadeType.ALL }, mappedBy="scrs")
+	private List<SCRSUser> SCRSUsers;
+	@OneToMany(cascade = { CascadeType.ALL }, mappedBy="scrs")
 	private List<Appointment> appointments;
 
 	// ------------------------
@@ -22,7 +26,7 @@ public class SCRS {
 
 	public SCRS() {
 		workspaces = new ArrayList<Workspace>();
-		users = new ArrayList<User>();
+		SCRSUsers = new ArrayList<SCRSUser>();
 		appointments = new ArrayList<Appointment>();
 	}
 
@@ -30,13 +34,12 @@ public class SCRS {
 	// INTERFACE
 	// ------------------------
 
-	@Id
-	public int getId() {
-		return this.id;
+	public int getScrsId() {
+		return this.scrsId;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setScrsId(int scrsId) {
+		this.scrsId = scrsId;
 	}
 
 	/* Code from template association_GetMany */
@@ -45,7 +48,6 @@ public class SCRS {
 		return aWorkspace;
 	}
 
-	@OneToMany(cascade = { CascadeType.ALL })
 	public List<Workspace> getWorkspaces() {
 		return this.workspaces;
 	}
@@ -70,32 +72,31 @@ public class SCRS {
 	}
 
 	/* Code from template association_GetMany */
-	public User getUser(int index) {
-		User aUser = users.get(index);
-		return aUser;
+	public SCRSUser getUser(int index) {
+		SCRSUser aSCRSUser = SCRSUsers.get(index);
+		return aSCRSUser;
 	}
 
-	@OneToMany(cascade = { CascadeType.ALL })
-	public List<User> getUsers() {
-		return this.users;
+	public List<SCRSUser> getSCRSUsers() {
+		return this.SCRSUsers;
 	}
 
-	public void setUsers(List<User> us) {
-		this.users = us;
+	public void setSCRSUsers(List<SCRSUser> us) {
+		this.SCRSUsers = us;
 	}
 
 	public int numberOfUsers() {
-		int number = users.size();
+		int number = SCRSUsers.size();
 		return number;
 	}
 
 	public boolean hasUsers() {
-		boolean has = users.size() > 0;
+		boolean has = SCRSUsers.size() > 0;
 		return has;
 	}
 
-	public int indexOfUser(User aUser) {
-		int index = users.indexOf(aUser);
+	public int indexOfUser(SCRSUser aSCRSUser) {
+		int index = SCRSUsers.indexOf(aSCRSUser);
 		return index;
 	}
 
@@ -105,7 +106,6 @@ public class SCRS {
 		return aAppointment;
 	}
 
-	@OneToMany(cascade = { CascadeType.ALL })
 	public List<Appointment> getAppointments() {
 		return this.appointments;
 	}
@@ -206,63 +206,63 @@ public class SCRS {
 	}
 	/* Code from template association_AddManyToOne */
 
-	public boolean addUser(User aUser) {
+	public boolean addUser(SCRSUser aSCRSUser) {
 		boolean wasAdded = false;
-		if (users.contains(aUser)) {
+		if (SCRSUsers.contains(aSCRSUser)) {
 			return false;
 		}
-		SCRS existingScrs = aUser.getScrs();
+		SCRS existingScrs = aSCRSUser.getScrs();
 		boolean isNewScrs = existingScrs != null && !this.equals(existingScrs);
 		if (isNewScrs) {
-			aUser.setScrs(this);
+			aSCRSUser.setScrs(this);
 		} else {
-			users.add(aUser);
+			SCRSUsers.add(aSCRSUser);
 		}
 		wasAdded = true;
 		return wasAdded;
 	}
 
-	public boolean removeUser(User aUser) {
+	public boolean removeUser(SCRSUser aSCRSUser) {
 		boolean wasRemoved = false;
 		// Unable to remove aUser, as it must always have a scrs
-		if (!this.equals(aUser.getScrs())) {
-			users.remove(aUser);
+		if (!this.equals(aSCRSUser.getScrs())) {
+			SCRSUsers.remove(aSCRSUser);
 			wasRemoved = true;
 		}
 		return wasRemoved;
 	}
 
 	/* Code from template association_AddIndexControlFunctions */
-	public boolean addUserAt(User aUser, int index) {
+	public boolean addUserAt(SCRSUser aSCRSUser, int index) {
 		boolean wasAdded = false;
-		if (addUser(aUser)) {
+		if (addUser(aSCRSUser)) {
 			if (index < 0) {
 				index = 0;
 			}
 			if (index > numberOfUsers()) {
 				index = numberOfUsers() - 1;
 			}
-			users.remove(aUser);
-			users.add(index, aUser);
+			SCRSUsers.remove(aSCRSUser);
+			SCRSUsers.add(index, aSCRSUser);
 			wasAdded = true;
 		}
 		return wasAdded;
 	}
 
-	public boolean addOrMoveUserAt(User aUser, int index) {
+	public boolean addOrMoveUserAt(SCRSUser aSCRSUser, int index) {
 		boolean wasAdded = false;
-		if (users.contains(aUser)) {
+		if (SCRSUsers.contains(aSCRSUser)) {
 			if (index < 0) {
 				index = 0;
 			}
 			if (index > numberOfUsers()) {
 				index = numberOfUsers() - 1;
 			}
-			users.remove(aUser);
-			users.add(index, aUser);
+			SCRSUsers.remove(aSCRSUser);
+			SCRSUsers.add(index, aSCRSUser);
 			wasAdded = true;
 		} else {
-			wasAdded = addUserAt(aUser, index);
+			wasAdded = addUserAt(aSCRSUser, index);
 		}
 		return wasAdded;
 	}
@@ -348,10 +348,10 @@ public class SCRS {
 			workspaces.remove(aWorkspace);
 		}
 
-		while (users.size() > 0) {
-			User aUser = users.get(users.size() - 1);
-			aUser.delete();
-			users.remove(aUser);
+		while (SCRSUsers.size() > 0) {
+			SCRSUser aSCRSUser = SCRSUsers.get(SCRSUsers.size() - 1);
+			aSCRSUser.delete();
+			SCRSUsers.remove(aSCRSUser);
 		}
 
 		while (appointments.size() > 0) {

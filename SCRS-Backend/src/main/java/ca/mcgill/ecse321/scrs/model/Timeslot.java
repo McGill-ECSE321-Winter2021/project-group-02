@@ -16,6 +16,7 @@ public class Timeslot {
 	// ------------------------
 
 	// Timeslot Attributes
+	@Id
 	private int timeSlotID;
 	private Date startDate;
 	private Date endDate;
@@ -23,8 +24,11 @@ public class Timeslot {
 	private Time endTime;
 
 	// Timeslot Associations
+	@ManyToMany
 	private List<Technician> technicians;
+	@ManyToOne
 	private Appointment appointment;
+	@ManyToOne
 	private Workspace workspace;
 
 	// ------------------------
@@ -87,7 +91,6 @@ public class Timeslot {
 		return wasSet;
 	}
 
-	@Id
 	public int getTimeSlotID() {
 		return timeSlotID;
 	}
@@ -113,8 +116,7 @@ public class Timeslot {
 		Technician aTechnician = technicians.get(index);
 		return aTechnician;
 	}
-	
-	@ManyToMany
+
 	public List<Technician> getTechnicians() {
 		return technicians;
 	}
@@ -139,7 +141,6 @@ public class Timeslot {
 	}
 
 	/* Code from template association_GetOne */
-	@ManyToOne
 	public Appointment getAppointment() {
 		return appointment;
 	}
@@ -150,7 +151,6 @@ public class Timeslot {
 	}
 
 	/* Code from template association_GetOne */
-	@ManyToOne
 	public Workspace getWorkspace() {
 		return workspace;
 	}

@@ -22,6 +22,7 @@ public class Appointment {
 	// ------------------------
 
 	// Appointment Attributes
+	@Id
 	private int appointmentID;
 	private AppointmentType appointmentType;
 	private String service;
@@ -31,8 +32,11 @@ public class Appointment {
 	private boolean paid;
 
 	// Appointment Associations
+	@ManyToOne
 	private Customer customer;
+	@OneToMany(mappedBy="appointment") //0..1 to 1..*
 	private List<Timeslot> timeslots;
+	@ManyToOne
 	private SCRS scrs;
 
 	// ------------------------
@@ -116,8 +120,7 @@ public class Appointment {
 		wasSet = true;
 		return wasSet;
 	}
-	
-	@Id
+
 	public int getAppointmentID() {
 		return appointmentID;
 	}
@@ -146,7 +149,6 @@ public class Appointment {
 		return paid;
 	}
 
-	@ManyToOne
 	public Customer getCustomer() {
 		return customer;
 	}
@@ -156,8 +158,7 @@ public class Appointment {
 		Timeslot aTimeslot = timeslots.get(index);
 		return aTimeslot;
 	}
-	
-	@OneToMany //0..1 to 1..*
+
 	public List<Timeslot> getTimeslots() {
 		List<Timeslot> newTimeslots = Collections.unmodifiableList(timeslots);
 		return newTimeslots;
@@ -179,7 +180,6 @@ public class Appointment {
 	}
 
 	/* Code from template association_GetOne */
-	@ManyToOne
 	public SCRS getScrs() {
 		return scrs;
 	}
@@ -326,7 +326,6 @@ public class Appointment {
 	}
 
 	/* Code from template association_SetOneToMany */
-	@ManyToOne
 	public boolean setScrs(SCRS aScrs) {
 		boolean wasSet = false;
 		if (aScrs == null) {

@@ -2,20 +2,17 @@ package ca.mcgill.ecse321.scrs.model;
 
 import java.util.*;
 
-import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 
 @Entity
-public class Technician extends User {
+public class Technician extends SCRSUser
+{
 
 	//=======Availabilities======
+	@ManyToMany
 	private List<Timeslot> availabilities;
 
-	@ManyToMany
 	public List<Timeslot> getAvailabilities() {
 		return this.availabilities;
 	}
@@ -33,7 +30,6 @@ public class Technician extends User {
 	}
 
 	protected Technician() {}
-
 
 	//=======Other Methods=======
 
@@ -54,11 +50,10 @@ public class Technician extends User {
 		return wasAdded;
 	}
 	
-	 public int indexOfAvailability(Timeslot aAvailability)
-	  {
-	    int index = availabilities.indexOf(aAvailability);
-	    return index;
-	  }
+	public int indexOfAvailability(Timeslot aAvailability) {
+		int index = availabilities.indexOf(aAvailability);
+		return index;
+	}
 
 	public boolean removeAvailability(Timeslot aAvailability) {
 		boolean wasRemoved = false;
