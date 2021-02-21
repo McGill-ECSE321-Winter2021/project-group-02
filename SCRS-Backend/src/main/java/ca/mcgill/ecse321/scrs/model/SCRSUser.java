@@ -6,135 +6,133 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Entity
-@DiscriminatorColumn(name="TYPE")
+@DiscriminatorColumn(name = "TYPE")
 public abstract class SCRSUser
 {
+    // Account Attributes
+    @Id
+    private int scrsUserId;
+    private String name;
+    private String password;
+    private String email;
+    private String phone;
 
-	// ------------------------
-	// MEMBER VARIABLES
-	// ------------------------
+    // Account Associations
+    @ManyToOne
+    private SCRS scrs;
 
-	// Account Attributes
-	private String name;
-	private String password;
-	private String email;
-	private String phone;
+    public SCRSUser(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs, int aScrsUserId)
+    {
+        name = aName;
+        password = aPassword;
+        email = aEmail;
+        phone = aPhone;
+        scrsUserId = aScrsUserId;
+        boolean didAddScrs = setScrs(aScrs);
+        if (!didAddScrs)
+        {
+            throw new RuntimeException(
+                    "Unable to create user due to scrs. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+        }
+    }
 
-	// Account Associations
-	@ManyToOne
-	private SCRS scrs;
-	@Id
-	private int scrsUserId;
+    protected SCRSUser()
+    {
+    }
 
-	// ------------------------
-	// CONSTRUCTOR
-	// ------------------------
+    public int getScrsUserId()
+    {
+        return this.scrsUserId;
+    }
 
-	public SCRSUser(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs, int aScrsUserId) {
-		name = aName;
-		password = aPassword;
-		email = aEmail;
-		phone = aPhone;
-		scrsUserId = aScrsUserId;
-		boolean didAddScrs = setScrs(aScrs);
-		if (!didAddScrs) {
-			throw new RuntimeException(
-					"Unable to create user due to scrs. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-		}
-	}
+    public void setScrsUserId(int UserId)
+    {
+        this.scrsUserId = UserId;
+    }
 
-	protected SCRSUser() {}
+    public boolean setName(String aName)
+    {
+        name = aName;
+        return true;
+    }
 
-	// ------------------------
-	// INTERFACE
-	// ------------------------
+    public boolean setPassword(String aPassword)
+    {
+        password = aPassword;
+        return true;
+    }
 
-	public int getScrsUserId() {
-		return this.scrsUserId;
-	}
+    public boolean setEmail(String aEmail)
+    {
+        email = aEmail;
+        return true;
+    }
 
-	public void setScrsUserId(int UserId) {
-		this.scrsUserId = UserId;
-	}
+    public boolean setPhone(String aPhone)
+    {
+        phone = aPhone;
+        return true;
+    }
 
-	public boolean setName(String aName) {
-		boolean wasSet = false;
-		name = aName;
-		wasSet = true;
-		return wasSet;
-	}
+    public String getName()
+    {
+        return name;
+    }
 
-	public boolean setPassword(String aPassword) {
-		boolean wasSet = false;
-		password = aPassword;
-		wasSet = true;
-		return wasSet;
-	}
+    public String getPassword()
+    {
+        return password;
+    }
 
-	public boolean setEmail(String aEmail) {
-		boolean wasSet = false;
-		email = aEmail;
-		wasSet = true;
-		return wasSet;
-	}
+    public String getEmail()
+    {
+        return email;
+    }
 
-	public boolean setPhone(String aPhone) {
-		boolean wasSet = false;
-		phone = aPhone;
-		wasSet = true;
-		return wasSet;
-	}
+    public String getPhone()
+    {
+        return phone;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public SCRS getScrs()
+    {
+        return scrs;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public boolean setScrs(SCRS aScrs)
+    {
+        boolean wasSet = false;
+        if (aScrs == null)
+        {
+            return wasSet;
+        }
 
-	public String getEmail() {
-		return email;
-	}
+        SCRS existingScrs = scrs;
+        scrs = aScrs;
+        if (existingScrs != null && !existingScrs.equals(aScrs))
+        {
+            existingScrs.removeUser(this);
+        }
+        scrs.addUser(this);
+        wasSet = true;
+        return wasSet;
+    }
 
-	public String getPhone() {
-		return phone;
-	}
+    public void delete()
+    {
+        SCRS placeholderScrs = scrs;
+        this.scrs = null;
+        if (placeholderScrs != null)
+        {
+            placeholderScrs.removeUser(this);
+        }
+    }
 
-	/* Code from template association_GetOne */
-	public SCRS getScrs() {
-		return scrs;
-	}
-
-	/* Code from template association_SetOneToMany */
-	public boolean setScrs(SCRS aScrs) {
-		boolean wasSet = false;
-		if (aScrs == null) {
-			return wasSet;
-		}
-
-		SCRS existingScrs = scrs;
-		scrs = aScrs;
-		if (existingScrs != null && !existingScrs.equals(aScrs)) {
-			existingScrs.removeUser(this);
-		}
-		scrs.addUser(this);
-		wasSet = true;
-		return wasSet;
-	}
-
-	public void delete() {
-		SCRS placeholderScrs = scrs;
-		this.scrs = null;
-		if (placeholderScrs != null) {
-			placeholderScrs.removeUser(this);
-		}
-	}
-
-	public String toString() {
-		return super.toString() + "[" + "name" + ":" + getName() + "," + "password" + ":" + getPassword() + ","
-				+ "email" + ":" + getEmail() + "," + "phone" + ":" + getPhone() + "]"
-				+ System.getProperties().getProperty("line.separator") + "  " + "scrs = "
-				+ (getScrs() != null ? Integer.toHexString(System.identityHashCode(getScrs())) : "null");
-	}
+    public String toString()
+    {
+        return super.toString() + "[" + "name" + ":" + getName() + "," + "password" + ":" + getPassword() + ","
+                + "email" + ":" + getEmail() + "," + "phone" + ":" + getPhone() + "]"
+                + System.getProperties().getProperty("line.separator") + "  " + "scrs = "
+                + (getScrs() != null ? Integer.toHexString(System.identityHashCode(getScrs())) : "null");
+    }
 }

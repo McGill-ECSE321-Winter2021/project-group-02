@@ -7,206 +7,222 @@ import java.sql.Time;
 import javax.persistence.*;
 
 @Entity
-public class Workspace {
+public class Workspace
+{
+    // Workspace Attributes
+    @Id
+    private int workspaceID;
+    private String spaceType;
 
-	// ------------------------
-	// MEMBER VARIABLES
-	// ------------------------
+    // Workspace Associations
+    @OneToMany(mappedBy = "workspace")
+    private List<Timeslot> availabilities;
+    @ManyToOne
+    private SCRS scrs;
 
-	// Workspace Attributes
-	@Id
-	private int workspaceID;
-	private String spaceType;
+    public Workspace(int aWorkspaceID, String aSpaceType, SCRS aScrs)
+    {
+        workspaceID = aWorkspaceID;
+        spaceType = aSpaceType;
+        availabilities = new ArrayList<Timeslot>();
+        boolean didAddScrs = setScrs(aScrs);
+        if (!didAddScrs)
+        {
+            throw new RuntimeException(
+                    "Unable to create workspace due to scrs. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+        }
+    }
 
-	// Workspace Associations
-	@OneToMany(mappedBy = "workspace")
-	private List<Timeslot> availabilities;
-	@ManyToOne /* Code from template association_GetOne */
-	private SCRS scrs;
+    protected Workspace()
+    {
+    }
 
-	// ------------------------
-	// CONSTRUCTOR
-	// ------------------------
+    public static int minimumNumberOfAvailabilities()
+    {
+        return 0;
+    }
 
-	public Workspace(int aWorkspaceID, String aSpaceType, SCRS aScrs) {
-		workspaceID = aWorkspaceID;
-		spaceType = aSpaceType;
-		availabilities = new ArrayList<Timeslot>();
-		boolean didAddScrs = setScrs(aScrs);
-		if (!didAddScrs) {
-			throw new RuntimeException(
-					"Unable to create workspace due to scrs. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-		}
-	}
+    public boolean setWorkspaceID(int aWorkspaceID)
+    {
+        workspaceID = aWorkspaceID;
+        return true;
+    }
 
-	protected Workspace() {}
+    public boolean setSpaceType(String aSpaceType)
+    {
+        spaceType = aSpaceType;
+        return true;
+    }
 
-	// ------------------------
-	// INTERFACE
-	// ------------------------
+    public int getWorkspaceID()
+    {
+        return workspaceID;
+    }
 
-	public boolean setWorkspaceID(int aWorkspaceID) {
-		boolean wasSet = false;
-		workspaceID = aWorkspaceID;
-		wasSet = true;
-		return wasSet;
-	}
+    public String getSpaceType()
+    {
+        return spaceType;
+    }
 
-	public boolean setSpaceType(String aSpaceType) {
-		boolean wasSet = false;
-		spaceType = aSpaceType;
-		wasSet = true;
-		return wasSet;
-	}
+    public Timeslot getAvailability(int index)
+    {
+        return availabilities.get(index);
+    }
 
-	public int getWorkspaceID() {
-		return workspaceID;
-	}
+    public List<Timeslot> getAvailabilities()
+    {
+        return availabilities;
+    }
 
-	public String getSpaceType() {
-		return spaceType;
-	}
+    public void setAvailabilities(List<Timeslot> timeslots)
+    {
+        availabilities = timeslots;
+    }
 
-	/* Code from template association_GetMany */
-	public Timeslot getAvailability(int index) {
-		Timeslot aAvailability = availabilities.get(index);
-		return aAvailability;
-	}
+    public int numberOfAvailabilities()
+    {
+        return availabilities.size();
+    }
 
-	public List<Timeslot> getAvailabilities() {
-		return availabilities;
-	}
-	
-	public void setAvailabilities(List<Timeslot> timeslots) {
-		availabilities=timeslots;
-	}
+    public boolean hasAvailabilities()
+    {
+        return availabilities.size() > 0;
+    }
 
-	public int numberOfAvailabilities() {
-		int number = availabilities.size();
-		return number;
-	}
+    public int indexOfAvailability(Timeslot aAvailability)
+    {
+        return availabilities.indexOf(aAvailability);
+    }
 
-	public boolean hasAvailabilities() {
-		boolean has = availabilities.size() > 0;
-		return has;
-	}
+    public SCRS getScrs()
+    {
+        return scrs;
+    }
 
-	public int indexOfAvailability(Timeslot aAvailability) {
-		int index = availabilities.indexOf(aAvailability);
-		return index;
-	}
+    public Timeslot addAvailability(int aTimeSlotID, Date aStartDate, Date aEndDate, Time aStartTime,
+                                    Time aEndTime)
+    {
+        return new Timeslot(aTimeSlotID, aStartDate, aEndDate, aStartTime, aEndTime, this);
+    }
 
-	public SCRS getScrs() {
-		return scrs;
-	}
-	
+    public boolean addAvailability(Timeslot aAvailability)
+    {
+        boolean wasAdded = false;
+        if (availabilities.contains(aAvailability))
+        {
+            return false;
+        }
+        Workspace existingWorkspace = aAvailability.getWorkspace();
+        boolean isNewWorkspace = existingWorkspace != null && !this.equals(existingWorkspace);
+        if (isNewWorkspace)
+        {
+            aAvailability.setWorkspace(this);
+        }
+        else
+        {
+            availabilities.add(aAvailability);
+        }
+        wasAdded = true;
+        return wasAdded;
+    }
 
-	/* Code from template association_MinimumNumberOfMethod */
-	public static int minimumNumberOfAvailabilities() {
-		return 0;
-	}
+    public boolean removeAvailability(Timeslot aAvailability)
+    {
+        boolean wasRemoved = false;
+        // Unable to remove aAvailability, as it must always have a workspace
+        if (!this.equals(aAvailability.getWorkspace()))
+        {
+            availabilities.remove(aAvailability);
+            wasRemoved = true;
+        }
+        return wasRemoved;
+    }
 
-	/* Code from template association_AddManyToOne */
-	public Timeslot addAvailability(int aTimeSlotID, Date aStartDate, Date aEndDate, Time aStartTime,
-			Time aEndTime) {
-		return new Timeslot(aTimeSlotID, aStartDate, aEndDate, aStartTime, aEndTime, this);
-	}
+    public boolean addAvailabilityAt(Timeslot aAvailability, int index)
+    {
+        boolean wasAdded = false;
+        if (addAvailability(aAvailability))
+        {
+            if (index < 0)
+            {
+                index = 0;
+            }
+            if (index > numberOfAvailabilities())
+            {
+                index = numberOfAvailabilities() - 1;
+            }
+            availabilities.remove(aAvailability);
+            availabilities.add(index, aAvailability);
+            wasAdded = true;
+        }
+        return wasAdded;
+    }
 
-	public boolean addAvailability(Timeslot aAvailability) {
-		boolean wasAdded = false;
-		if (availabilities.contains(aAvailability)) {
-			return false;
-		}
-		Workspace existingWorkspace = aAvailability.getWorkspace();
-		boolean isNewWorkspace = existingWorkspace != null && !this.equals(existingWorkspace);
-		if (isNewWorkspace) {
-			aAvailability.setWorkspace(this);
-		} else {
-			availabilities.add(aAvailability);
-		}
-		wasAdded = true;
-		return wasAdded;
-	}
+    public boolean addOrMoveAvailabilityAt(Timeslot aAvailability, int index)
+    {
+        boolean wasAdded = false;
+        if (availabilities.contains(aAvailability))
+        {
+            if (index < 0)
+            {
+                index = 0;
+            }
+            if (index > numberOfAvailabilities())
+            {
+                index = numberOfAvailabilities() - 1;
+            }
+            availabilities.remove(aAvailability);
+            availabilities.add(index, aAvailability);
+            wasAdded = true;
+        }
+        else
+        {
+            wasAdded = addAvailabilityAt(aAvailability, index);
+        }
+        return wasAdded;
+    }
 
-	public boolean removeAvailability(Timeslot aAvailability) {
-		boolean wasRemoved = false;
-		// Unable to remove aAvailability, as it must always have a workspace
-		if (!this.equals(aAvailability.getWorkspace())) {
-			availabilities.remove(aAvailability);
-			wasRemoved = true;
-		}
-		return wasRemoved;
-	}
+    /* Code from template association_SetOneToMany */
+    public boolean setScrs(SCRS aScrs)
+    {
+        boolean wasSet = false;
+        if (aScrs == null)
+        {
+            return wasSet;
+        }
 
-	/* Code from template association_AddIndexControlFunctions */
-	public boolean addAvailabilityAt(Timeslot aAvailability, int index) {
-		boolean wasAdded = false;
-		if (addAvailability(aAvailability)) {
-			if (index < 0) {
-				index = 0;
-			}
-			if (index > numberOfAvailabilities()) {
-				index = numberOfAvailabilities() - 1;
-			}
-			availabilities.remove(aAvailability);
-			availabilities.add(index, aAvailability);
-			wasAdded = true;
-		}
-		return wasAdded;
-	}
+        SCRS existingScrs = scrs;
+        scrs = aScrs;
+        if (existingScrs != null && !existingScrs.equals(aScrs))
+        {
+            existingScrs.removeWorkspace(this);
+        }
+        scrs.addWorkspace(this);
+        wasSet = true;
+        return wasSet;
+    }
 
-	public boolean addOrMoveAvailabilityAt(Timeslot aAvailability, int index) {
-		boolean wasAdded = false;
-		if (availabilities.contains(aAvailability)) {
-			if (index < 0) {
-				index = 0;
-			}
-			if (index > numberOfAvailabilities()) {
-				index = numberOfAvailabilities() - 1;
-			}
-			availabilities.remove(aAvailability);
-			availabilities.add(index, aAvailability);
-			wasAdded = true;
-		} else {
-			wasAdded = addAvailabilityAt(aAvailability, index);
-		}
-		return wasAdded;
-	}
+    public void delete()
+    {
+        while (availabilities.size() > 0)
+        {
+            Timeslot aAvailability = availabilities.get(availabilities.size() - 1);
+            aAvailability.delete();
+            availabilities.remove(aAvailability);
+        }
 
-	/* Code from template association_SetOneToMany */
-	public boolean setScrs(SCRS aScrs) {
-		boolean wasSet = false;
-		if (aScrs == null) {
-			return wasSet;
-		}
+        SCRS placeholderScrs = scrs;
+        this.scrs = null;
+        if (placeholderScrs != null)
+        {
+            placeholderScrs.removeWorkspace(this);
+        }
+    }
 
-		SCRS existingScrs = scrs;
-		scrs = aScrs;
-		if (existingScrs != null && !existingScrs.equals(aScrs)) {
-			existingScrs.removeWorkspace(this);
-		}
-		scrs.addWorkspace(this);
-		wasSet = true;
-		return wasSet;
-	}
-
-	public void delete() {
-		while (availabilities.size() > 0) {
-			Timeslot aAvailability = availabilities.get(availabilities.size() - 1);
-			aAvailability.delete();
-			availabilities.remove(aAvailability);
-		}
-
-		SCRS placeholderScrs = scrs;
-		this.scrs = null;
-		if (placeholderScrs != null) {
-			placeholderScrs.removeWorkspace(this);
-		}
-	}
-
-	public String toString() {
-		return super.toString() + "[" + "workspaceID" + ":" + getWorkspaceID() + "," + "spaceType" + ":"
-				+ getSpaceType() + "]" + System.getProperties().getProperty("line.separator") + "  " + "scrs = "
-				+ (getScrs() != null ? Integer.toHexString(System.identityHashCode(getScrs())) : "null");
-	}
+    public String toString()
+    {
+        return super.toString() + "[" + "workspaceID" + ":" + getWorkspaceID() + "," + "spaceType" + ":"
+                + getSpaceType() + "]" + System.getProperties().getProperty("line.separator") + "  " + "scrs = "
+                + (getScrs() != null ? Integer.toHexString(System.identityHashCode(getScrs())) : "null");
+    }
 }
