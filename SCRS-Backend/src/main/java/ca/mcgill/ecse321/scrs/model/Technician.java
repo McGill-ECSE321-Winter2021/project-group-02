@@ -29,6 +29,10 @@ public class Technician extends User {
 		return this.availabilities;
 	}
 
+	public void setAvailabilities(List<Timeslot> av) {
+		this.availabilities = av;
+	}
+
 
 	//========Constructor========
 
