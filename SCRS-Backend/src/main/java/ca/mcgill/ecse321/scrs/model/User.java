@@ -1,10 +1,12 @@
 package ca.mcgill.ecse321.scrs.model;
 
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Entity
+@DiscriminatorColumn(name="TYPE")
 public abstract class User {
 
 	// ------------------------
@@ -37,6 +39,8 @@ public abstract class User {
 					"Unable to create user due to scrs. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
 		}
 	}
+
+	protected User() {}
 
 	// ------------------------
 	// INTERFACE

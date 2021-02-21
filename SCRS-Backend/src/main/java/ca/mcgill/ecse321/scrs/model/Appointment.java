@@ -66,6 +66,8 @@ public class Appointment {
 		}
 	}
 
+	protected Appointment() {}
+
 	public boolean setAppointmentID(int aAppointmentID) {
 		boolean wasSet = false;
 		appointmentID = aAppointmentID;

@@ -10,8 +10,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 
 @Entity
-@Inheritance(strategy=InheritanceType.JOINED)
-@DiscriminatorColumn(name="TYPE")
 public class Customer extends User {
 
 	// Customer Associations
@@ -21,6 +19,8 @@ public class Customer extends User {
 		super(aName, aPassword, aEmail, aPhone, aScrs, id);
 		appointments = new ArrayList<Appointment>();
 	}
+
+	public Customer() {}
 
 	/* Code from template association_GetMany */
 	public Appointment getAppointment(int index) {

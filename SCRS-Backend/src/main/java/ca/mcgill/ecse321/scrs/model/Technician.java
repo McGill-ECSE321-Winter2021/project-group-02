@@ -10,8 +10,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 
 @Entity
-@Inheritance(strategy=InheritanceType.JOINED)
-@DiscriminatorColumn(name="TYPE")
 public class Technician extends User {
 
 	//=======Availabilities======
@@ -33,6 +31,8 @@ public class Technician extends User {
 		super(aName, aPassword, aEmail, aPhone, aScrs, id);
 		availabilities = new ArrayList<Timeslot>();
 	}
+
+	protected Technician() {}
 
 
 	//=======Other Methods=======
