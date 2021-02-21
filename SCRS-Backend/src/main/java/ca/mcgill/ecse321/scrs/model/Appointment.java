@@ -4,6 +4,7 @@ import java.util.*;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Appointment {
@@ -144,7 +145,6 @@ public class Appointment {
 	}
 
 	@ManyToOne
-	/* Code from template association_GetOne */
 	public Customer getCustomer() {
 		return customer;
 	}
@@ -154,7 +154,8 @@ public class Appointment {
 		Timeslot aTimeslot = timeslots.get(index);
 		return aTimeslot;
 	}
-
+	
+	@OneToMany //0..1 to 1..*
 	public List<Timeslot> getTimeslots() {
 		List<Timeslot> newTimeslots = Collections.unmodifiableList(timeslots);
 		return newTimeslots;
@@ -176,6 +177,7 @@ public class Appointment {
 	}
 
 	/* Code from template association_GetOne */
+	@ManyToOne
 	public SCRS getScrs() {
 		return scrs;
 	}
@@ -322,6 +324,7 @@ public class Appointment {
 	}
 
 	/* Code from template association_SetOneToMany */
+	@ManyToOne
 	public boolean setScrs(SCRS aScrs) {
 		boolean wasSet = false;
 		if (aScrs == null) {
