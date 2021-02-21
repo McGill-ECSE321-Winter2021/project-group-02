@@ -68,7 +68,6 @@ public abstract class User {
 		return wasSet;
 	}
 	
-	@Id
 	public String getName() {
 		return name;
 	}
