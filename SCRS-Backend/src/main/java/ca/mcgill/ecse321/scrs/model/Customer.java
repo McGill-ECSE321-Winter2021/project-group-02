@@ -2,17 +2,15 @@ package ca.mcgill.ecse321.scrs.model;
 
 import java.util.*;
 
-import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 
 @Entity
-public class Customer extends User {
+public class Customer extends SCRSUser
+{
 
 	// Customer Associations
+	@OneToMany(mappedBy="customer")
 	private List<Appointment> appointments;
 
 	public Customer(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs, int id) {
@@ -27,8 +25,7 @@ public class Customer extends User {
 		Appointment aAppointment = appointments.get(index);
 		return aAppointment;
 	}
-	
-	@OneToMany(mappedBy="customer")
+
 	public List<Appointment> getAppointments() {
 		return appointments;
 	}

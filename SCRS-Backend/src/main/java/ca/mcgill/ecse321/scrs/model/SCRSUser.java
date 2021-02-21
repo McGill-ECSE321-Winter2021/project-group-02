@@ -7,32 +7,35 @@ import javax.persistence.ManyToOne;
 
 @Entity
 @DiscriminatorColumn(name="TYPE")
-public abstract class User {
+public abstract class SCRSUser
+{
 
 	// ------------------------
 	// MEMBER VARIABLES
 	// ------------------------
 
-	// User Attributes
+	// Account Attributes
 	private String name;
 	private String password;
 	private String email;
 	private String phone;
 
-	// User Associations
+	// Account Associations
+	@ManyToOne
 	private SCRS scrs;
-	private int userID;
+	@Id
+	private int scrsUserId;
 
 	// ------------------------
 	// CONSTRUCTOR
 	// ------------------------
 
-	public User(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs, int id) {
+	public SCRSUser(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs, int aScrsUserId) {
 		name = aName;
 		password = aPassword;
 		email = aEmail;
 		phone = aPhone;
-		userID= id;
+		scrsUserId = aScrsUserId;
 		boolean didAddScrs = setScrs(aScrs);
 		if (!didAddScrs) {
 			throw new RuntimeException(
@@ -40,19 +43,18 @@ public abstract class User {
 		}
 	}
 
-	protected User() {}
+	protected SCRSUser() {}
 
 	// ------------------------
 	// INTERFACE
 	// ------------------------
 
-	@Id
-	public int getId() {
-		return this.userID;
+	public int getScrsUserId() {
+		return this.scrsUserId;
 	}
 
-	public void setId(int id) {
-		this.userID = id;
+	public void setScrsUserId(int UserId) {
+		this.scrsUserId = UserId;
 	}
 
 	public boolean setName(String aName) {
@@ -100,7 +102,6 @@ public abstract class User {
 	}
 
 	/* Code from template association_GetOne */
-	@ManyToOne
 	public SCRS getScrs() {
 		return scrs;
 	}
