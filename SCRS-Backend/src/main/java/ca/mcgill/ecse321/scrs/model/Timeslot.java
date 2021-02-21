@@ -4,6 +4,8 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.*;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Timeslot {
@@ -107,7 +109,7 @@ public class Timeslot {
 		Technician aTechnician = technician.get(index);
 		return aTechnician;
 	}
-
+	@ManyToMany
 	public List<Technician> getTechnician() {
 		List<Technician> newTechnician = Collections.unmodifiableList(technician);
 		return newTechnician;
@@ -129,6 +131,7 @@ public class Timeslot {
 	}
 
 	/* Code from template association_GetOne */
+	@ManyToOne
 	public Appointment getAppointment() {
 		return appointment;
 	}
@@ -139,6 +142,7 @@ public class Timeslot {
 	}
 
 	/* Code from template association_GetOne */
+	@ManyToOne
 	public Workspace getWorkspace() {
 		return workspace;
 	}
