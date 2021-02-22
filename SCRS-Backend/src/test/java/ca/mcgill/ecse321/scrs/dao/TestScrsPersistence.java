@@ -103,8 +103,7 @@ public class TestScrsPersistence {
         SCRS scrs = new SCRS();
 
         //create customer with data
-        String name = "testName";
-        Customer customer = new Customer(name, "password", "email", "phone", scrs);
+        Customer customer = new Customer("name", "password", "email", "phone", scrs);
 
         //create appointment -> timeslot -> workspace to test the association
         Workspace ws = new Workspace("test", scrs);
@@ -120,12 +119,10 @@ public class TestScrsPersistence {
         //save customer
         customerRepository.save(customer);
 
-        customer = null;
-
         //check test outputs
-        customer = customerRepository.findByScrsUserId(/* FIXME */ 0);
+        Customer actualCustomer = customerRepository.findByScrsUserId(customer.getScrsUserId());
         assertNotNull(customer);
-        assertEquals(name, customer.getName());
+        assertEquals(customer.getName(), customer.getName());
         assertNotNull(customer.getAppointment(0));
         assertEquals(app, customer.getAppointment(0));
     }
