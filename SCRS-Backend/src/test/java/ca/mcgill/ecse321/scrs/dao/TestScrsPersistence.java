@@ -57,18 +57,20 @@ public class TestScrsPersistence {
     @Transactional
     public void testPersistAndLoadAssistant()
     {
-        SCRS system = new SCRS();
-        String name = "NotAdel";
-        Assistant aAssistant = new Assistant(name, "password", "mail@notmail.mcgill.ca", "666 call devil", system);
+        SCRS scrs = new SCRS();
+        Assistant assistant = new Assistant("name", "password", "name@mail.mcgill.ca", "111-1111", scrs);
+        scrsRepository.save(scrs);
+        assistantRepository.save(assistant);
 
-        scrsRepository.save(system);
-        assistantRepository.save(aAssistant);
+        Assistant actualAssistant = assistantRepository.findByScrsUserId(assistant.getScrsUserId());
 
-        aAssistant = null;
-
-        aAssistant = assistantRepository.findByScrsUserId(1);
-        assertNotNull(aAssistant);
-        assertEquals(name, aAssistant.getName());
+        assertNotNull(actualAssistant);
+        assertEquals(assistant.getScrsUserId(), actualAssistant.getScrsUserId());
+        assertEquals(assistant.getName(), actualAssistant.getName());
+        assertEquals(assistant.getPassword(), actualAssistant.getPassword());
+        assertEquals(assistant.getEmail(), actualAssistant.getEmail());
+        assertEquals(assistant.getPhone(), actualAssistant.getPhone());
+        assertEquals(scrs.getScrsId(), actualAssistant.getScrs().getScrsId());
     }
 
     //=========ADEL TESTS========== (Customer and SCRS tests)
