@@ -49,6 +49,7 @@ public class TestScrsPersistence {
         workspaceRepository.deleteAll();
     }
 
+    //=========SIMON TESTS========== (Assistant, Technician tests)
     @Test
     public void testPersistAndLoadAssistant() {
         SCRS system = new SCRS();
@@ -63,4 +64,14 @@ public class TestScrsPersistence {
         assertNotNull(aAssistant);
         assertEquals(name, aAssistant.getName());
     }
+
+    //=========ADEL TESTS========== (Customer tests)
+
+    //=========ALIX TESTS========== (Appointment tests)
+
+    //=========ROEY TESTS========== (Timeslot tests)
+
+    //=========ALEXANDRA TESTS========== (Workspace tests)
+
+
 }
