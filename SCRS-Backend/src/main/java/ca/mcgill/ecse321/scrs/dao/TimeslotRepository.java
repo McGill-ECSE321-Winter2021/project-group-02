@@ -1,4 +1,7 @@
 package ca.mcgill.ecse321.scrs.dao;
 
-public interface TimeslotRepository {
+import ca.mcgill.ecse321.scrs.model.Timeslot;
+import org.springframework.data.repository.CrudRepository;
+
+public interface TimeslotRepository extends CrudRepository<Timeslot, Integer> {
 }

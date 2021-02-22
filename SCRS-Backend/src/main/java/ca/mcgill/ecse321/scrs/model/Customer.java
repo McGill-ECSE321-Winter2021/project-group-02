@@ -18,8 +18,10 @@ public class Customer extends SCRSUser
         appointments = new ArrayList<Appointment>();
     }
 
-    public Customer()
+    public Customer(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs)
     {
+        super(aName, aPassword, aEmail, aPhone, aScrs);
+        appointments = new ArrayList<Appointment>();
     }
 
     public static int minimumNumberOfAppointments()
