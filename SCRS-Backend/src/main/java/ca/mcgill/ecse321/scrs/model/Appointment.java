@@ -1,10 +1,9 @@
 package ca.mcgill.ecse321.scrs.model;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import java.util.*;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 @Entity
 public class Appointment
@@ -16,6 +15,8 @@ public class Appointment
 
     // Appointment Attributes
     @Id
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
     private int appointmentID;
     private AppointmentType appointmentType;
     private String service;
@@ -32,10 +33,13 @@ public class Appointment
     @ManyToOne
     private SCRS scrs;
 
-    public Appointment(int aAppointmentID, AppointmentType aAppointmentType, String aService, String aNote,
+    protected Appointment()
+    {
+    }
+
+    public Appointment(AppointmentType aAppointmentType, String aService, String aNote,
                        int aRating, String aFeedback, boolean aPaid, Customer aCustomer, SCRS aScrs, Timeslot... allTimeslots)
     {
-        appointmentID = aAppointmentID;
         appointmentType = aAppointmentType;
         service = aService;
         note = aNote;
@@ -61,11 +65,6 @@ public class Appointment
             throw new RuntimeException(
                     "Unable to create appointment due to scrs. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
         }
-    }
-
-
-    protected Appointment()
-    {
     }
 
     /* Code from template association_MinimumNumberOfMethod */

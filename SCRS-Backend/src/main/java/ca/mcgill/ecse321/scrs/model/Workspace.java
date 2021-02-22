@@ -1,6 +1,8 @@
 package ca.mcgill.ecse321.scrs.model;
 
 
+import org.hibernate.annotations.GenericGenerator;
+
 import java.util.*;
 import java.sql.Date;
 import java.sql.Time;
@@ -11,6 +13,8 @@ public class Workspace
 {
     // Workspace Attributes
     @Id
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
     private int workspaceID;
     private String spaceType;
 
@@ -20,9 +24,8 @@ public class Workspace
     @ManyToOne
     private SCRS scrs;
 
-    public Workspace(int aWorkspaceID, String aSpaceType, SCRS aScrs)
+    public Workspace(String aSpaceType, SCRS aScrs)
     {
-        workspaceID = aWorkspaceID;
         spaceType = aSpaceType;
         availabilities = new ArrayList<Timeslot>();
         boolean didAddScrs = setScrs(aScrs);
@@ -36,6 +39,8 @@ public class Workspace
     protected Workspace()
     {
     }
+
+    ;
 
     public static int minimumNumberOfAvailabilities()
     {
@@ -99,10 +104,10 @@ public class Workspace
         return scrs;
     }
 
-    public Timeslot addAvailability(int aTimeSlotID, Date aStartDate, Date aEndDate, Time aStartTime,
+    public Timeslot addAvailability(Date aStartDate, Date aEndDate, Time aStartTime,
                                     Time aEndTime)
     {
-        return new Timeslot(aTimeSlotID, aStartDate, aEndDate, aStartTime, aEndTime, this);
+        return new Timeslot(aStartDate, aEndDate, aStartTime, aEndTime, this);
     }
 
     public boolean addAvailability(Timeslot aAvailability)

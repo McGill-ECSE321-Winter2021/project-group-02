@@ -1,9 +1,8 @@
 package ca.mcgill.ecse321.scrs.model;
 
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 
 @Entity
 @DiscriminatorColumn(name = "TYPE")
@@ -11,6 +10,8 @@ public abstract class SCRSUser
 {
     // Account Attributes
     @Id
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
     private int scrsUserId;
     private String name;
     private String password;
@@ -21,13 +22,12 @@ public abstract class SCRSUser
     @ManyToOne
     private SCRS scrs;
 
-    public SCRSUser(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs, int aScrsUserId)
+    public SCRSUser(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs)
     {
         name = aName;
         password = aPassword;
         email = aEmail;
         phone = aPhone;
-        scrsUserId = aScrsUserId;
         boolean didAddScrs = setScrs(aScrs);
         if (!didAddScrs)
         {
@@ -38,7 +38,14 @@ public abstract class SCRSUser
 
     protected SCRSUser()
     {
+        name = "Invalid";
+        password = "Invalid";
+        email = "Invalid";
+        phone = "Invalid";
+        scrs = null;
     }
+
+    ;
 
     public int getScrsUserId()
     {

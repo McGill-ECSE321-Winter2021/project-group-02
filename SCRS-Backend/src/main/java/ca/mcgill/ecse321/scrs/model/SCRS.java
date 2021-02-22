@@ -1,17 +1,18 @@
 package ca.mcgill.ecse321.scrs.model;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import java.util.List;
 import java.util.ArrayList;
-import javax.persistence.CascadeType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 @Entity
 public class SCRS
 {
     // SCRS Associations
     @Id
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
     private int scrsId;
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "scrs")
     private List<Workspace> workspaces;
@@ -143,9 +144,9 @@ public class SCRS
     }
 
     /* Code from template association_AddManyToOne */
-    public Workspace addWorkspace(int aWorkspaceID, String aSpaceType)
+    public Workspace addWorkspace(String aSpaceType)
     {
-        return new Workspace(aWorkspaceID, aSpaceType, this);
+        return new Workspace(aSpaceType, this);
     }
 
     public boolean addWorkspace(Workspace aWorkspace)
@@ -306,11 +307,10 @@ public class SCRS
     }
 
     /* Code from template association_AddManyToOne */
-    public Appointment addAppointment(int aAppointmentID,
-                                      ca.mcgill.ecse321.scrs.model.Appointment.AppointmentType aAppointmentType, String aService, String aNote,
+    public Appointment addAppointment(ca.mcgill.ecse321.scrs.model.Appointment.AppointmentType aAppointmentType, String aService, String aNote,
                                       int aRating, String aFeedback, boolean aPaid, Customer aCustomer, Timeslot... allTimeslots)
     {
-        return new Appointment(aAppointmentID, aAppointmentType, aService, aNote, aRating, aFeedback, aPaid, aCustomer,
+        return new Appointment(aAppointmentType, aService, aNote, aRating, aFeedback, aPaid, aCustomer,
                 this, allTimeslots);
     }
 

@@ -3,23 +3,32 @@ package ca.mcgill.ecse321.scrs.model;
 import java.util.*;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 @Entity
 public class Technician extends SCRSUser
 {
     @ManyToMany
+    @JoinTable(
+            name = "technician_availabilities",
+            joinColumns = @JoinColumn(name = "technician_id"),
+            inverseJoinColumns = @JoinColumn(name = "timeslot_id")
+    )
     private List<Timeslot> availabilities;
 
-    public Technician(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs, int id)
+    public Technician(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs)
     {
-        super(aName, aPassword, aEmail, aPhone, aScrs, id);
+        super(aName, aPassword, aEmail, aPhone, aScrs);
         availabilities = new ArrayList<Timeslot>();
     }
 
     protected Technician()
     {
     }
+
+    ;
 
     public List<Timeslot> getAvailabilities()
     {
