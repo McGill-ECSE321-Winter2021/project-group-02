@@ -268,6 +268,34 @@ public class TestScrsPersistence
         assertEquals(actualTimeslot.getWorkspace().getWorkspaceID(), ts.getWorkspace().getWorkspaceID());
     }
 
+    @Test
+    @Transactional
+    public void testPersistAndLoadTimeslotByTechnicians()
+    {
+        SCRS scrs = new SCRS();
+        Workspace ws = new Workspace("test", scrs);
+        Timeslot ts = new Timeslot(new Date(0), new Date(LocalDate.now().toEpochDay()), new Time(0), new Time(LocalDate.now().toEpochDay()), ws);
+        Technician tech = new Technician("SomeTech", "password", "email", "phone", scrs);
+        scrsRepository.save(scrs);
+        workspaceRepository.save(ws);
+        timeslotRepository.save(ts);
+        technicianRepository.save(tech);
+
+        List<Timeslot> actualTimeslots = timeslotRepository.findByTechnicians(tech);
+
+        assertEquals(0, actualTimeslots.size());
+
+        tech.addAvailability(ts);
+        technicianRepository.save(tech);
+
+        actualTimeslots = timeslotRepository.findByTechnicians(tech);
+        assertNotEquals(0, actualTimeslots.size());
+        Timeslot actualTimeslot = actualTimeslots.get(0);
+
+        assertEquals(actualTimeslot.getTimeSlotID(), ts.getTimeSlotID());
+        assertEquals(actualTimeslot.getWorkspace().getWorkspaceID(), ts.getWorkspace().getWorkspaceID());
+    }
+
     //=========ALEXANDRA TESTS========== (Workspace tests)
     @Test
     @Transactional
