@@ -73,8 +73,8 @@ public class TestScrsPersistence {
 
     //=========ADEL TESTS========== (Customer and SCRS tests)
 
-    @Test
-    @Transactional
+    //@Test
+    //@Transactional
     public void testPersistAndLoadSCRS()
     {
         //create scrs
@@ -137,22 +137,20 @@ public class TestScrsPersistence {
         Customer customer = new Customer("Rick Roll", "You just got Rick Rolled", "Ha Gottem@gmail.com", "(666) 666-6666", system);
         Workspace workspace = new Workspace("mom get out of my room I'm playing Minecraft", system);
         Timeslot timeslot = new Timeslot(new Date(LocalDate.now().toEpochDay()), new Date(LocalDate.now().toEpochDay()), new Time(3333), new Time(6666), workspace);
-        String aFeedback = "boop";
-        Appointment appointment = new Appointment(Appointment.AppointmentType.CarWash, "beep", "shrimp was good",90, aFeedback, false, customer, system, timeslot );
+        Appointment appointment = new Appointment(Appointment.AppointmentType.CarWash, "beep", "shrimp was good",90, "boop", false, customer, system, timeslot );
 
         //saving them
         scrsRepository.save(system);
         customerRepository.save(customer);
         workspaceRepository.save(workspace);
         timeslotRepository.save(timeslot);
-        appointmentRepository.save(appointment);
-
-        appointment = null;
+        Appointment appointment2 = appointmentRepository.save(appointment);     //for getting the ID
 
         //check appointment
-        appointment = appointmentRepository.findByAppointmentID(1);
+        System.out.println(appointment2.getAppointmentID());
+        Appointment appointment1 = appointmentRepository.findByAppointmentID(appointment2.getAppointmentID());
         assertNotNull(appointment);
-        assertEquals(aFeedback, appointment.getFeedback());
+        assertEquals(appointment1.getFeedback(), appointment.getFeedback());
 
         //check appointment-timeslot relation
         Timeslot timeslot1 = appointment.getTimeslot(0);
