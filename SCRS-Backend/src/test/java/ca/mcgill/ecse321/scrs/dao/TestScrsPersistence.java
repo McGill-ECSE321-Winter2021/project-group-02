@@ -77,6 +77,27 @@ public class TestScrsPersistence
         assertEquals(scrs.getScrsId(), actualAssistant.getScrs().getScrsId());
     }
 
+    @Test
+    @Transactional
+    public void testPersistAndLoadTechnician()
+    {
+        SCRS scrs = new SCRS();
+        Technician technician = new Technician("name", "password", "name@mail.mcgill.ca", "111-1111", scrs);
+
+        scrsRepository.save(scrs);
+        technicianRepository.save(technician);
+
+        Technician actualTechnician = technicianRepository.findByScrsUserId(technician.getScrsUserId());
+
+        assertNotNull(actualTechnician);
+        assertEquals(technician.getScrsUserId(), actualTechnician.getScrsUserId());
+        assertEquals(technician.getName(), actualTechnician.getName());
+        assertEquals(technician.getPassword(), actualTechnician.getPassword());
+        assertEquals(technician.getEmail(), actualTechnician.getEmail());
+        assertEquals(technician.getPhone(), actualTechnician.getPhone());
+        assertEquals(scrs.getScrsId(), actualTechnician.getScrs().getScrsId());
+    }
+
     //=========ADEL TESTS========== (Customer and SCRS tests)
 
     @Test
