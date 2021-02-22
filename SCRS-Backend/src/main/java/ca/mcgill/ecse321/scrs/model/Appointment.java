@@ -94,11 +94,6 @@ public class Appointment
         }
     }
 
-
-    protected Appointment()
-    {
-    }
-
     /* Code from template association_MinimumNumberOfMethod */
     public static int minimumNumberOfTimeslots()
     {

@@ -6,9 +6,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.repository.CrudRepository;
 import javax.persistence.EntityManager;
 
-@Repository
-public class SCRSRepository {
+public interface SCRSRepository extends CrudRepository<SCRS, Integer>{
 
-    @Autowired
-    EntityManager entityManager;
+    SCRS findByScrsId(int scrsId);
 }

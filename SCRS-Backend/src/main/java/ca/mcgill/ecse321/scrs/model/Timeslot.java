@@ -67,9 +67,6 @@ public class Timeslot
         }
     }
 
-    public Timeslot()
-    {
-    }
 
     public static int minimumNumberOfTechnician()
     {

@@ -7,6 +7,8 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import ca.mcgill.ecse321.scrs.model.*;
+import ca.mcgill.ecse321.scrs.model.Appointment.AppointmentType;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -49,7 +52,8 @@ public class TestScrsPersistence {
         workspaceRepository.deleteAll();
     }
 
-    //=========SIMON TESTS========== (Assistant, Technician tests)
+
+    //=========SIMON TESTS========== (Assistant and Technician tests)
     @Test
     public void testPersistAndLoadAssistant() {
         SCRS system = new SCRS();
@@ -65,7 +69,64 @@ public class TestScrsPersistence {
         assertEquals(name, aAssistant.getName());
     }
 
-    //=========ADEL TESTS========== (Customer tests)
+    //=========ADEL TESTS========== (Customer and SCRS tests)
+
+    @Test
+    public void testPersistAndLoadSCRS() {
+        //create scrs
+        int id = 1;
+        SCRS scrs = new SCRS();
+        scrs.setScrsId(1);
+
+        //create and add test workspace to scrs
+        Workspace space = new Workspace("test", scrs);
+        workspaceRepository.save(space);
+        scrs.addWorkspace(space);
+
+        //save scrs
+        scrsRepository.save(scrs);
+
+        scrs = null;
+
+        //check test outputs
+        scrs = scrsRepository.findByScrsId(id);
+        assertNotNull(scrs);
+        assertEquals(scrs.getScrsId(), id); //test if ID was properly stored/read
+        assertNotNull(scrs.getWorkspace(0));
+        assertEquals(scrs.getWorkspace(0), space); //test if workspace association was properly stored/read
+    }
+
+    @Test
+    public void testPersistAndLoadCustomer() {
+        //create dummy scrs
+        SCRS scrs = new SCRS();
+
+        //create customer with data
+        int id = 32;
+        String name = "testName";
+        Customer customer = new Customer(name, "password", "email", "phone", scrs, id);
+
+        //create appointment -> timeslot -> workspace to test the association
+        Workspace ws = new Workspace("test", scrs);
+        Timeslot ts = new Timeslot(new Date(0),new Date(LocalDate.now().toEpochDay()), new Time(0), new Time(LocalDate.now().toEpochDay()), ws);
+        Appointment app = new Appointment(AppointmentType.CarWash, "service", "note", 5, "feedback", true, customer, scrs, ts);
+        customer.addAppointment(app);
+        workspaceRepository.save(ws);
+        timeslotRepository.save(ts);
+        appointmentRepository.save(app);
+
+        //save customer
+        customerRepository.save(customer);
+
+        customer = null;
+
+        //check test outputs
+        customer = customerRepository.findByScrsUserId(id);
+        assertNotNull(customer);
+        assertEquals(customer.getName(), name);
+        assertNotNull(customer.getAppointment(0));
+        assertEquals(customer.getAppointment(0), app);
+    }
 
     //=========ALIX TESTS========== (Appointment tests)
 

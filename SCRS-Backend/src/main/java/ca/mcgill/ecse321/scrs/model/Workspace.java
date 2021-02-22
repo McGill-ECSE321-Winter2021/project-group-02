@@ -49,9 +49,6 @@ public class Workspace
         }
     }
 
-    protected Workspace()
-    {
-    }
 
     public static int minimumNumberOfAvailabilities()
     {
