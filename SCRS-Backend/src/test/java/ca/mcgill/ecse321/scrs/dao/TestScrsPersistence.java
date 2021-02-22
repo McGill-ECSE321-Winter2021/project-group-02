@@ -73,8 +73,8 @@ public class TestScrsPersistence {
 
     //=========ADEL TESTS========== (Customer and SCRS tests)
 
-    //@Test
-    //@Transactional
+    @Test
+    @Transactional
     public void testPersistAndLoadSCRS()
     {
         //create scrs
