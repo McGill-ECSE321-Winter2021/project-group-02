@@ -24,8 +24,10 @@ public class Technician extends SCRSUser
         availabilities = new ArrayList<Timeslot>();
     }
 
-    protected Technician()
+    public Technician(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs)
     {
+        super(aName, aPassword, aEmail, aPhone, aScrs);
+        availabilities = new ArrayList<Timeslot>();
     }
 
     public List<Timeslot> getAvailabilities()

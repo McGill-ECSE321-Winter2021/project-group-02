@@ -1,4 +1,7 @@
 package ca.mcgill.ecse321.scrs.dao;
 
-public interface WorkspaceRepository {
+import ca.mcgill.ecse321.scrs.model.Workspace;
+import org.springframework.data.repository.CrudRepository;
+
+public interface WorkspaceRepository extends CrudRepository<Workspace, Integer> {
 }
