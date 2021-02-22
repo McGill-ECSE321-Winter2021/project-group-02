@@ -97,7 +97,6 @@ public class TestScrsPersistence
         SCRS actualScrs = scrsRepository.findByScrsId(scrs.getScrsId());
         assertNotNull(actualScrs);
         assertEquals(scrs.getScrsId(), actualScrs.getScrsId()); //test if ID was properly stored/read
-        assertEquals(scrs.getWorkspaces().size(), actualScrs.getWorkspaces().size());
         assertEquals(scrs.getWorkspace(0), space); //test if workspace association was properly stored/read
     }
 
@@ -127,10 +126,13 @@ public class TestScrsPersistence
 
         //check test outputs
         Customer actualCustomer = customerRepository.findByScrsUserId(customer.getScrsUserId());
-        assertNotNull(customer);
-        assertEquals(customer.getName(), customer.getName());
-        assertNotNull(customer.getAppointment(0));
-        assertEquals(app, customer.getAppointment(0));
+        assertNotNull(actualCustomer);
+        assertEquals(customer.getName(), actualCustomer.getName());
+        assertEquals(customer.getPassword(), actualCustomer.getPassword());
+        assertEquals(customer.getEmail(), actualCustomer.getEmail());
+        assertEquals(customer.getPhone(), actualCustomer.getPhone());
+        assertNotNull(actualCustomer.getAppointment(0));
+        assertEquals(customer.getAppointment(0), actualCustomer.getAppointment(0));
     }
 
     //=========ALIX TESTS========== (Appointment tests)
