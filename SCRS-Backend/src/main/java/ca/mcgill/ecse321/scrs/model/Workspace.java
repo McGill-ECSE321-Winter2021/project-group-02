@@ -37,6 +37,18 @@ public class Workspace
         }
     }
 
+    public Workspace(String aSpaceType, SCRS aScrs)
+    {
+        spaceType = aSpaceType;
+        availabilities = new ArrayList<Timeslot>();
+        boolean didAddScrs = setScrs(aScrs);
+        if (!didAddScrs)
+        {
+            throw new RuntimeException(
+                    "Unable to create workspace due to scrs. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+        }
+    }
+
     protected Workspace()
     {
     }

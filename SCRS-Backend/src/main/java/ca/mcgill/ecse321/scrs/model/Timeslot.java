@@ -51,6 +51,22 @@ public class Timeslot
         }
     }
 
+    public Timeslot(Date aStartDate, Date aEndDate, Time aStartTime, Time aEndTime,
+                    Workspace aWorkspace)
+    {
+        startDate = aStartDate;
+        endDate = aEndDate;
+        startTime = aStartTime;
+        endTime = aEndTime;
+        technicians = new ArrayList<Technician>();
+        boolean didAddWorkspace = setWorkspace(aWorkspace);
+        if (!didAddWorkspace)
+        {
+            throw new RuntimeException(
+                    "Unable to create availability due to workspace. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+        }
+    }
+
     public Timeslot()
     {
     }
