@@ -129,6 +129,41 @@ public class TestScrsPersistence {
     }
 
     //=========ALIX TESTS========== (Appointment tests)
+    @Test
+    public void testPersistAndLoadAppointment() {
+
+        // creating objects
+        SCRS system = new SCRS();
+        Customer customer = new Customer("Rick Roll", "You just got Rick Rolled", "Ha Gottem@gmail.com", "(666) 666-6666", system);
+        Workspace workspace = new Workspace("mom get out of my room I'm playing Minecraft", system);
+        Timeslot timeslot = new Timeslot(new Date(LocalDate.now().toEpochDay()), new Date(LocalDate.now().toEpochDay()), new Time(3333), new Time(6666), workspace);
+        String aFeedback = "boop";
+        Appointment appointment = new Appointment(Appointment.AppointmentType.CarWash, "beep", "shrimp was good",90, aFeedback, false, customer, system, timeslot );
+
+        //saving them
+        customerRepository.save(customer);
+        workspaceRepository.save(workspace);
+        timeslotRepository.save(timeslot);
+        appointmentRepository.save(appointment);
+
+        appointment = null;
+
+        //check appointment
+        appointment = appointmentRepository.findByAppointmentID(1);
+        assertNotNull(appointment);
+        assertEquals(aFeedback, appointment.getFeedback());
+
+        //check appointment-timeslot relation
+        Timeslot timeslot1 = appointment.getTimeslot(0);
+        assertNotNull(timeslot1);
+        assertEquals(timeslot1.getEndTime(), timeslot.getEndTime());
+
+        //check appointment-customer relation
+        Customer customer1 = appointment.getCustomer();
+        assertNotNull(customer1);
+        assertEquals(customer1.getName(), customer.getName());
+
+    }
 
     //=========ROEY TESTS========== (Timeslot tests)
 
