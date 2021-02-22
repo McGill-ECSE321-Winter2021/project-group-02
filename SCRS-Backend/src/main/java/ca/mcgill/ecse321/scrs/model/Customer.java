@@ -12,12 +12,6 @@ public class Customer extends SCRSUser
     @OneToMany(mappedBy = "customer")
     private List<Appointment> appointments;
 
-    public Customer(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs, int id)
-    {
-        super(aName, aPassword, aEmail, aPhone, aScrs, id);
-        appointments = new ArrayList<Appointment>();
-    }
-
     public Customer(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs)
     {
         super(aName, aPassword, aEmail, aPhone, aScrs);
@@ -61,11 +55,10 @@ public class Customer extends SCRSUser
         return appointments.indexOf(aAppointment);
     }
 
-    public Appointment addAppointment(int aAppointmentID,
-                                      ca.mcgill.ecse321.scrs.model.Appointment.AppointmentType aAppointmentType, String aService, String aNote,
+    public Appointment addAppointment(ca.mcgill.ecse321.scrs.model.Appointment.AppointmentType aAppointmentType, String aService, String aNote,
                                       int aRating, String aFeedback, boolean aPaid, SCRS aScrs, Timeslot... allTimeslots)
     {
-        return new Appointment(aAppointmentID, aAppointmentType, aService, aNote, aRating, aFeedback, aPaid, this,
+        return new Appointment(aAppointmentType, aService, aNote, aRating, aFeedback, aPaid, this,
                 aScrs, allTimeslots);
     }
 

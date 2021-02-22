@@ -18,12 +18,6 @@ public class Technician extends SCRSUser
     )
     private List<Timeslot> availabilities;
 
-    public Technician(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs, int id)
-    {
-        super(aName, aPassword, aEmail, aPhone, aScrs, id);
-        availabilities = new ArrayList<Timeslot>();
-    }
-
     public Technician(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs)
     {
         super(aName, aPassword, aEmail, aPhone, aScrs);

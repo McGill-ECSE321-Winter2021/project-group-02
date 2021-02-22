@@ -33,37 +33,6 @@ public class Appointment
     @ManyToOne
     private SCRS scrs;
 
-    public Appointment(int aAppointmentID, AppointmentType aAppointmentType, String aService, String aNote,
-                       int aRating, String aFeedback, boolean aPaid, Customer aCustomer, SCRS aScrs, Timeslot... allTimeslots)
-    {
-        appointmentID = aAppointmentID;
-        appointmentType = aAppointmentType;
-        service = aService;
-        note = aNote;
-        rating = aRating;
-        feedback = aFeedback;
-        paid = aPaid;
-        boolean didAddCustomer = setCustomer(aCustomer);
-        if (!didAddCustomer)
-        {
-            throw new RuntimeException(
-                    "Unable to create appointment due to customer. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-        }
-        timeslots = new ArrayList<Timeslot>();
-        boolean didAddTimeslots = setTimeslots(allTimeslots);
-        if (!didAddTimeslots)
-        {
-            throw new RuntimeException(
-                    "Unable to create Appointment, must have at least 1 timeslots. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-        }
-        boolean didAddScrs = setScrs(aScrs);
-        if (!didAddScrs)
-        {
-            throw new RuntimeException(
-                    "Unable to create appointment due to scrs. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-        }
-    }
-
     protected Appointment() {}
 
     public Appointment(AppointmentType aAppointmentType, String aService, String aNote,

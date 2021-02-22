@@ -144,9 +144,9 @@ public class SCRS
     }
 
     /* Code from template association_AddManyToOne */
-    public Workspace addWorkspace(int aWorkspaceID, String aSpaceType)
+    public Workspace addWorkspace(String aSpaceType)
     {
-        return new Workspace(aWorkspaceID, aSpaceType, this);
+        return new Workspace(aSpaceType, this);
     }
 
     public boolean addWorkspace(Workspace aWorkspace)
@@ -307,11 +307,10 @@ public class SCRS
     }
 
     /* Code from template association_AddManyToOne */
-    public Appointment addAppointment(int aAppointmentID,
-                                      ca.mcgill.ecse321.scrs.model.Appointment.AppointmentType aAppointmentType, String aService, String aNote,
+    public Appointment addAppointment(ca.mcgill.ecse321.scrs.model.Appointment.AppointmentType aAppointmentType, String aService, String aNote,
                                       int aRating, String aFeedback, boolean aPaid, Customer aCustomer, Timeslot... allTimeslots)
     {
-        return new Appointment(aAppointmentID, aAppointmentType, aService, aNote, aRating, aFeedback, aPaid, aCustomer,
+        return new Appointment(aAppointmentType, aService, aNote, aRating, aFeedback, aPaid, aCustomer,
                 this, allTimeslots);
     }
 

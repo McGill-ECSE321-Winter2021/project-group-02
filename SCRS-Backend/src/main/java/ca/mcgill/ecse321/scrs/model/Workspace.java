@@ -24,19 +24,6 @@ public class Workspace
     @ManyToOne
     private SCRS scrs;
 
-    public Workspace(int aWorkspaceID, String aSpaceType, SCRS aScrs)
-    {
-        workspaceID = aWorkspaceID;
-        spaceType = aSpaceType;
-        availabilities = new ArrayList<Timeslot>();
-        boolean didAddScrs = setScrs(aScrs);
-        if (!didAddScrs)
-        {
-            throw new RuntimeException(
-                    "Unable to create workspace due to scrs. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-        }
-    }
-
     public Workspace(String aSpaceType, SCRS aScrs)
     {
         spaceType = aSpaceType;
@@ -113,10 +100,10 @@ public class Workspace
         return scrs;
     }
 
-    public Timeslot addAvailability(int aTimeSlotID, Date aStartDate, Date aEndDate, Time aStartTime,
+    public Timeslot addAvailability(Date aStartDate, Date aEndDate, Time aStartTime,
                                     Time aEndTime)
     {
-        return new Timeslot(aTimeSlotID, aStartDate, aEndDate, aStartTime, aEndTime, this);
+        return new Timeslot(aStartDate, aEndDate, aStartTime, aEndTime, this);
     }
 
     public boolean addAvailability(Timeslot aAvailability)

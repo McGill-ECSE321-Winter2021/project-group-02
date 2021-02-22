@@ -22,21 +22,6 @@ public abstract class SCRSUser
     @ManyToOne
     private SCRS scrs;
 
-    public SCRSUser(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs, int aScrsUserId)
-    {
-        name = aName;
-        password = aPassword;
-        email = aEmail;
-        phone = aPhone;
-        scrsUserId = aScrsUserId;
-        boolean didAddScrs = setScrs(aScrs);
-        if (!didAddScrs)
-        {
-            throw new RuntimeException(
-                    "Unable to create user due to scrs. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-        }
-    }
-
     public SCRSUser(String aName, String aPassword, String aEmail, String aPhone, SCRS aScrs)
     {
         name = aName;
