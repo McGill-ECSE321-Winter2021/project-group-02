@@ -51,6 +51,7 @@ public abstract class SCRSUser
         }
     }
 
+    protected SCRSUser() {};
 
     public int getScrsUserId()
     {

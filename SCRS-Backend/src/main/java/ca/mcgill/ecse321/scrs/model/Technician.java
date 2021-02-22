@@ -30,6 +30,8 @@ public class Technician extends SCRSUser
         availabilities = new ArrayList<Timeslot>();
     }
 
+    protected Technician() {};
+
     public List<Timeslot> getAvailabilities()
     {
         return this.availabilities;

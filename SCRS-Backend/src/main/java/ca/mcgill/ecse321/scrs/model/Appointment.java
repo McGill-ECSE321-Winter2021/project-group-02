@@ -64,6 +64,8 @@ public class Appointment
         }
     }
 
+    protected Appointment() {}
+
     public Appointment(AppointmentType aAppointmentType, String aService, String aNote,
                        int aRating, String aFeedback, boolean aPaid, Customer aCustomer, SCRS aScrs, Timeslot... allTimeslots)
     {
