@@ -10,6 +10,9 @@ public interface AppointmentRepository extends CrudRepository<Appointment, Integ
 
     Appointment findByAppointmentID(int appointmentID);
 
-    List<Appointment> findByCustomer(Customer customer);
+    List<Appointment> findAppointmentsByAppointmentType(Appointment.AppointmentType type);
 
+    List<Appointment> findAppointmentsByPaid(boolean aPaid);
+
+    List<Appointment> findAppointmentByCustomer(Customer customer);
 }

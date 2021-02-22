@@ -6,8 +6,6 @@ import java.beans.Transient;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -159,7 +157,7 @@ public class TestScrsPersistence
     //=========ALIX TESTS========== (Appointment tests)
     @Test
     @Transactional
-    public void testPersistAndLoadAppointment()
+    public void testPersistAndLoadAppointmentByID()
     {
         // creating objects
         SCRS system = new SCRS();
@@ -176,9 +174,8 @@ public class TestScrsPersistence
         Appointment appointment2 = appointmentRepository.save(appointment);     //for getting the ID
 
         //check appointment
-        System.out.println(appointment2.getAppointmentID());
         Appointment appointment1 = appointmentRepository.findByAppointmentID(appointment2.getAppointmentID());
-        assertNotNull(appointment);
+        assertNotNull(appointment1);
         assertEquals(appointment1.getFeedback(), appointment.getFeedback());
 
         //check appointment-timeslot relation
@@ -192,6 +189,103 @@ public class TestScrsPersistence
         assertEquals(customer1.getName(), customer.getName());
 
     }
+
+    @Test
+    @Transactional
+    public void testPersistAndLoadAppointmentByAppointmentType()
+    {
+        // creating objects
+        SCRS system = new SCRS();
+        Customer customer = new Customer("Rick Roll", "You just got Rick Rolled", "Ha Gottem@gmail.com", "(666) 666-6666", system);
+        Workspace workspace = new Workspace("mom get out of my room I'm playing Minecraft", system);
+
+        //saving them
+        scrsRepository.save(system);
+        customerRepository.save(customer);
+        workspaceRepository.save(workspace);
+        for(int i = 0 ; i < 5 ; i++){
+            Timeslot timeslot = new Timeslot(new Date(LocalDate.now().toEpochDay()), new Date(LocalDate.now().toEpochDay()), new Time(3333), new Time(6666), workspace);
+            Appointment appointment = new Appointment(Appointment.AppointmentType.CarWash, "beep", "shrimp was good",90, "boop", false, customer, system, timeslot );
+            timeslotRepository.save(timeslot);
+            appointmentRepository.save(appointment);
+        }
+        for(int i = 0 ; i < 3 ; i++){
+            Timeslot timeslot = new Timeslot(new Date(LocalDate.now().toEpochDay()), new Date(LocalDate.now().toEpochDay()), new Time(3333), new Time(6666), workspace);
+            Appointment differentAppointment = new Appointment(AppointmentType.Checkup, "beep", "shrimp was good",90, "boop", false, customer, system, timeslot );
+            timeslotRepository.save(timeslot);
+            appointmentRepository.save(differentAppointment);
+        }
+
+        //check appointment
+        List<Appointment> appointment1 = appointmentRepository.findAppointmentsByAppointmentType(AppointmentType.CarWash);
+        assertNotNull(appointment1);
+        assertEquals(appointment1.size(), 5);
+    }
+
+    @Test
+    @Transactional
+    public void testPersistAndLoadAppointmentByPaid()
+    {
+        // creating objects
+        SCRS system = new SCRS();
+        Customer customer = new Customer("Rick Roll", "You just got Rick Rolled", "Ha Gottem@gmail.com", "(666) 666-6666", system);
+        Workspace workspace = new Workspace("mom get out of my room I'm playing Minecraft", system);
+
+        //saving them
+        scrsRepository.save(system);
+        customerRepository.save(customer);
+        workspaceRepository.save(workspace);
+        for(int i = 0 ; i < 5 ; i++){
+            Timeslot timeslot = new Timeslot(new Date(LocalDate.now().toEpochDay()), new Date(LocalDate.now().toEpochDay()), new Time(3333), new Time(6666), workspace);
+            Appointment appointment = new Appointment(Appointment.AppointmentType.CarWash, "beep", "shrimp was good",90, "boop", true, customer, system, timeslot );
+            timeslotRepository.save(timeslot);
+            appointmentRepository.save(appointment);
+        }
+        for(int i = 0 ; i < 3 ; i++){
+            Timeslot timeslot = new Timeslot(new Date(LocalDate.now().toEpochDay()), new Date(LocalDate.now().toEpochDay()), new Time(3333), new Time(6666), workspace);
+            Appointment differentAppointment = new Appointment(AppointmentType.CarWash, "beep", "shrimp was good",90, "boop", false, customer, system, timeslot );
+            timeslotRepository.save(timeslot);
+            appointmentRepository.save(differentAppointment);
+        }
+
+        //check appointment
+        List<Appointment> appointment1 = appointmentRepository.findAppointmentsByPaid(true);
+        assertNotNull(appointment1);
+        assertEquals(appointment1.size(), 5);
+    }
+
+    @Test
+    @Transactional
+    public void testPersistAndLoadAppointmentByCustomer()
+    {
+        // creating objects
+        SCRS system = new SCRS();
+        Customer customer = new Customer("Rick Roll", "You just got Rick Rolled", "Ha Gottem@gmail.com", "(666) 666-6666", system);
+        Workspace workspace = new Workspace("mom get out of my room I'm playing Minecraft", system);
+
+        //saving them
+        scrsRepository.save(system);
+        customerRepository.save(customer);
+        workspaceRepository.save(workspace);
+        for(int i = 0 ; i < 5 ; i++){
+            Timeslot timeslot = new Timeslot(new Date(LocalDate.now().toEpochDay()), new Date(LocalDate.now().toEpochDay()), new Time(3333), new Time(6666), workspace);
+            Appointment appointment = new Appointment(Appointment.AppointmentType.CarWash, "beep", "shrimp was good",90, "boop", true, customer, system, timeslot );
+            timeslotRepository.save(timeslot);
+            appointmentRepository.save(appointment);
+        }
+        for(int i = 0 ; i < 3 ; i++){
+            Timeslot timeslot = new Timeslot(new Date(LocalDate.now().toEpochDay()), new Date(LocalDate.now().toEpochDay()), new Time(3333), new Time(6666), workspace);
+            Appointment differentAppointment = new Appointment(AppointmentType.CarWash, "beep", "shrimp was good",90, "boop", false, customer, system, timeslot );
+            timeslotRepository.save(timeslot);
+            appointmentRepository.save(differentAppointment);
+        }
+
+        //check appointment
+        List<Appointment> appointment1 = appointmentRepository.findAppointmentByCustomer(customer);
+        assertNotNull(appointment1);
+        assertEquals(appointment1.size(), 8);
+    }
+
 
     //=========ROEY TESTS========== (Timeslot tests)
     @Test
