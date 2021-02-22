@@ -1,12 +1,11 @@
 package ca.mcgill.ecse321.scrs.model;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import java.sql.Date;
 import java.sql.Time;
 import java.util.*;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 public class Timeslot
@@ -14,6 +13,8 @@ public class Timeslot
 
     // Timeslot Attributes
     @Id
+    @GeneratedValue(generator="increment")
+    @GenericGenerator(name="increment", strategy = "increment")
     private int timeSlotID;
     private Date startDate;
     private Date endDate;
