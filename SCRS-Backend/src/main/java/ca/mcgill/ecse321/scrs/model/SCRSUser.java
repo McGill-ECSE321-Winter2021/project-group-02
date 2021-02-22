@@ -51,7 +51,14 @@ public abstract class SCRSUser
         }
     }
 
-    protected SCRSUser() {};
+    protected SCRSUser()
+    {
+        name = "Invalid";
+        password = "Invalid";
+        email = "Invalid";
+        phone = "Invalid";
+        scrs = null;
+    };
 
     public int getScrsUserId()
     {
