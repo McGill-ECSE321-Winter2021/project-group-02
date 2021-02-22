@@ -23,6 +23,11 @@ public class Timeslot
 
     // Timeslot Associations
     @ManyToMany
+    @JoinTable(
+            name="technician_availabilities",
+            joinColumns = @JoinColumn(name = "timeslot_id"),
+            inverseJoinColumns = @JoinColumn(name = "technician_id")
+    )
     private List<Technician> technicians;
     @ManyToOne
     private Appointment appointment;
