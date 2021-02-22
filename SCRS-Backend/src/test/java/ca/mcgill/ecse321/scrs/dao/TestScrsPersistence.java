@@ -6,6 +6,8 @@ import java.beans.Transient;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -195,6 +197,50 @@ public class TestScrsPersistence {
         }
         assertEquals(ts.getAppointment(), actualTs.getAppointment());
         assertEquals(ts.getWorkspace().getWorkspaceID(), actualTs.getWorkspace().getWorkspaceID());
+    }
+
+    @Test
+    @Transactional
+    public void testPersistAndLoadTimeslotByAppointment()
+    {
+        SCRS scrs = new SCRS();
+        Workspace ws = new Workspace("test", scrs);
+        Timeslot ts = new Timeslot(new Date(0),new Date(LocalDate.now().toEpochDay()), new Time(0), new Time(LocalDate.now().toEpochDay()), ws);
+        Customer customer = new Customer("Rick Roll", "You just got Rick Rolled", "Ha Gottem@gmail.com", "(666) 666-6666", scrs);
+        Appointment appointment = new Appointment(Appointment.AppointmentType.CarWash, "beep", "shrimp was good",90, "boop", false, customer, scrs, ts);
+        scrsRepository.save(scrs);
+        workspaceRepository.save(ws);
+        timeslotRepository.save(ts);
+        customerRepository.save(customer);
+        appointmentRepository.save(appointment);
+
+        List<Timeslot> actualTimeslots = timeslotRepository.findByAppointment(appointment);
+
+        assertEquals(1, actualTimeslots.size());
+        Timeslot actualTimeslot = actualTimeslots.get(0);
+
+        assertEquals(actualTimeslot.getTimeSlotID(), ts.getTimeSlotID());
+        assertEquals(actualTimeslot.getWorkspace().getWorkspaceID(), ts.getWorkspace().getWorkspaceID());
+    }
+
+    @Test
+    @Transactional
+    public void testPersistAndLoadTimeslotByWorkspace()
+    {
+        SCRS scrs = new SCRS();
+        Workspace ws = new Workspace("test", scrs);
+        Timeslot ts = new Timeslot(new Date(0),new Date(LocalDate.now().toEpochDay()), new Time(0), new Time(LocalDate.now().toEpochDay()), ws);
+        scrsRepository.save(scrs);
+        workspaceRepository.save(ws);
+        timeslotRepository.save(ts);
+
+        List<Timeslot> actualTimeslots = timeslotRepository.findByWorkspace(ws);
+
+        assertEquals(1, actualTimeslots.size());
+        Timeslot actualTimeslot = actualTimeslots.get(0);
+
+        assertEquals(actualTimeslot.getTimeSlotID(), ts.getTimeSlotID());
+        assertEquals(actualTimeslot.getWorkspace().getWorkspaceID(), ts.getWorkspace().getWorkspaceID());
     }
 
     //=========ALEXANDRA TESTS========== (Workspace tests)
