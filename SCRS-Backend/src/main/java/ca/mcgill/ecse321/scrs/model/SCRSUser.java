@@ -10,8 +10,8 @@ public abstract class SCRSUser
 {
     // Account Attributes
     @Id
-    @GeneratedValue(generator="increment")
-    @GenericGenerator(name="increment", strategy = "increment")
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
     private int scrsUserId;
     private String name;
     private String password;
@@ -43,7 +43,9 @@ public abstract class SCRSUser
         email = "Invalid";
         phone = "Invalid";
         scrs = null;
-    };
+    }
+
+    ;
 
     public int getScrsUserId()
     {

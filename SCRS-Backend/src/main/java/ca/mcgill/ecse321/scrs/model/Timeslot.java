@@ -13,8 +13,8 @@ public class Timeslot
 
     // Timeslot Attributes
     @Id
-    @GeneratedValue(generator="increment")
-    @GenericGenerator(name="increment", strategy = "increment")
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
     private int timeSlotID;
     private Date startDate;
     private Date endDate;
@@ -24,7 +24,7 @@ public class Timeslot
     // Timeslot Associations
     @ManyToMany
     @JoinTable(
-            name="technician_availabilities",
+            name = "technician_availabilities",
             joinColumns = @JoinColumn(name = "timeslot_id"),
             inverseJoinColumns = @JoinColumn(name = "technician_id")
     )
@@ -50,7 +50,11 @@ public class Timeslot
         }
     }
 
-    protected Timeslot() {};
+    protected Timeslot()
+    {
+    }
+
+    ;
 
     public static int minimumNumberOfTechnician()
     {

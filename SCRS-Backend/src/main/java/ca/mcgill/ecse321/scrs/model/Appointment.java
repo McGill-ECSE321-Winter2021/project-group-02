@@ -15,8 +15,8 @@ public class Appointment
 
     // Appointment Attributes
     @Id
-    @GeneratedValue(generator="increment")
-    @GenericGenerator(name="increment", strategy = "increment")
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
     private int appointmentID;
     private AppointmentType appointmentType;
     private String service;
@@ -33,7 +33,9 @@ public class Appointment
     @ManyToOne
     private SCRS scrs;
 
-    protected Appointment() {}
+    protected Appointment()
+    {
+    }
 
     public Appointment(AppointmentType aAppointmentType, String aService, String aNote,
                        int aRating, String aFeedback, boolean aPaid, Customer aCustomer, SCRS aScrs, Timeslot... allTimeslots)

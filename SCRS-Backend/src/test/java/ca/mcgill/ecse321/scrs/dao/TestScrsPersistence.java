@@ -24,7 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class TestScrsPersistence {
+public class TestScrsPersistence
+{
     @Autowired
     private AppointmentRepository appointmentRepository;
     @Autowired
@@ -40,10 +41,11 @@ public class TestScrsPersistence {
     @Autowired
     private TimeslotRepository timeslotRepository;
     @Autowired
-    private  WorkspaceRepository workspaceRepository;
+    private WorkspaceRepository workspaceRepository;
 
     @AfterEach
-    public void clearDatabase() {
+    public void clearDatabase()
+    {
         appointmentRepository.deleteAll();
         timeslotRepository.deleteAll();
         assistantRepository.deleteAll();
@@ -111,7 +113,7 @@ public class TestScrsPersistence {
 
         //create appointment -> timeslot -> workspace to test the association
         Workspace ws = new Workspace("test", scrs);
-        Timeslot ts = new Timeslot(new Date(0),new Date(LocalDate.now().toEpochDay()), new Time(0), new Time(LocalDate.now().toEpochDay()), ws);
+        Timeslot ts = new Timeslot(new Date(0), new Date(LocalDate.now().toEpochDay()), new Time(0), new Time(LocalDate.now().toEpochDay()), ws);
         Appointment app = new Appointment(AppointmentType.CarWash, "service", "note", 5, "feedback", true, customer, scrs, ts);
         customer.addAppointment(app);
 
@@ -141,7 +143,7 @@ public class TestScrsPersistence {
         Customer customer = new Customer("Rick Roll", "You just got Rick Rolled", "Ha Gottem@gmail.com", "(666) 666-6666", system);
         Workspace workspace = new Workspace("mom get out of my room I'm playing Minecraft", system);
         Timeslot timeslot = new Timeslot(new Date(LocalDate.now().toEpochDay()), new Date(LocalDate.now().toEpochDay()), new Time(3333), new Time(6666), workspace);
-        Appointment appointment = new Appointment(Appointment.AppointmentType.CarWash, "beep", "shrimp was good",90, "boop", false, customer, system, timeslot );
+        Appointment appointment = new Appointment(Appointment.AppointmentType.CarWash, "beep", "shrimp was good", 90, "boop", false, customer, system, timeslot);
 
         //saving them
         scrsRepository.save(system);
@@ -175,7 +177,7 @@ public class TestScrsPersistence {
     {
         SCRS scrs = new SCRS();
         Workspace ws = new Workspace("test", scrs);
-        Timeslot ts = new Timeslot(new Date(0),new Date(LocalDate.now().toEpochDay()), new Time(0), new Time(LocalDate.now().toEpochDay()), ws);
+        Timeslot ts = new Timeslot(new Date(0), new Date(LocalDate.now().toEpochDay()), new Time(0), new Time(LocalDate.now().toEpochDay()), ws);
         scrsRepository.save(scrs);
         workspaceRepository.save(ws);
         timeslotRepository.save(ts);
@@ -205,9 +207,9 @@ public class TestScrsPersistence {
     {
         SCRS scrs = new SCRS();
         Workspace ws = new Workspace("test", scrs);
-        Timeslot ts = new Timeslot(new Date(0),new Date(LocalDate.now().toEpochDay()), new Time(0), new Time(LocalDate.now().toEpochDay()), ws);
+        Timeslot ts = new Timeslot(new Date(0), new Date(LocalDate.now().toEpochDay()), new Time(0), new Time(LocalDate.now().toEpochDay()), ws);
         Customer customer = new Customer("Rick Roll", "You just got Rick Rolled", "Ha Gottem@gmail.com", "(666) 666-6666", scrs);
-        Appointment appointment = new Appointment(Appointment.AppointmentType.CarWash, "beep", "shrimp was good",90, "boop", false, customer, scrs, ts);
+        Appointment appointment = new Appointment(Appointment.AppointmentType.CarWash, "beep", "shrimp was good", 90, "boop", false, customer, scrs, ts);
         scrsRepository.save(scrs);
         workspaceRepository.save(ws);
         timeslotRepository.save(ts);
@@ -229,7 +231,7 @@ public class TestScrsPersistence {
     {
         SCRS scrs = new SCRS();
         Workspace ws = new Workspace("test", scrs);
-        Timeslot ts = new Timeslot(new Date(0),new Date(LocalDate.now().toEpochDay()), new Time(0), new Time(LocalDate.now().toEpochDay()), ws);
+        Timeslot ts = new Timeslot(new Date(0), new Date(LocalDate.now().toEpochDay()), new Time(0), new Time(LocalDate.now().toEpochDay()), ws);
         scrsRepository.save(scrs);
         workspaceRepository.save(ws);
         timeslotRepository.save(ts);

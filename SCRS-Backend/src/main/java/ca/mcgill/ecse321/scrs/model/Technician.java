@@ -12,7 +12,7 @@ public class Technician extends SCRSUser
 {
     @ManyToMany
     @JoinTable(
-            name="technician_availabilities",
+            name = "technician_availabilities",
             joinColumns = @JoinColumn(name = "technician_id"),
             inverseJoinColumns = @JoinColumn(name = "timeslot_id")
     )
@@ -24,7 +24,11 @@ public class Technician extends SCRSUser
         availabilities = new ArrayList<Timeslot>();
     }
 
-    protected Technician() {};
+    protected Technician()
+    {
+    }
+
+    ;
 
     public List<Timeslot> getAvailabilities()
     {

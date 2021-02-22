@@ -13,8 +13,8 @@ public class Workspace
 {
     // Workspace Attributes
     @Id
-    @GeneratedValue(generator="increment")
-    @GenericGenerator(name="increment", strategy = "increment")
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
     private int workspaceID;
     private String spaceType;
 
@@ -36,7 +36,11 @@ public class Workspace
         }
     }
 
-    protected Workspace() {};
+    protected Workspace()
+    {
+    }
+
+    ;
 
     public static int minimumNumberOfAvailabilities()
     {

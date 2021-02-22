@@ -11,8 +11,8 @@ public class SCRS
 {
     // SCRS Associations
     @Id
-    @GeneratedValue(generator="increment")
-    @GenericGenerator(name="increment", strategy = "increment")
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
     private int scrsId;
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "scrs")
     private List<Workspace> workspaces;
