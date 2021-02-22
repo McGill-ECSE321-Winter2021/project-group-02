@@ -1,6 +1,8 @@
 package ca.mcgill.ecse321.scrs.model;
 
 
+import org.hibernate.annotations.GenericGenerator;
+
 import java.util.*;
 import java.sql.Date;
 import java.sql.Time;
@@ -11,6 +13,8 @@ public class Workspace
 {
     // Workspace Attributes
     @Id
+    @GeneratedValue(generator="increment")
+    @GenericGenerator(name="increment", strategy = "increment")
     private int workspaceID;
     private String spaceType;
 

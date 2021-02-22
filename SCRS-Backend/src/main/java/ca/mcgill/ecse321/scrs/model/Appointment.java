@@ -1,10 +1,9 @@
 package ca.mcgill.ecse321.scrs.model;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import java.util.*;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 @Entity
 public class Appointment
@@ -16,6 +15,8 @@ public class Appointment
 
     // Appointment Attributes
     @Id
+    @GeneratedValue(generator="increment")
+    @GenericGenerator(name="increment", strategy = "increment")
     private int appointmentID;
     private AppointmentType appointmentType;
     private String service;

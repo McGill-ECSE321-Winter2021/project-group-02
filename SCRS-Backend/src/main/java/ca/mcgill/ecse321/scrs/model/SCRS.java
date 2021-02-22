@@ -1,17 +1,18 @@
 package ca.mcgill.ecse321.scrs.model;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import java.util.List;
 import java.util.ArrayList;
-import javax.persistence.CascadeType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 @Entity
 public class SCRS
 {
     // SCRS Associations
     @Id
+    @GeneratedValue(generator="increment")
+    @GenericGenerator(name="increment", strategy = "increment")
     private int scrsId;
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "scrs")
     private List<Workspace> workspaces;

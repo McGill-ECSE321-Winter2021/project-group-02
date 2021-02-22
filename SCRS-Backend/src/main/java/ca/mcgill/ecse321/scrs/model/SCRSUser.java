@@ -1,9 +1,8 @@
 package ca.mcgill.ecse321.scrs.model;
 
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 
 @Entity
 @DiscriminatorColumn(name = "TYPE")
@@ -11,6 +10,8 @@ public abstract class SCRSUser
 {
     // Account Attributes
     @Id
+    @GeneratedValue(generator="increment")
+    @GenericGenerator(name="increment", strategy = "increment")
     private int scrsUserId;
     private String name;
     private String password;
