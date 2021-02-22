@@ -269,6 +269,23 @@ public class TestScrsPersistence
     }
 
     //=========ALEXANDRA TESTS========== (Workspace tests)
-
-
+    @Test
+    @Transactional
+    public void testPersistAndLoadWorkspace()
+    {
+        SCRS scrs = new SCRS();
+        Workspace workspace = new Workspace("test", scrs);
+        Timeslot timeslot = new Timeslot(new Date(0),new Date(LocalDate.now().toEpochDay()), new Time(0), new Time(LocalDate.now().toEpochDay()), workspace);
+        
+        scrsRepository.save(scrs);
+        workspaceRepository.save(workspace);
+        timeslotRepository.save(timeslot);
+        
+        Workspace actualWorkspace = workspaceRepository.findByWorkspaceID(workspace.getWorkspaceID());
+        assertNotNull(actualWorkspace);
+        assertEquals(workspace.getSpaceType(), actualWorkspace.getSpaceType());
+        assertNotNull(actualWorkspace.getAvailabilities().get(0));
+        assertEquals(workspace.getAvailabilities().get(0), actualWorkspace.getAvailabilities().get(0));
+    }
+    
 }
