@@ -27,13 +27,13 @@ If you haven't realized yet, there are only second year computer engineering stu
 * [Domain Model](https://github.com/McGill-ECSE321-Winter2021/project-group-02/wiki/Domain-Model)   
 
 ## Effort Table (D1)
-| Team Member | Responsibilities | Est. Time Spent (h) |
+| Team Member | Time Spent | Responsibilities | 
 | --- | --- | --- |
-| Adel | | |
-| Alex | | |
-| Alix | | |
-| Roey | | | 
-| Simon | | |
+| Adel | ~15 | Documentation, Requirements, Persistence, Testing |
+| Alex | ~15| Domain Model, Code Gen, Requirements, Persistence, Testing |
+| Alix | ~15 | Heroku Setup, Gradle Setup, Requirements, Persistence, Testing |
+| Roey | ~15 | Github Repo Management, Issue Tracking, Requirements, Persistence, Testing |
+| Simon | ~15 | PR Reviews, Requirements, Persistence, Testing |
 
 
 ***
