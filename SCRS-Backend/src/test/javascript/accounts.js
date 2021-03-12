@@ -5,7 +5,11 @@ const testingAccounts = async () => {
 
   //example of a get request from front-end
 
-  let getTest = await axios.get(backend_address + "/api/somegetroute");
+  try {
+    let getTest = await axios.get(backend_address + "/api/somegetroute");
+  } catch (err) {
+    console.log(err.response.data.error); //or any other message you would want
+  }
 
   let responseDataGet = getTest.data; //do something with this for tests
 
@@ -16,10 +20,14 @@ const testingAccounts = async () => {
     you: "got bababooied",
   };
 
-  let postTest = await axios.post(
-    backend_address + "/api/somepostroute",
-    sentData
-  );
+  try {
+    let postTest = await axios.post(
+      backend_address + "/api/somepostroute",
+      sentData
+    );
+  } catch (err) {
+    console.log(err.response.data.error); //or any other message you would want
+  }
 
   let responseDataPost = postTest.data; //do something with this for tests
 
@@ -27,18 +35,26 @@ const testingAccounts = async () => {
 
   const id = 1;
 
-  let updateTest = await axios.put(
-    backend_address + `/api/someupdateroute/${id}`,
-    sentData
-  );
+  try {
+    let updateTest = await axios.put(
+      backend_address + `/api/someupdateroute/${id}`,
+      sentData
+    );
+  } catch (err) {
+    console.log(err.response.data.error); //or any other message you would want
+  }
 
   let responseDataUpdate = updateTest.data; //do something with this for tests
 
   //example of a delete request from the front-end
 
-  let deleteTest = await axios.delete(
-    backend_address + `/api/somedeleteroute/${id}`
-  );
+  try {
+    let deleteTest = await axios.delete(
+      backend_address + `/api/somedeleteroute/${id}`
+    );
+  } catch (err) {
+    console.log(err.response.data.error); //or any other message you would want
+  }
 
   let responseDataDelete = deleteTest.data; //do something with this for tests
 };
