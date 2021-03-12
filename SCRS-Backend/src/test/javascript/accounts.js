@@ -22,6 +22,28 @@ const testingAccounts = async () => {
   );
 
   let responseDataPost = postTest.data;
+
+  //example of a delete request from the front-end
+
+  const id = 1;
+
+  let updateTest = await axios.put(
+    backend_address + `/api/someupdateroute/${id}`,
+    sentData
+  );
+
+  let responseDataUpdate = updateTest.data;
+
+  //example of a delete request from the front-end
+
+  let deleteTest = await axios.delete(
+    backend_address + "/api/somedeleteroute",
+    {
+      id,
+    }
+  );
+
+  let responseDataDelete = updateTest.data;
 };
 
 export default testingAccounts;
