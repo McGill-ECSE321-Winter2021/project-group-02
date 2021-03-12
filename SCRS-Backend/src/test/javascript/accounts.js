@@ -23,7 +23,7 @@ const testingAccounts = async () => {
 
   let responseDataPost = postTest.data; //do something with this for tests
 
-  //example of a delete request from the front-end
+  //example of an update request from the front-end
 
   const id = 1;
 
