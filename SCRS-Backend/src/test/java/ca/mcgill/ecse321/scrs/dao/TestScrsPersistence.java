@@ -281,7 +281,7 @@ public class TestScrsPersistence
         }
 
         //check appointment
-        List<Appointment> appointment1 = appointmentRepository.findAppointmentByCustomer(customer);
+        List<Appointment> appointment1 = appointmentRepository.findAppointmentsByCustomer(customer);
         assertNotNull(appointment1);
         assertEquals(appointment1.size(), 8);
     }
