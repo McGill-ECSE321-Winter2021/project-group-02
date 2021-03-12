@@ -7,7 +7,7 @@ const testingAccounts = async () => {
 
   let getTest = await axios.get(backend_address + "/api/somegetroute");
 
-  let responseDataGet = getTest.data;
+  let responseDataGet = getTest.data; //do something with this for tests
 
   //example of a post request from front-end
 
@@ -21,7 +21,7 @@ const testingAccounts = async () => {
     sentData
   );
 
-  let responseDataPost = postTest.data;
+  let responseDataPost = postTest.data; //do something with this for tests
 
   //example of a delete request from the front-end
 
@@ -32,18 +32,15 @@ const testingAccounts = async () => {
     sentData
   );
 
-  let responseDataUpdate = updateTest.data;
+  let responseDataUpdate = updateTest.data; //do something with this for tests
 
   //example of a delete request from the front-end
 
   let deleteTest = await axios.delete(
-    backend_address + "/api/somedeleteroute",
-    {
-      id,
-    }
+    backend_address + `/api/somedeleteroute/${id}`
   );
 
-  let responseDataDelete = updateTest.data;
+  let responseDataDelete = deleteTest.data; //do something with this for tests
 };
 
 export default testingAccounts;
