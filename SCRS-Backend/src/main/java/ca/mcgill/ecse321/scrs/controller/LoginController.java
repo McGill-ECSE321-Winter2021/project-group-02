@@ -9,26 +9,26 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/api/login", produces = MediaType.APPLICATION_JSON_VALUE)
 public class LoginController
 {
     //routes
 
-    @PostMapping ("/login/customer")
+    @PostMapping ("/customer")
     public ResponseEntity<Boolean> loginCustomer(@RequestBody Customer user) {
         String hashedPassword = Helper.hash(user.getPassword());
         System.out.println(user.getName() + ", " + hashedPassword);
         return new ResponseEntity<Boolean>(true, HttpStatus.OK);
     }
 
-    @PostMapping ("/login/assistant")
+    @PostMapping ("/assistant")
     public ResponseEntity<Boolean> loginAssistant(@RequestBody Assistant user) {
         String hashedPassword = Helper.hash(user.getPassword());
         System.out.println(user.getName() + ", " + hashedPassword);
         return new ResponseEntity<Boolean>(true, HttpStatus.OK);
     }
 
-    @PostMapping ("/login/technician")
+    @PostMapping ("/technician")
     public ResponseEntity<Boolean> loginTechnician(@RequestBody Technician user) {
         String hashedPassword = Helper.hash(user.getPassword());
         System.out.println(user.getName() + ", " + hashedPassword);
