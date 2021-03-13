@@ -18,7 +18,7 @@ public class Customer extends SCRSUser
         appointments = new ArrayList<Appointment>();
     }
 
-    protected Customer()
+    public Customer()
     {
     }
 
