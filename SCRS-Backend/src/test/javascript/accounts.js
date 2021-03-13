@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const testingAccounts = async () => {
-  const backend_address = "http://localhost:8000";
+const templates = async () => {
+  const backend_address = "http://localhost:8080";
   let counter = 0;
 
   //example of a get request from front-end
@@ -64,6 +64,87 @@ const testingAccounts = async () => {
   } catch (err) {
     console.error(err.response.data.error); //or any other message you would want
   }
+};
+
+const testingAccounts = async () => {
+  const backend_address = "http://localhost:8080";
+  let scoreCounter = 0;
+  const numberOfTests = 3;
+
+  //testing customer login
+  try {
+    let sentData = {
+      name: "bababooey",
+      password: "got bababooied",
+    };
+
+    let postTest = await axios.post(
+      backend_address + "/api/login/customer",
+      sentData
+    );
+
+    let responseDataPost = postTest.data; //do something with this for tests
+    let statusCode = postTest.status;
+    if (responseDataPost === true && statusCode === 200) scoreCounter++;
+    else {
+      console.log("Test 1 unsuccessful:");
+      console.log(`returned data may be erronous: ${responseDataPost}`);
+      console.log(`status code may not be as expected: ${statusCode}`);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+
+  //testing assistant login
+  try {
+    let sentData = {
+      name: "bababooey",
+      password: "got bababooied",
+    };
+
+    let postTest = await axios.post(
+      backend_address + "/api/login/assistant",
+      sentData
+    );
+
+    let responseDataPost = postTest.data; //do something with this for tests
+    let statusCode = postTest.status;
+    if (responseDataPost === true && statusCode === 200) scoreCounter++;
+    else {
+      console.log("Test 1 unsuccessful:");
+      console.log(`returned data may be erronous: ${responseDataPost}`);
+      console.log(`status code may not be as expected: ${statusCode}`);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+
+  //testing technician login
+  try {
+    let sentData = {
+      name: "bababooey",
+      password: "got bababooied",
+    };
+
+    let postTest = await axios.post(
+      backend_address + "/api/login/technician",
+      sentData
+    );
+
+    let responseDataPost = postTest.data; //do something with this for tests
+    let statusCode = postTest.status;
+    if (responseDataPost === true && statusCode === 200) scoreCounter++;
+    else {
+      console.log("Test 1 unsuccessful:");
+      console.log(`returned data may be erronous: ${responseDataPost}`);
+      console.log(`status code may not be as expected: ${statusCode}`);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (scoreCounter === numberOfTests) console.log("All tests were successful!");
+  else console.log(`${scoreCounter}/${numberOfTests} tests were successful.`);
 };
 
 export default testingAccounts;
