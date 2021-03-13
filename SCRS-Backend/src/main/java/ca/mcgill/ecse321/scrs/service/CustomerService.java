@@ -18,7 +18,8 @@ public class CustomerService {
     CustomerRepository customerRepository;
 
     @Transactional
-    public Customer createCustomer(String email, String name, String password, String phone) {
+    public Customer createCustomer(String email, String name, String password, String phone)
+    {
         Customer customer = new Customer();
         customer.setEmail(email);
         customer.setName(name);
@@ -29,27 +30,32 @@ public class CustomerService {
     }
 
     @Transactional
-    public List<Customer> getAllCustomers() {
+    public List<Customer> getAllCustomers()
+    {
         return toList(customerRepository.findAll());
     }
 
     @Transactional
-    public Customer getCustomerByEmail(String email) {
+    public Customer getCustomerByEmail(String email)
+    {
         return customerRepository.findByEmail(email);
     }
 
     @Transactional
-    public Customer getCustomerByName(String name) {
+    public Customer getCustomerByName(String name)
+    {
         return customerRepository.findByName(name);
     }
 
     @Transactional
-    public Customer getCustomerByPhone(String phone) {
+    public Customer getCustomerByPhone(String phone)
+    {
         return customerRepository.findByPhone(phone);
     }
 
     @Transactional
-    public Customer getCustomerByAppointments(List<Appointment> appointments) {
+    public Customer getCustomerByAppointments(List<Appointment> appointments)
+    {
         return customerRepository.findByAppointments(appointments);
     }
 }
