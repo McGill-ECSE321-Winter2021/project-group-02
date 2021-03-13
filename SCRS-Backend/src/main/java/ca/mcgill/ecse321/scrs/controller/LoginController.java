@@ -8,31 +8,46 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping(path = "/api/login", produces = MediaType.APPLICATION_JSON_VALUE)
 public class LoginController
 {
-    //routes
-
     @PostMapping ("/customer")
-    public ResponseEntity<Boolean> loginCustomer(@RequestBody Customer user) {
+    public ResponseEntity<Boolean> loginCustomer(@RequestBody Customer user, HttpServletResponse response) {
         String hashedPassword = Helper.hash(user.getPassword());
         System.out.println(user.getName() + ", " + hashedPassword);
+
+        String id = "-1";
+        Cookie cookie = new Cookie("id", id);
+        response.addCookie(cookie);
+
         return new ResponseEntity<Boolean>(true, HttpStatus.OK);
     }
 
     @PostMapping ("/assistant")
-    public ResponseEntity<Boolean> loginAssistant(@RequestBody Assistant user) {
+    public ResponseEntity<Boolean> loginAssistant(@RequestBody Assistant user, HttpServletResponse response) {
         String hashedPassword = Helper.hash(user.getPassword());
         System.out.println(user.getName() + ", " + hashedPassword);
+
+        String id = "-1";
+        Cookie cookie = new Cookie("id", id);
+        response.addCookie(cookie);
+
         return new ResponseEntity<Boolean>(true, HttpStatus.OK);
     }
 
     @PostMapping ("/technician")
-    public ResponseEntity<Boolean> loginTechnician(@RequestBody Technician user) {
+    public ResponseEntity<Boolean> loginTechnician(@RequestBody Technician user, HttpServletResponse response) {
         String hashedPassword = Helper.hash(user.getPassword());
         System.out.println(user.getName() + ", " + hashedPassword);
+
+        String id = "-1";
+        Cookie cookie = new Cookie("id", id);
+        response.addCookie(cookie);
+
         return new ResponseEntity<Boolean>(true, HttpStatus.OK);
     }
-
 }
