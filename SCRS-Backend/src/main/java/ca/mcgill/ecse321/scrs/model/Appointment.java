@@ -33,7 +33,7 @@ public class Appointment
     @ManyToOne
     private SCRS scrs;
 
-    protected Appointment()
+    public Appointment()
     {
     }
 
