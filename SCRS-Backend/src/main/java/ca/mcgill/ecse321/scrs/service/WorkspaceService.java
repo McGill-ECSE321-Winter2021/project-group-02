@@ -1,7 +1,6 @@
 package ca.mcgill.ecse321.scrs.service;
 
 import ca.mcgill.ecse321.scrs.dao.WorkspaceRepository;
-import ca.mcgill.ecse321.scrs.model.SCRSUser;
 import ca.mcgill.ecse321.scrs.model.Workspace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
