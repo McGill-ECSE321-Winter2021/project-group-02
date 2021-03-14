@@ -9,35 +9,22 @@ public class CustomerDto
     private String name;
     private String email;
     private String phone;
-    private List<AppointmentDto> appointments;
 
     public CustomerDto()
     {
     }
 
-    @SuppressWarnings("unchecked")
     public CustomerDto(int id, String name)
     {
-        this(id, name, null, null, Collections.EMPTY_LIST);
+        this(id, name, null, null);
     }
 
-    @SuppressWarnings("unchecked")
-    public CustomerDto(int id, String name, String email, String phone) {
-        this(id, name, email, phone, Collections.EMPTY_LIST);
-    }
-
-    public CustomerDto(int id, String name, List<AppointmentDto> appointmentList)
-    {
-        this(id, name, null, null, appointmentList);
-    }
-
-    public CustomerDto(int id, String name, String email, String phone, List<AppointmentDto> appointmentList)
+    public CustomerDto(int id, String name, String email, String phone)
     {
         scrsUserId = id;
         this.name = name;
         this.email = email;
         this.phone = phone;
-        appointments = appointmentList;
     }
 
     public int getCustomerId()
@@ -60,10 +47,6 @@ public class CustomerDto
         return phone;
     }
 
-    public List<AppointmentDto> getCustomerAppointments() {
-        return appointments;
-    }
-
     public void setCustomerEmail(String email)
     {
         this.email = email;
@@ -72,9 +55,5 @@ public class CustomerDto
     public void setCustomerPhone(String phone)
     {
         this.phone = phone;
-    }
-
-    public void setCustomerAppointments(List<AppointmentDto> appointmentList) {
-        appointments = appointmentList;
     }
 }

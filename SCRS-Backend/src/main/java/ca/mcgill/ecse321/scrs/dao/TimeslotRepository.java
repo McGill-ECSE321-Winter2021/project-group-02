@@ -12,8 +12,6 @@ public interface TimeslotRepository extends CrudRepository<Timeslot, Integer>
 {
     Timeslot findByTimeSlotID(int id);
 
-    List<Timeslot> findByAppointment(Appointment appt);
-
     List<Timeslot> findByWorkspace(Workspace ws);
 
     List<Timeslot> findByTechnicians(Technician technicians);

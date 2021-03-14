@@ -132,13 +132,10 @@ public class TestScrsPersistence
         //create appointment -> timeslot -> workspace to test the association
         Workspace ws = new Workspace("test", scrs);
         Timeslot ts = new Timeslot(new Date(0), new Date(LocalDate.now().toEpochDay()), new Time(0), new Time(LocalDate.now().toEpochDay()), ws);
-        Appointment app = new Appointment(AppointmentType.CarWash, "service", "note", 5, "feedback", true, customer, scrs, ts);
-        customer.addAppointment(app);
 
         scrsRepository.save(scrs);
         workspaceRepository.save(ws);
         timeslotRepository.save(ts);
-        appointmentRepository.save(app);
 
         //save customer
         customerRepository.save(customer);
@@ -150,8 +147,6 @@ public class TestScrsPersistence
         assertEquals(customer.getPassword(), actualCustomer.getPassword());
         assertEquals(customer.getEmail(), actualCustomer.getEmail());
         assertEquals(customer.getPhone(), actualCustomer.getPhone());
-        assertNotNull(actualCustomer.getAppointment(0));
-        assertEquals(customer.getAppointment(0), actualCustomer.getAppointment(0));
     }
 
     //=========ALIX TESTS========== (Appointment tests)
@@ -314,7 +309,6 @@ public class TestScrsPersistence
         {
             assertTrue(expectedTechs.contains(actualTech));
         }
-        assertEquals(ts.getAppointment(), actualTs.getAppointment());
         assertEquals(ts.getWorkspace().getWorkspaceID(), actualTs.getWorkspace().getWorkspaceID());
     }
 
@@ -333,7 +327,7 @@ public class TestScrsPersistence
         customerRepository.save(customer);
         appointmentRepository.save(appointment);
 
-        List<Timeslot> actualTimeslots = timeslotRepository.findByAppointment(appointment);
+        List<Timeslot> actualTimeslots = appointmentRepository.findByAppointmentID(appointment.getAppointmentID()).getTimeslots();
 
         assertEquals(1, actualTimeslots.size());
         Timeslot actualTimeslot = actualTimeslots.get(0);
@@ -356,34 +350,6 @@ public class TestScrsPersistence
         List<Timeslot> actualTimeslots = timeslotRepository.findByWorkspace(ws);
 
         assertEquals(1, actualTimeslots.size());
-        Timeslot actualTimeslot = actualTimeslots.get(0);
-
-        assertEquals(actualTimeslot.getTimeSlotID(), ts.getTimeSlotID());
-        assertEquals(actualTimeslot.getWorkspace().getWorkspaceID(), ts.getWorkspace().getWorkspaceID());
-    }
-
-    @Test
-    @Transactional
-    public void testPersistAndLoadTimeslotByTechnicians()
-    {
-        SCRS scrs = new SCRS();
-        Workspace ws = new Workspace("test", scrs);
-        Timeslot ts = new Timeslot(new Date(0), new Date(LocalDate.now().toEpochDay()), new Time(0), new Time(LocalDate.now().toEpochDay()), ws);
-        Technician tech = new Technician("SomeTech", "password", "email", "phone", scrs);
-        scrsRepository.save(scrs);
-        workspaceRepository.save(ws);
-        timeslotRepository.save(ts);
-        technicianRepository.save(tech);
-
-        List<Timeslot> actualTimeslots = timeslotRepository.findByTechnicians(tech);
-
-        assertEquals(0, actualTimeslots.size());
-
-        tech.addAvailability(ts);
-        technicianRepository.save(tech);
-
-        actualTimeslots = timeslotRepository.findByTechnicians(tech);
-        assertNotEquals(0, actualTimeslots.size());
         Timeslot actualTimeslot = actualTimeslots.get(0);
 
         assertEquals(actualTimeslot.getTimeSlotID(), ts.getTimeSlotID());

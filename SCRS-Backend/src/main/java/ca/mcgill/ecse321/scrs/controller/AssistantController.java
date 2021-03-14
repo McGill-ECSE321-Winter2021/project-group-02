@@ -1,5 +1,32 @@
 package ca.mcgill.ecse321.scrs.controller;
 
+import ca.mcgill.ecse321.scrs.dto.AssistantDto;
+import ca.mcgill.ecse321.scrs.model.Assistant;
+import ca.mcgill.ecse321.scrs.service.AssistantService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping(path = "/api/assistant")
 public class AssistantController
 {
+    @Autowired
+    AssistantService assistantService;
+
+    @PostMapping(value = {"/create", "/create/"})
+    public AssistantDto createAssistant(@RequestBody Assistant assistant)
+    {
+        return convertToDTO(assistantService.createAssistant(assistant.getEmail(), assistant.getName(), assistant.getPassword(), assistant.getPhone()));
+    }
+
+    // ================= Private Helpers ================
+
+    private AssistantDto convertToDTO(Assistant a)
+    {
+        if (a == null) throw new IllegalArgumentException("There is no such assistant!");
+        return new AssistantDto(a.getScrsUserId(), a.getName(), a.getEmail(), a.getPhone());
+    }
 }

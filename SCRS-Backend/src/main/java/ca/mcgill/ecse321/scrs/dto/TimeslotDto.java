@@ -12,7 +12,6 @@ public class TimeslotDto
     private Date endDate;
     private Time startTime;
     private Time endTime;
-    private AppointmentDto appointment;
     private WorkspaceDto workspace;
     private List<TechnicianDto> technicians;
 
@@ -22,22 +21,16 @@ public class TimeslotDto
 
     @SuppressWarnings("unchecked")
     public TimeslotDto(int id, Date startDate, Date endDate, Time startTime, Time endTime, WorkspaceDto workspace) {
-        this(id, startDate, endDate, startTime, endTime, null, workspace, Collections.EMPTY_LIST);
+        this(id, startDate, endDate, startTime, endTime, workspace, Collections.EMPTY_LIST);
     }
 
-    @SuppressWarnings("unchecked")
-    public TimeslotDto(int id, Date startDate, Date endDate, Time startTime, Time endTime, WorkspaceDto workspace, List<TechnicianDto> technicians) {
-        this(id, startDate, endDate, startTime, endTime, null, workspace, technicians);
-    }
-
-    public TimeslotDto(int id, Date startDate, Date endDate, Time startTime, Time endTime, AppointmentDto appointment, WorkspaceDto workspace, List<TechnicianDto> technicians)
+    public TimeslotDto(int id, Date startDate, Date endDate, Time startTime, Time endTime, WorkspaceDto workspace, List<TechnicianDto> technicians)
     {
         timeslotId = id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.startTime =startTime;
         this.endTime = endTime;
-        this.appointment = appointment;
         this.workspace = workspace;
         this.technicians = technicians;
     }
@@ -65,11 +58,6 @@ public class TimeslotDto
     public Time getEndTime()
     {
         return endTime;
-    }
-
-    public AppointmentDto getAppointment()
-    {
-        return appointment;
     }
 
     public WorkspaceDto getWorkspace()
