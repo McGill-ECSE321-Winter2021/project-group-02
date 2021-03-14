@@ -28,7 +28,7 @@ public class Appointment
     // Appointment Associations
     @ManyToOne
     private Customer customer;
-    @OneToMany(mappedBy = "appointment") //0..1 to 1..*
+    @OneToMany //0..1 to 1..*
     private List<Timeslot> timeslots;
     @ManyToOne
     private SCRS scrs;
@@ -210,13 +210,7 @@ public class Appointment
             return wasSet;
         }
 
-        Customer existingCustomer = customer;
         customer = aCustomer;
-        if (existingCustomer != null && !existingCustomer.equals(aCustomer))
-        {
-            existingCustomer.removeAppointment(this);
-        }
-        customer.addAppointment(this);
         wasSet = true;
         return wasSet;
     }
@@ -224,24 +218,12 @@ public class Appointment
     /* Code from template association_AddMNToOptionalOne */
     public boolean addTimeslot(Timeslot aTimeslot)
     {
-        boolean wasAdded = false;
         if (timeslots.contains(aTimeslot))
         {
             return false;
         }
-        Appointment existingAppointment = aTimeslot.getAppointment();
-        if (existingAppointment != null && existingAppointment.numberOfTimeslots() <= minimumNumberOfTimeslots())
-        {
-            return wasAdded;
-        }
-        else if (existingAppointment != null)
-        {
-            existingAppointment.timeslots.remove(aTimeslot);
-        }
         timeslots.add(aTimeslot);
-        setAppointment(aTimeslot, this);
-        wasAdded = true;
-        return wasAdded;
+        return true;
     }
 
     public boolean removeTimeslot(Timeslot aTimeslot)
@@ -250,80 +232,30 @@ public class Appointment
         if (timeslots.contains(aTimeslot) && numberOfTimeslots() > minimumNumberOfTimeslots())
         {
             timeslots.remove(aTimeslot);
-            setAppointment(aTimeslot, null);
             wasRemoved = true;
         }
         return wasRemoved;
     }
 
-    /* Code from template association_SetMNToOptionalOne */
+    /* Code from template association_SetUnidirectionalMStar */
     public boolean setTimeslots(Timeslot... newTimeslots)
     {
-        boolean wasSet = false;
-        if (newTimeslots.length < minimumNumberOfTimeslots())
-        {
-            return wasSet;
-        }
-
-        ArrayList<Timeslot> checkNewTimeslots = new ArrayList<Timeslot>();
-        HashMap<Appointment, Integer> appointmentToNewTimeslots = new HashMap<Appointment, Integer>();
+        ArrayList<Timeslot> verifiedTimeslots = new ArrayList<Timeslot>();
         for (Timeslot aTimeslot : newTimeslots)
         {
-            if (checkNewTimeslots.contains(aTimeslot))
+            if (verifiedTimeslots.contains(aTimeslot))
             {
-                return wasSet;
+                continue;
             }
-            else if (aTimeslot.getAppointment() != null && !this.equals(aTimeslot.getAppointment()))
-            {
-                Appointment existingAppointment = aTimeslot.getAppointment();
-                if (!appointmentToNewTimeslots.containsKey(existingAppointment))
-                {
-                    appointmentToNewTimeslots.put(existingAppointment,
-                            existingAppointment.numberOfTimeslots());
-                }
-                Integer currentCount = appointmentToNewTimeslots.get(existingAppointment);
-                int nextCount = currentCount - 1;
-                if (nextCount < 1)
-                {
-                    return wasSet;
-                }
-                appointmentToNewTimeslots.put(existingAppointment, nextCount);
-            }
-            checkNewTimeslots.add(aTimeslot);
+            verifiedTimeslots.add(aTimeslot);
         }
-
-        timeslots.removeAll(checkNewTimeslots);
-
-        for (Timeslot orphan : timeslots)
+        if (verifiedTimeslots.size() != newTimeslots.length || verifiedTimeslots.size() < minimumNumberOfTimeslots())
         {
-            setAppointment(orphan, null);
+            return false;
         }
         timeslots.clear();
-        for (Timeslot aTimeslot : newTimeslots)
-        {
-            if (aTimeslot.getAppointment() != null)
-            {
-                aTimeslot.getAppointment().timeslots.remove(aTimeslot);
-            }
-            setAppointment(aTimeslot, this);
-            timeslots.add(aTimeslot);
-        }
-        wasSet = true;
-        return wasSet;
-    }
-
-    /* Code from template association_GetPrivate */
-    private void setAppointment(Timeslot aTimeslot, Appointment aAppointment)
-    {
-        try
-        {
-            java.lang.reflect.Field mentorField = aTimeslot.getClass().getDeclaredField("appointment");
-            mentorField.setAccessible(true);
-            mentorField.set(aTimeslot, aAppointment);
-        } catch (Exception e)
-        {
-            throw new RuntimeException("Issue internally setting aAppointment to aTimeslot", e);
-        }
+        timeslots.addAll(verifiedTimeslots);
+        return true;
     }
 
     /* Code from template association_AddIndexControlFunctions */
@@ -393,16 +325,7 @@ public class Appointment
 
     public void delete()
     {
-        Customer placeholderCustomer = customer;
         this.customer = null;
-        if (placeholderCustomer != null)
-        {
-            placeholderCustomer.removeAppointment(this);
-        }
-        for (Timeslot aTimeslot : timeslots)
-        {
-            setAppointment(aTimeslot, null);
-        }
         timeslots.clear();
         SCRS placeholderScrs = scrs;
         this.scrs = null;
