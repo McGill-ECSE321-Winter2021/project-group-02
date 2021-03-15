@@ -52,12 +52,10 @@ public class AppointmentController {
     }
     
     @PostMapping(value = {"/rate-appointment", "/rate-appointment/"})
-    public ResponseEntity<AppointmentDto> rateAppointment(@RequestParam(name = "appointmentId") int appointmentId, @RequestParam(name = "rating") int rating)
-    {
+    public ResponseEntity<AppointmentDto> rateAppointment(@RequestParam(name = "appointmentId") int appointmentId, @RequestParam(name = "rating") int rating) {
         if (rating > 10 || rating < 0) throw new IllegalArgumentException("Invalid rating");
 
-        Appointment appointment = appointmentService.getAppointmentById(appointmentId);
-        appointment.setRating(rating);
+        Appointment appointment = appointmentService.rateAppointment(appointmentId, rating);
         return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
     }
 
