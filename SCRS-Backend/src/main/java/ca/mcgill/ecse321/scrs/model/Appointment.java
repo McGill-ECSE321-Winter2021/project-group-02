@@ -35,6 +35,15 @@ public class Appointment
 
     protected Appointment()
     {
+        appointmentType = null;
+        service = null;
+        note = null;
+        rating = -1;
+        feedback = null;
+        paid = false;
+        customer = null;
+        timeslots = null;
+        scrs = null;
     }
 
     public Appointment(AppointmentType aAppointmentType, String aService, String aNote,

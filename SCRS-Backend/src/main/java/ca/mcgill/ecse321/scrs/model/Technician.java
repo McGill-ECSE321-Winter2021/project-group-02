@@ -26,9 +26,9 @@ public class Technician extends SCRSUser
 
     protected Technician()
     {
+        super();
+        availabilities = null;
     }
-
-    ;
 
     public List<Timeslot> getAvailabilities()
     {
