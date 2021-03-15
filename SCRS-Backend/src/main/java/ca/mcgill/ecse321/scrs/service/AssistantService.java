@@ -17,7 +17,8 @@ public class AssistantService
     public AssistantRepository assistantRepository;
 
     @Transactional
-    public Assistant createAssistant(String email, String name, String password, String phone) {
+    public Assistant createAssistant(String email, String name, String password, String phone)
+    {
         Assistant assistant = new Assistant();
         assistant.setEmail(email);
         assistant.setName(name);
@@ -58,13 +59,8 @@ public class AssistantService
     }
 
     @Transactional
-    public Assistant updateAssistantInfo(Assistant updates)
+    public Assistant updateAssistantInfo(Assistant assistant)
     {
-        Assistant assistant = assistantRepository.findByScrsUserId(updates.getScrsUserId());
-        if (updates.getEmail() != null) assistant.setEmail(updates.getEmail());
-        if (updates.getName() != null) assistant.setName(updates.getName());
-        if (updates.getPassword() != null) assistant.setPassword(updates.getPassword());
-        if (updates.getPhone() != null) assistant.setPhone(updates.getPhone());
         assistantRepository.save(assistant);
         return assistant;
     }

@@ -1,6 +1,7 @@
 package ca.mcgill.ecse321.scrs.service;
 
 import ca.mcgill.ecse321.scrs.dao.TechnicianRepository;
+import ca.mcgill.ecse321.scrs.model.Assistant;
 import ca.mcgill.ecse321.scrs.model.Technician;
 import ca.mcgill.ecse321.scrs.model.Timeslot;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,11 @@ public class TechnicianService {
     }
 
     @Transactional
+    public Technician getTechnicianByID(int id) {
+        return technicianRepository.findByScrsUserId(id);
+    }
+
+    @Transactional
     public Technician getTechnicianByEmail(String email) {
         return technicianRepository.findByEmail(email);
     }
@@ -46,5 +52,12 @@ public class TechnicianService {
     @Transactional
     public Technician getTechnicianByPhone(String phone) {
         return technicianRepository.findByPhone(phone);
+    }
+
+    @Transactional
+    public Technician updateTechnicianInfo(Technician technician)
+    {
+        technicianRepository.save(technician);
+        return technician;
     }
 }

@@ -36,7 +36,7 @@ public class AssistantController
     {
         if (assistant == null)
         {
-            throw new IllegalArgumentException("No updates received. Please send updates in the form of a valid assistant.");
+            throw new IllegalArgumentException("Invalid assistant");
         }
         if (assistantService.getAssistantByID(assistant.getScrsUserId()) == null)
         {
