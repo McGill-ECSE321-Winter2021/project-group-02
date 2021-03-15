@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDTO;
+
 @RestController
 @RequestMapping(path = "/api/technician")
 public class TechnicianController
@@ -31,13 +33,5 @@ public class TechnicianController
             throw new IllegalArgumentException("Email already in use, please try a different email address.");
         }
         return new ResponseEntity<TechnicianDto>(convertToDTO(technicianService.createTechnician(technician.getEmail(), technician.getName(), technician.getPassword(), technician.getPhone())), HttpStatus.OK);
-    }
-
-    // ================= Private Helpers ================
-
-    public TechnicianDto convertToDTO(Technician t)
-    {
-        if (t == null) throw new IllegalArgumentException("There is no such assistant!");
-        return new TechnicianDto(t.getScrsUserId(), t.getName(), t.getEmail(), t.getPhone());
     }
 }

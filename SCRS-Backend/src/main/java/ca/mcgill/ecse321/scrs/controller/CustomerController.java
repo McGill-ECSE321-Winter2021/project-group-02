@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDTO;
+
 @RestController
 @RequestMapping(path = "/api/customer")
 public class CustomerController
@@ -30,11 +32,4 @@ public class CustomerController
         return new ResponseEntity<CustomerDto>(convertToDTO(customerService.createCustomer(customer.getEmail(), customer.getName(), customer.getPassword(), customer.getPhone())), HttpStatus.OK);
     }
 
-    // ================= Helper Methods ================
-
-    public static CustomerDto convertToDTO(Customer c)
-    {
-        if (c == null) throw new IllegalArgumentException("There is no such customer!");
-        return new CustomerDto(c.getScrsUserId(), c.getName(), c.getEmail(), c.getPhone());
-    }
 }

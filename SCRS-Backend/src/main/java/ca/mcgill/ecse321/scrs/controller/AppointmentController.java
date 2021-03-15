@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDto;
+
 @RestController
 @RequestMapping(path = "/api/appointment")
 public class AppointmentController
@@ -36,16 +38,5 @@ public class AppointmentController
         Appointment appointment = appointmentService.getAppointmentById(appointmentId);
         appointment.setPaid(true);
         return convertToDto(appointment);
-    }
-
-    // ========== Helper Methods ==========
-
-    public static AppointmentDto convertToDto(Appointment a)
-    {
-        if (a == null)
-            throw new IllegalArgumentException("There is no such appointment!");
-        CustomerDto customerDto = CustomerController.convertToDTO(a.getCustomer());
-        List<TimeslotDto> timeslots = TimeslotController.convertToDto(a.getTimeslots());
-        return new AppointmentDto(a.getAppointmentID(), a.getAppointmentType(), a.getService(), a.getNote(), customerDto, timeslots);
     }
 }
