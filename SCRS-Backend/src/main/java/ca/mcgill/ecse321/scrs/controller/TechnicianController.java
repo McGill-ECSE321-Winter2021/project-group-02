@@ -1,9 +1,6 @@
 package ca.mcgill.ecse321.scrs.controller;
 
-import ca.mcgill.ecse321.scrs.dto.AssistantDto;
-import ca.mcgill.ecse321.scrs.dto.CustomerDto;
 import ca.mcgill.ecse321.scrs.dto.TechnicianDto;
-import ca.mcgill.ecse321.scrs.model.Assistant;
 import ca.mcgill.ecse321.scrs.model.Technician;
 import ca.mcgill.ecse321.scrs.service.TechnicianService;
 import org.springframework.beans.factory.annotation.Autowired;
