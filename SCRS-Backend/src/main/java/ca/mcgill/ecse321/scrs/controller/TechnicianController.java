@@ -19,6 +19,14 @@ public class TechnicianController
     @PostMapping(value = {"/create", "/create/"})
     public TechnicianDto createAssistant(@RequestBody Technician technician)
     {
+        if (technician == null)
+        {
+            throw new IllegalArgumentException("Invalid technician. Please submit a valid technician account to be created.");
+        }
+        if ( technicianService.getTechnicianByEmail(technician.getEmail()) != null)
+        {
+            throw new IllegalArgumentException("Email already in use, please try a different email address.");
+        }
         return convertToDTO(technicianService.createTechnician(technician.getEmail(), technician.getName(), technician.getPassword(), technician.getPhone()));
     }
 

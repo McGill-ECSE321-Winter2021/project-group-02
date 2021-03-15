@@ -19,6 +19,14 @@ public class AssistantController
     @PostMapping(value = {"/create", "/create/"})
     public AssistantDto createAssistant(@RequestBody Assistant assistant)
     {
+        if (assistant == null)
+        {
+            throw new IllegalArgumentException("Invalid assistant. Please submit a valid assistant account to be created.");
+        }
+        if (assistantService.getAssistantByEmail(assistant.getEmail()) != null)
+        {
+            throw new IllegalArgumentException("Email already in use, please try a different email address.");
+        }
         return convertToDTO(assistantService.createAssistant(assistant.getEmail(), assistant.getName(), assistant.getPassword(), assistant.getPhone()));
     }
 

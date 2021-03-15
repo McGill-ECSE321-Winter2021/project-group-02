@@ -16,6 +16,14 @@ public class CustomerController
     @PostMapping(value = {"/create", "/create/"})
     public CustomerDto createCustomer(@RequestBody Customer customer)
     {
+        if (customer == null)
+        {
+            throw new IllegalArgumentException("Invalid customer. Please submit a valid customer account to be created.");
+        }
+        if (customerService.getCustomerByEmail(customer.getEmail()) != null)
+        {
+            throw new IllegalArgumentException("Email already in use, please try a different email address.");
+        }
         return convertToDTO(customerService.createCustomer(customer.getEmail(), customer.getName(), customer.getPassword(), customer.getPhone()));
     }
 
