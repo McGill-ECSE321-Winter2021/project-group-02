@@ -1,7 +1,7 @@
 package ca.mcgill.ecse321.scrs.dao;
 
-import ca.mcgill.ecse321.scrs.model.*;
-import ca.mcgill.ecse321.scrs.model.Appointment.AppointmentType;
+import ca.mcgill.ecse321.scrs.model.Assistant;
+import ca.mcgill.ecse321.scrs.model.SCRS;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,16 +10,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
-import java.sql.Time;
-import java.time.LocalDate;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class TestScrsPersistence
+public class TestAssistantPersistence
 {
     @Autowired
     private AppointmentRepository appointmentRepository;
@@ -52,28 +48,26 @@ public class TestScrsPersistence
     }
 
     /**
-     * Test the persistence of the SCRS class
-     * @author Adel Ahram
+     * Test the persistence of an assistant object in the database.
+     * @author SimonNM
      */
     @Test
     @Transactional
-    public void testPersistAndLoadSCRS()
+    public void testPersistAndLoadAssistant()
     {
-        //create scrs
         SCRS scrs = new SCRS();
-        //create and add test workspace to scrs
-        Workspace space = new Workspace("test", scrs);
-        scrs.addWorkspace(space);
-
-        //save scrs
+        Assistant assistant = new Assistant("name", "password", "name@mail.mcgill.ca", "111-1111", scrs);
         scrsRepository.save(scrs);
-        workspaceRepository.save(space);
+        assistantRepository.save(assistant);
 
-        //check test outputs
-        SCRS actualScrs = scrsRepository.findByScrsId(scrs.getScrsId());
-        assertNotNull(actualScrs);
-        assertEquals(scrs.getScrsId(), actualScrs.getScrsId()); //test if ID was properly stored/read
-        assertEquals(scrs.getWorkspace(0), space); //test if workspace association was properly stored/read
+        Assistant actualAssistant = assistantRepository.findByScrsUserId(assistant.getScrsUserId());
+
+        assertNotNull(actualAssistant);
+        assertEquals(assistant.getScrsUserId(), actualAssistant.getScrsUserId());
+        assertEquals(assistant.getName(), actualAssistant.getName());
+        assertEquals(assistant.getPassword(), actualAssistant.getPassword());
+        assertEquals(assistant.getEmail(), actualAssistant.getEmail());
+        assertEquals(assistant.getPhone(), actualAssistant.getPhone());
+        assertEquals(scrs.getScrsId(), actualAssistant.getScrs().getScrsId());
     }
-
 }

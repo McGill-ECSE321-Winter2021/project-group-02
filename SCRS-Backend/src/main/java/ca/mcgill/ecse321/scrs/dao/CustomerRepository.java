@@ -16,7 +16,4 @@ public interface CustomerRepository extends CrudRepository<Customer, Integer>
     Customer findByName(String name);
 
     Customer findByPhone(String phone);
-
-    Customer findByAppointments(List<Appointment> appointments);
-
 }

@@ -1,8 +1,5 @@
 package ca.mcgill.ecse321.scrs.dto;
 
-import java.util.Collections;
-import java.util.List;
-
 public class CustomerDto
 {
     private int scrsUserId;

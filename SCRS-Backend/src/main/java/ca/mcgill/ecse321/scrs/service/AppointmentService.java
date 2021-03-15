@@ -38,17 +38,17 @@ public class AppointmentService {
     }
 
     @Transactional
+    public Appointment getAppointmentById(int id) {
+        return appointmentRepository.findByAppointmentID(id);
+    }
+
+    @Transactional
     public List<Appointment> getAppointmentsByCustomer(Customer customer) {
         return new ArrayList<>(appointmentRepository.findAppointmentsByCustomer(customer));
     }
 
     @Transactional
-    public List<Appointment> getAppointmentsByTimeslots(List<Timeslot> timeslots) {
-        return new ArrayList<>(appointmentRepository.findAppointmentsByTimeslots(timeslots));
-    }
-
-    @Transactional
-    public List<Appointment> getAppointmentsByTimeslotsAndCustomer(List<Timeslot> timeslots, Customer customer) {
-        return new ArrayList<>(appointmentRepository.findAppointmentsByTimeslotsAndCustomer(timeslots, customer));
+    public List<Appointment> getAppointmentsByTimeslot(Timeslot timeslot) {
+        return new ArrayList<>(appointmentRepository.findAppointmentsByTimeslots(timeslot));
     }
 }

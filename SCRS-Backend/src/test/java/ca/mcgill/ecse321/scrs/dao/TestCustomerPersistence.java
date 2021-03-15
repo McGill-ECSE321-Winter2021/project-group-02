@@ -1,7 +1,9 @@
 package ca.mcgill.ecse321.scrs.dao;
 
-import ca.mcgill.ecse321.scrs.model.*;
-import ca.mcgill.ecse321.scrs.model.Appointment.AppointmentType;
+import ca.mcgill.ecse321.scrs.model.Customer;
+import ca.mcgill.ecse321.scrs.model.SCRS;
+import ca.mcgill.ecse321.scrs.model.Timeslot;
+import ca.mcgill.ecse321.scrs.model.Workspace;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,13 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalDate;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class TestScrsPersistence
+public class TestCustomerPersistence
 {
     @Autowired
     private AppointmentRepository appointmentRepository;
@@ -52,28 +54,36 @@ public class TestScrsPersistence
     }
 
     /**
-     * Test the persistence of the SCRS class
+     * Test the persistence of the customer class.
      * @author Adel Ahram
      */
     @Test
     @Transactional
-    public void testPersistAndLoadSCRS()
+    public void testPersistAndLoadCustomer()
     {
-        //create scrs
+        //create dummy scrs
         SCRS scrs = new SCRS();
-        //create and add test workspace to scrs
-        Workspace space = new Workspace("test", scrs);
-        scrs.addWorkspace(space);
 
-        //save scrs
+        //create customer with data
+        Customer customer = new Customer("name", "password", "email", "phone", scrs);
+
+        //create appointment -> timeslot -> workspace to test the association
+        Workspace ws = new Workspace("test", scrs);
+        Timeslot ts = new Timeslot(new Date(0), new Date(LocalDate.now().toEpochDay()), new Time(0), new Time(LocalDate.now().toEpochDay()), ws);
+
         scrsRepository.save(scrs);
-        workspaceRepository.save(space);
+        workspaceRepository.save(ws);
+        timeslotRepository.save(ts);
+
+        //save customer
+        customerRepository.save(customer);
 
         //check test outputs
-        SCRS actualScrs = scrsRepository.findByScrsId(scrs.getScrsId());
-        assertNotNull(actualScrs);
-        assertEquals(scrs.getScrsId(), actualScrs.getScrsId()); //test if ID was properly stored/read
-        assertEquals(scrs.getWorkspace(0), space); //test if workspace association was properly stored/read
+        Customer actualCustomer = customerRepository.findByScrsUserId(customer.getScrsUserId());
+        assertNotNull(actualCustomer);
+        assertEquals(customer.getName(), actualCustomer.getName());
+        assertEquals(customer.getPassword(), actualCustomer.getPassword());
+        assertEquals(customer.getEmail(), actualCustomer.getEmail());
+        assertEquals(customer.getPhone(), actualCustomer.getPhone());
     }
-
 }

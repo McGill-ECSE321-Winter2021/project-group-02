@@ -1,6 +1,6 @@
 package ca.mcgill.ecse321.scrs.dto;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 public class WorkspaceDto
@@ -13,10 +13,9 @@ public class WorkspaceDto
     {
     }
 
-    @SuppressWarnings("uncheked")
     public WorkspaceDto(int id, String type)
     {
-        this(id, type, Collections.EMPTY_LIST);
+        this(id, type, new ArrayList<TimeslotDto>());
     }
 
     public WorkspaceDto(int id, String type, List<TimeslotDto> availabilityList)

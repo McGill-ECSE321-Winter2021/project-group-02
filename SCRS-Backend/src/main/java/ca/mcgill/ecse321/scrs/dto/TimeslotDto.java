@@ -2,7 +2,7 @@ package ca.mcgill.ecse321.scrs.dto;
 
 import java.sql.Date;
 import java.sql.Time;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TimeslotDto
@@ -19,9 +19,8 @@ public class TimeslotDto
     {
     }
 
-    @SuppressWarnings("unchecked")
     public TimeslotDto(int id, Date startDate, Date endDate, Time startTime, Time endTime, WorkspaceDto workspace) {
-        this(id, startDate, endDate, startTime, endTime, workspace, Collections.EMPTY_LIST);
+        this(id, startDate, endDate, startTime, endTime, workspace, new ArrayList<TechnicianDto>());
     }
 
     public TimeslotDto(int id, Date startDate, Date endDate, Time startTime, Time endTime, WorkspaceDto workspace, List<TechnicianDto> technicians)
