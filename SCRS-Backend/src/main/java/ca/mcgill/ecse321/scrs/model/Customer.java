@@ -20,6 +20,8 @@ public class Customer extends SCRSUser
 
     protected Customer()
     {
+        super();
+        appointments = null;
     }
 
     public static int minimumNumberOfAppointments()

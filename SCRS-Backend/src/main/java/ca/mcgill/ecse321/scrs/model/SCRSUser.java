@@ -38,14 +38,12 @@ public abstract class SCRSUser
 
     protected SCRSUser()
     {
-        name = "Invalid";
-        password = "Invalid";
-        email = "Invalid";
-        phone = "Invalid";
+        name = null;
+        password = null;
+        email = null;
+        phone = null;
         scrs = null;
     }
-
-    ;
 
     public int getScrsUserId()
     {
