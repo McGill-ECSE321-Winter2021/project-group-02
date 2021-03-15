@@ -66,7 +66,7 @@ public class Helper
 
     public static TechnicianDto convertToDTO(Technician t)
     {
-        if (t == null) throw new IllegalArgumentException("There is no such assistant!");
+        if (t == null) throw new IllegalArgumentException("There is no such technician!");
         return new TechnicianDto(t.getScrsUserId(), t.getName(), t.getEmail(), t.getPhone());
     }
 
