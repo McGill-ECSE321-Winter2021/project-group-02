@@ -1,9 +1,12 @@
 package ca.mcgill.ecse321.scrs.controller;
 
+import ca.mcgill.ecse321.scrs.dto.CustomerDto;
 import ca.mcgill.ecse321.scrs.dto.TechnicianDto;
 import ca.mcgill.ecse321.scrs.model.Technician;
 import ca.mcgill.ecse321.scrs.service.TechnicianService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +20,7 @@ public class TechnicianController
     TechnicianService technicianService;
 
     @PostMapping(value = {"/create", "/create/"})
-    public TechnicianDto createAssistant(@RequestBody Technician technician)
+    public ResponseEntity<TechnicianDto> createTechnician(@RequestBody Technician technician)
     {
         if (technician == null)
         {
@@ -27,7 +30,7 @@ public class TechnicianController
         {
             throw new IllegalArgumentException("Email already in use, please try a different email address.");
         }
-        return convertToDTO(technicianService.createTechnician(technician.getEmail(), technician.getName(), technician.getPassword(), technician.getPhone()));
+        return new ResponseEntity<TechnicianDto>(convertToDTO(technicianService.createTechnician(technician.getEmail(), technician.getName(), technician.getPassword(), technician.getPhone())), HttpStatus.OK);
     }
 
     // ================= Private Helpers ================

@@ -4,6 +4,8 @@ import ca.mcgill.ecse321.scrs.dto.AssistantDto;
 import ca.mcgill.ecse321.scrs.model.Assistant;
 import ca.mcgill.ecse321.scrs.service.AssistantService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +19,7 @@ public class AssistantController
     AssistantService assistantService;
 
     @PostMapping(value = {"/create", "/create/"})
-    public AssistantDto createAssistant(@RequestBody Assistant assistant)
+    public ResponseEntity<AssistantDto> createAssistant(@RequestBody Assistant assistant)
     {
         if (assistant == null)
         {
@@ -27,7 +29,7 @@ public class AssistantController
         {
             throw new IllegalArgumentException("Email already in use, please try a different email address.");
         }
-        return convertToDTO(assistantService.createAssistant(assistant.getEmail(), assistant.getName(), assistant.getPassword(), assistant.getPhone()));
+        return new ResponseEntity<AssistantDto>(convertToDTO(assistantService.createAssistant(assistant.getEmail(), assistant.getName(), assistant.getPassword(), assistant.getPhone())), HttpStatus.OK);
     }
 
     // ================= Private Helpers ================

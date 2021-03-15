@@ -1,9 +1,12 @@
 package ca.mcgill.ecse321.scrs.controller;
 
+import ca.mcgill.ecse321.scrs.dto.AssistantDto;
 import ca.mcgill.ecse321.scrs.dto.CustomerDto;
 import ca.mcgill.ecse321.scrs.model.Customer;
 import ca.mcgill.ecse321.scrs.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,7 +17,7 @@ public class CustomerController
     CustomerService customerService;
 
     @PostMapping(value = {"/create", "/create/"})
-    public CustomerDto createCustomer(@RequestBody Customer customer)
+    public ResponseEntity<CustomerDto> createCustomer(@RequestBody Customer customer)
     {
         if (customer == null)
         {
@@ -24,7 +27,7 @@ public class CustomerController
         {
             throw new IllegalArgumentException("Email already in use, please try a different email address.");
         }
-        return convertToDTO(customerService.createCustomer(customer.getEmail(), customer.getName(), customer.getPassword(), customer.getPhone()));
+        return new ResponseEntity<CustomerDto>(convertToDTO(customerService.createCustomer(customer.getEmail(), customer.getName(), customer.getPassword(), customer.getPhone())), HttpStatus.OK);
     }
 
     // ================= Helper Methods ================
