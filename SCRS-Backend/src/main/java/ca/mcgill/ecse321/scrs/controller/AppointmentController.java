@@ -48,7 +48,7 @@ public class AppointmentController {
     public AppointmentDto payAppointment(@RequestParam(name = "appointmentId") int appointmentId) {
         Appointment appointment = appointmentService.getAppointmentById(appointmentId);
         appointment.setPaid(true);
-        return convertToDto(appointment);
+        return new ResponseEntity<AppointmentDto>(convertToDto(appointment), HttpStatus.OK);
     }
     
     @PutMapping(value = {"/rate-appointment", "/rate-appointment/"})

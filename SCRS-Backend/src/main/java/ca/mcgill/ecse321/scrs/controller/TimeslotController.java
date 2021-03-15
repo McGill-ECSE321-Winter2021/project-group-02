@@ -26,7 +26,7 @@ public class TimeslotController
     TimeslotService timeslotService;
 
     @GetMapping(value = {"/getServiceTimeslot", "/getServiceTimeslot/"})
-    public List<TimeslotDto> getServiceTimeslot(@RequestParam(name = "appointmentType") AppointmentType type)
+    public ResponseEntity<List<TimeslotDto>> getServiceTimeslot(@RequestParam(name = "appointmentType") AppointmentType type)
     {
         // TODO find available timeslots based on selected appointment type
         return null;
