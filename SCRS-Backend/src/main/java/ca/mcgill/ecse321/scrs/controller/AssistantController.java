@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDTO;
+import static ca.mcgill.ecse321.scrs.controller.Helper.hash;
 
 @RestController
 @RequestMapping(path = "/api/assistant")
@@ -28,7 +29,7 @@ public class AssistantController
         {
             throw new IllegalArgumentException("Email already in use, please try a different email address.");
         }
-        return new ResponseEntity<AssistantDto>(convertToDTO(assistantService.createAssistant(assistant.getEmail(), assistant.getName(), assistant.getPassword(), assistant.getPhone())), HttpStatus.OK);
+        return new ResponseEntity<AssistantDto>(convertToDTO(assistantService.createAssistant(assistant.getEmail(), assistant.getName(), hash(assistant.getPassword()), assistant.getPhone())), HttpStatus.OK);
     }
 
     @PutMapping(value = {"/update", "/update/"})
