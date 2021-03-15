@@ -51,7 +51,7 @@ public class AppointmentController {
         return convertToDto(appointment);
     }
     
-    @PostMapping(value = {"/rate-appointment", "/rate-appointment/"})
+    @PutMapping(value = {"/rate-appointment", "/rate-appointment/"})
     public ResponseEntity<AppointmentDto> rateAppointment(@RequestParam(name = "appointmentId") int appointmentId, @RequestParam(name = "rating") int rating) {
         if (rating > 10 || rating < 0) throw new IllegalArgumentException("Invalid rating");
 
