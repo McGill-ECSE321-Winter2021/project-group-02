@@ -60,4 +60,12 @@ public class AppointmentService {
         appointmentRepository.save(appointment);
         return appointment;
     }
+
+    @Transactional
+    public void modifyAppointment(Appointment appt)
+    {
+        if (appt == null) throw new IllegalArgumentException("Invalid appointment");
+        if (appointmentRepository.findByAppointmentID(appt.getAppointmentID()) == null) throw new IllegalArgumentException("No such appointment exists");
+        appointmentRepository.save(appt);
+    }
 }
