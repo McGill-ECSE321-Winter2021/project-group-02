@@ -6,12 +6,10 @@ import ca.mcgill.ecse321.scrs.service.AssistantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDTO;
+import static ca.mcgill.ecse321.scrs.controller.Helper.hash;
 
 @RestController
 @RequestMapping(path = "/api/assistant")
@@ -31,6 +29,20 @@ public class AssistantController
         {
             throw new IllegalArgumentException("Email already in use, please try a different email address.");
         }
-        return new ResponseEntity<AssistantDto>(convertToDTO(assistantService.createAssistant(assistant.getEmail(), assistant.getName(), assistant.getPassword(), assistant.getPhone())), HttpStatus.OK);
+        return new ResponseEntity<AssistantDto>(convertToDTO(assistantService.createAssistant(assistant.getEmail(), assistant.getName(), hash(assistant.getPassword()), assistant.getPhone())), HttpStatus.OK);
+    }
+
+    @PutMapping(value = {"/update", "/update/"})
+    public ResponseEntity<AssistantDto> updateAssistant(@RequestBody Assistant assistant)
+    {
+        if (assistant == null)
+        {
+            throw new IllegalArgumentException("Invalid assistant");
+        }
+        if (assistantService.getAssistantByID(assistant.getScrsUserId()) == null)
+        {
+            throw new IllegalArgumentException("No such assistant found.");
+        }
+        return new ResponseEntity<AssistantDto>(convertToDTO(assistantService.updateAssistantInfo(assistant)), HttpStatus.OK);
     }
 }

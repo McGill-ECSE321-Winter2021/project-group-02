@@ -2,6 +2,7 @@ package ca.mcgill.ecse321.scrs.service;
 
 import ca.mcgill.ecse321.scrs.dao.CustomerRepository;
 import ca.mcgill.ecse321.scrs.model.Appointment;
+import ca.mcgill.ecse321.scrs.model.Assistant;
 import ca.mcgill.ecse321.scrs.model.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,12 @@ public class CustomerService {
     }
 
     @Transactional
+    public Customer getCustomerByID(int id)
+    {
+        return customerRepository.findByScrsUserId(id);
+    }
+
+    @Transactional
     public Customer getCustomerByEmail(String email)
     {
         return customerRepository.findByEmail(email);
@@ -51,5 +58,12 @@ public class CustomerService {
     public Customer getCustomerByPhone(String phone)
     {
         return customerRepository.findByPhone(phone);
+    }
+
+    @Transactional
+    public Customer updateCustomerInfo(Customer customer)
+    {
+        customerRepository.save(customer);
+        return customer;
     }
 }
