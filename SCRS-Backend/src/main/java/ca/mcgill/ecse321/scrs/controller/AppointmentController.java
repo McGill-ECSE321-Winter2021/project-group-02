@@ -1,8 +1,6 @@
 package ca.mcgill.ecse321.scrs.controller;
 
 import ca.mcgill.ecse321.scrs.dto.AppointmentDto;
-import ca.mcgill.ecse321.scrs.dto.CustomerDto;
-import ca.mcgill.ecse321.scrs.dto.TimeslotDto;
 import ca.mcgill.ecse321.scrs.model.Appointment;
 import ca.mcgill.ecse321.scrs.model.Timeslot;
 import ca.mcgill.ecse321.scrs.service.AppointmentService;
@@ -13,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDto;
 
@@ -53,4 +50,13 @@ public class AppointmentController {
         appointment.setPaid(true);
         return convertToDto(appointment);
     }
+    
+    @PostMapping(value = {"/rate-appointment", "/rate-appointment/"})
+    public ResponseEntity<AppointmentDto> rateAppointment(@RequestParam(name = "appointmentId") int appointmentId, @RequestParam(name = "rating") int rating) {
+        if (rating > 10 || rating < 0) throw new IllegalArgumentException("Invalid rating");
+
+        Appointment appointment = appointmentService.rateAppointment(appointmentId, rating);
+        return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
+    }
+
 }
