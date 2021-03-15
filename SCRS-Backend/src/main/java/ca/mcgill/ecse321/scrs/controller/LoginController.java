@@ -50,4 +50,15 @@ public class LoginController
 
         return new ResponseEntity<Boolean>(true, HttpStatus.OK);
     }
+
+    @PostMapping ("/logout")
+    public ResponseEntity<Boolean> logout(HttpServletResponse response) {
+
+        String id = "-1";
+        Cookie cookie = new Cookie("id", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+    }
 }
