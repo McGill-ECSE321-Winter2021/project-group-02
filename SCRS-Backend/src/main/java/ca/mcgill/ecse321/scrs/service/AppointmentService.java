@@ -51,4 +51,13 @@ public class AppointmentService {
     public List<Appointment> getAppointmentsByTimeslot(Timeslot timeslot) {
         return new ArrayList<>(appointmentRepository.findAppointmentsByTimeslots(timeslot));
     }
+
+    @Transactional
+    public Appointment rateAppointment(int appointmentId, int rating) {
+        Appointment appointment = getAppointmentById(appointmentId);
+        if (appointment == null) throw new IllegalArgumentException("No such appointment!");
+        appointment.setRating(rating);
+        appointmentRepository.save(appointment);
+        return appointment;
+    }
 }
