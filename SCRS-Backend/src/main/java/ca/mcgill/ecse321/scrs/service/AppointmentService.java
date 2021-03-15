@@ -43,12 +43,7 @@ public class AppointmentService {
     }
 
     @Transactional
-    public List<Appointment> getAppointmentsByTimeslots(List<Timeslot> timeslots) {
-        return new ArrayList<>(appointmentRepository.findAppointmentsByTimeslots(timeslots));
-    }
-
-    @Transactional
-    public List<Appointment> getAppointmentsByTimeslotsAndCustomer(List<Timeslot> timeslots, Customer customer) {
-        return new ArrayList<>(appointmentRepository.findAppointmentsByTimeslotsAndCustomer(timeslots, customer));
+    public List<Appointment> getAppointmentsByTimeslot(Timeslot timeslot) {
+        return new ArrayList<>(appointmentRepository.findAppointmentsByTimeslots(timeslot));
     }
 }

@@ -1,7 +1,8 @@
 package ca.mcgill.ecse321.scrs.dao;
 
-import ca.mcgill.ecse321.scrs.model.*;
-import ca.mcgill.ecse321.scrs.model.Appointment.AppointmentType;
+import ca.mcgill.ecse321.scrs.model.SCRS;
+import ca.mcgill.ecse321.scrs.model.Timeslot;
+import ca.mcgill.ecse321.scrs.model.Workspace;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,14 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalDate;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class TestScrsPersistence
-{
+public class TestWorkspacePersistence {
     @Autowired
     private AppointmentRepository appointmentRepository;
     @Autowired
@@ -39,8 +39,7 @@ public class TestScrsPersistence
     private WorkspaceRepository workspaceRepository;
 
     @AfterEach
-    public void clearDatabase()
-    {
+    public void clearDatabase() {
         appointmentRepository.deleteAll();
         timeslotRepository.deleteAll();
         assistantRepository.deleteAll();
@@ -52,28 +51,26 @@ public class TestScrsPersistence
     }
 
     /**
-     * Test the persistence of the SCRS class
-     * @author Adel Ahram
+     * Persistence test of the Workspace class.
+     * 
+     * @author Alexandra Gafencu
      */
     @Test
     @Transactional
-    public void testPersistAndLoadSCRS()
-    {
-        //create scrs
+    public void testPersistAndLoadWorkspace() {
         SCRS scrs = new SCRS();
-        //create and add test workspace to scrs
-        Workspace space = new Workspace("test", scrs);
-        scrs.addWorkspace(space);
+        Workspace workspace = new Workspace("test", scrs);
+        Timeslot timeslot = new Timeslot(new Date(0), new Date(LocalDate.now().toEpochDay()), new Time(0),
+                new Time(LocalDate.now().toEpochDay()), workspace);
 
-        //save scrs
         scrsRepository.save(scrs);
-        workspaceRepository.save(space);
+        workspaceRepository.save(workspace);
+        timeslotRepository.save(timeslot);
 
-        //check test outputs
-        SCRS actualScrs = scrsRepository.findByScrsId(scrs.getScrsId());
-        assertNotNull(actualScrs);
-        assertEquals(scrs.getScrsId(), actualScrs.getScrsId()); //test if ID was properly stored/read
-        assertEquals(scrs.getWorkspace(0), space); //test if workspace association was properly stored/read
+        Workspace actualWorkspace = workspaceRepository.findByWorkspaceID(workspace.getWorkspaceID());
+        assertNotNull(actualWorkspace);
+        assertEquals(workspace.getSpaceType(), actualWorkspace.getSpaceType());
+        assertNotNull(actualWorkspace.getAvailabilities().get(0));
+        assertEquals(workspace.getAvailabilities().get(0), actualWorkspace.getAvailabilities().get(0));
     }
-
 }

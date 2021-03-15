@@ -47,9 +47,4 @@ public class TechnicianService {
     public Technician getTechnicianByPhone(String phone) {
         return technicianRepository.findByPhone(phone);
     }
-
-    @Transactional
-    public Technician getTechnicianByAvailabilities(List<Timeslot> availabilities) {
-        return technicianRepository.findByAvailabilities(availabilities);
-    }
 }

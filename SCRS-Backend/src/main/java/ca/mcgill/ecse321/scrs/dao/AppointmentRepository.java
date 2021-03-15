@@ -18,7 +18,5 @@ public interface AppointmentRepository extends CrudRepository<Appointment, Integ
 
     List<Appointment> findAppointmentsByCustomer(Customer customer);
 
-    List<Appointment> findAppointmentsByTimeslots(List<Timeslot> timeslots);
-
-    List<Appointment> findAppointmentsByTimeslotsAndCustomer(List<Timeslot> timeslots, Customer customer);
+    List<Appointment> findAppointmentsByTimeslots(Timeslot timeslots);
 }

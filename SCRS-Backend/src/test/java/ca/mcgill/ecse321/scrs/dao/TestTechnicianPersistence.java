@@ -1,7 +1,7 @@
 package ca.mcgill.ecse321.scrs.dao;
 
-import ca.mcgill.ecse321.scrs.model.*;
-import ca.mcgill.ecse321.scrs.model.Appointment.AppointmentType;
+import ca.mcgill.ecse321.scrs.model.SCRS;
+import ca.mcgill.ecse321.scrs.model.Technician;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,16 +10,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
-import java.sql.Time;
-import java.time.LocalDate;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class TestScrsPersistence
+public class TestTechnicianPersistence
 {
     @Autowired
     private AppointmentRepository appointmentRepository;
@@ -52,28 +48,27 @@ public class TestScrsPersistence
     }
 
     /**
-     * Test the persistence of the SCRS class
-     * @author Adel Ahram
+     * Test the technician class
+     * @author SimonNM
      */
     @Test
     @Transactional
-    public void testPersistAndLoadSCRS()
+    public void testPersistAndLoadTechnician()
     {
-        //create scrs
         SCRS scrs = new SCRS();
-        //create and add test workspace to scrs
-        Workspace space = new Workspace("test", scrs);
-        scrs.addWorkspace(space);
+        Technician technician = new Technician("name", "password", "name@mail.mcgill.ca", "111-1111", scrs);
 
-        //save scrs
         scrsRepository.save(scrs);
-        workspaceRepository.save(space);
+        technicianRepository.save(technician);
 
-        //check test outputs
-        SCRS actualScrs = scrsRepository.findByScrsId(scrs.getScrsId());
-        assertNotNull(actualScrs);
-        assertEquals(scrs.getScrsId(), actualScrs.getScrsId()); //test if ID was properly stored/read
-        assertEquals(scrs.getWorkspace(0), space); //test if workspace association was properly stored/read
+        Technician actualTechnician = technicianRepository.findByScrsUserId(technician.getScrsUserId());
+
+        assertNotNull(actualTechnician);
+        assertEquals(technician.getScrsUserId(), actualTechnician.getScrsUserId());
+        assertEquals(technician.getName(), actualTechnician.getName());
+        assertEquals(technician.getPassword(), actualTechnician.getPassword());
+        assertEquals(technician.getEmail(), actualTechnician.getEmail());
+        assertEquals(technician.getPhone(), actualTechnician.getPhone());
+        assertEquals(scrs.getScrsId(), actualTechnician.getScrs().getScrsId());
     }
-
 }

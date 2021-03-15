@@ -52,10 +52,4 @@ public class CustomerService {
     {
         return customerRepository.findByPhone(phone);
     }
-
-    @Transactional
-    public Customer getCustomerByAppointments(List<Appointment> appointments)
-    {
-        return customerRepository.findByAppointments(appointments);
-    }
 }
