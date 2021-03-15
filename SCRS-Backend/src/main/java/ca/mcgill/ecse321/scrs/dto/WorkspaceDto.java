@@ -1,7 +1,6 @@
 package ca.mcgill.ecse321.scrs.dto;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class WorkspaceDto

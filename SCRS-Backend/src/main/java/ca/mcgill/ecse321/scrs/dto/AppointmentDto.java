@@ -3,7 +3,6 @@ package ca.mcgill.ecse321.scrs.dto;
 import ca.mcgill.ecse321.scrs.model.Appointment.AppointmentType;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class AppointmentDto
@@ -22,15 +21,15 @@ public class AppointmentDto
     {
     }
 
-    public AppointmentDto(int id, AppointmentType type, String note, CustomerDto customer, List<TimeslotDto> timeslotList)
+    public AppointmentDto(int id, AppointmentType type, String service, String note, CustomerDto customer, List<TimeslotDto> timeslotList)
     {
-        this(id, type, null, note, -1, null, false, customer, timeslotList);
+        this(id, type, service, note, -1, null, false, customer, timeslotList);
     }
 
     @SuppressWarnings("unchecked")
-    public AppointmentDto(int id, String service, String note, CustomerDto customer)
+    public AppointmentDto(int id, AppointmentType type, String service, String note, CustomerDto customer)
     {
-        this(id, null, service, note, -1, null, false, customer, new ArrayList<TimeslotDto>());
+        this(id, type, service, note, -1, null, false, customer, new ArrayList<TimeslotDto>());
     }
 
     public AppointmentDto(int id, AppointmentType type, String service, String note, int rating, String feedback, boolean isPaid, CustomerDto customer, List<TimeslotDto> timeslotList)

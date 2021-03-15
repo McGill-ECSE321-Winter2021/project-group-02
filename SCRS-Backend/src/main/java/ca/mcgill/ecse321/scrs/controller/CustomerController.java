@@ -27,9 +27,9 @@ public class CustomerController
         return convertToDTO(customerService.createCustomer(customer.getEmail(), customer.getName(), customer.getPassword(), customer.getPhone()));
     }
 
-    // ================= Private Helpers ================
+    // ================= Helper Methods ================
 
-    private CustomerDto convertToDTO(Customer c)
+    public static CustomerDto convertToDTO(Customer c)
     {
         if (c == null) throw new IllegalArgumentException("There is no such customer!");
         return new CustomerDto(c.getScrsUserId(), c.getName(), c.getEmail(), c.getPhone());

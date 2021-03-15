@@ -38,6 +38,11 @@ public class AppointmentService {
     }
 
     @Transactional
+    public Appointment getAppointmentById(int id) {
+        return appointmentRepository.findByAppointmentID(id);
+    }
+
+    @Transactional
     public List<Appointment> getAppointmentsByCustomer(Customer customer) {
         return new ArrayList<>(appointmentRepository.findAppointmentsByCustomer(customer));
     }
