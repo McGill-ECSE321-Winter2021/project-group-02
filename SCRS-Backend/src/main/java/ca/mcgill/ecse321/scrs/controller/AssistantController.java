@@ -34,7 +34,7 @@ public class AssistantController
 
     // ================= Private Helpers ================
 
-    private AssistantDto convertToDTO(Assistant a)
+    public AssistantDto convertToDTO(Assistant a)
     {
         if (a == null) throw new IllegalArgumentException("There is no such assistant!");
         return new AssistantDto(a.getScrsUserId(), a.getName(), a.getEmail(), a.getPhone());

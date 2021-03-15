@@ -35,7 +35,7 @@ public class TechnicianController
 
     // ================= Private Helpers ================
 
-    private TechnicianDto convertToDTO(Technician t)
+    public TechnicianDto convertToDTO(Technician t)
     {
         if (t == null) throw new IllegalArgumentException("There is no such assistant!");
         return new TechnicianDto(t.getScrsUserId(), t.getName(), t.getEmail(), t.getPhone());
