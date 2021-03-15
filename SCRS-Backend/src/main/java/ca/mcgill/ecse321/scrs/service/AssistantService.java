@@ -14,7 +14,7 @@ import static ca.mcgill.ecse321.scrs.service.ServiceHelpers.toList;
 public class AssistantService
 {
     @Autowired
-    public AssistantRepository assistantRepository;
+    AssistantRepository assistantRepository;
 
     @Transactional
     public Assistant createAssistant(String email, String name, String password, String phone)
