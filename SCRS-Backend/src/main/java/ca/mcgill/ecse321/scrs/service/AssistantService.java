@@ -28,22 +28,44 @@ public class AssistantService
     }
 
     @Transactional
-    public List<Assistant> getAllAssistants() {
+    public Assistant getAssistantByID(int id)
+    {
+        return assistantRepository.findByScrsUserId(id);
+    }
+
+    @Transactional
+    public List<Assistant> getAllAssistants()
+    {
         return toList(assistantRepository.findAll());
     }
 
     @Transactional
-    public Assistant getAssistantByEmail(String email) {
+    public Assistant getAssistantByEmail(String email)
+    {
         return assistantRepository.findByEmail(email);
     }
 
     @Transactional
-    public Assistant getAssistantByName(String name) {
+    public Assistant getAssistantByName(String name)
+    {
         return assistantRepository.findByName(name);
     }
 
     @Transactional
-    public Assistant getAssistantByPhone(String phone) {
+    public Assistant getAssistantByPhone(String phone)
+    {
         return assistantRepository.findByPhone(phone);
+    }
+
+    @Transactional
+    public Assistant updateAssistantInfo(Assistant updates)
+    {
+        Assistant assistant = assistantRepository.findByScrsUserId(updates.getScrsUserId());
+        if (updates.getEmail() != null) assistant.setEmail(updates.getEmail());
+        if (updates.getName() != null) assistant.setName(updates.getName());
+        if (updates.getPassword() != null) assistant.setPassword(updates.getPassword());
+        if (updates.getPhone() != null) assistant.setPhone(updates.getPhone());
+        assistantRepository.save(assistant);
+        return assistant;
     }
 }
