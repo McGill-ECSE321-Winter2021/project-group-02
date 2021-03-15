@@ -2,6 +2,7 @@ package ca.mcgill.ecse321.scrs.controller;
 
 import ca.mcgill.ecse321.scrs.dto.AssistantDto;
 import ca.mcgill.ecse321.scrs.dto.CustomerDto;
+import ca.mcgill.ecse321.scrs.model.Assistant;
 import ca.mcgill.ecse321.scrs.model.Customer;
 import ca.mcgill.ecse321.scrs.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,20 @@ public class CustomerController
             throw new IllegalArgumentException("Email already in use, please try a different email address.");
         }
         return new ResponseEntity<CustomerDto>(convertToDTO(customerService.createCustomer(customer.getEmail(), customer.getName(), customer.getPassword(), customer.getPhone())), HttpStatus.OK);
+    }
+
+    @PutMapping(value = {"/update", "/update/"})
+    public ResponseEntity<CustomerDto> updateCustomer(@RequestBody Customer customer)
+    {
+        if (customer == null)
+        {
+            throw new IllegalArgumentException("Invalid customer.");
+        }
+        if (customerService.getCustomerByID(customer.getScrsUserId()) == null)
+        {
+            throw new IllegalArgumentException("No such customer found.");
+        }
+        return new ResponseEntity<CustomerDto>(convertToDTO(customerService.updateCustomerInfo(customer)), HttpStatus.OK);
     }
 
 }
