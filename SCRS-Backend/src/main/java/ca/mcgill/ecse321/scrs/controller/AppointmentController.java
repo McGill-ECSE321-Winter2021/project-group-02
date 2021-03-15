@@ -59,4 +59,12 @@ public class AppointmentController {
         return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
     }
 
+    @PutMapping(value = {"/modifyAppointment", "/modifyAppointment/"})
+    public ResponseEntity<AppointmentDto> modifyAppointment(@RequestBody Appointment appt) {
+        if (appt == null) throw new IllegalArgumentException("Invalid appointment");
+
+        appointmentService.modifyAppointment(appt);
+        return new ResponseEntity<>(convertToDto(appt), HttpStatus.OK);
+    }
+
 }
