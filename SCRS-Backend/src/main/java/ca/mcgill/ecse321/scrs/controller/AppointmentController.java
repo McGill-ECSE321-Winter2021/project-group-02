@@ -1,8 +1,6 @@
 package ca.mcgill.ecse321.scrs.controller;
 
 import ca.mcgill.ecse321.scrs.dto.AppointmentDto;
-import ca.mcgill.ecse321.scrs.dto.CustomerDto;
-import ca.mcgill.ecse321.scrs.dto.TimeslotDto;
 import ca.mcgill.ecse321.scrs.model.Appointment;
 import ca.mcgill.ecse321.scrs.model.Timeslot;
 import ca.mcgill.ecse321.scrs.service.AppointmentService;
@@ -13,31 +11,35 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDto;
 
 @RestController
 @RequestMapping(path = "/api/appointment", produces = MediaType.APPLICATION_JSON_VALUE)
-public class AppointmentController {
+public class AppointmentController
+{
     @Autowired
     AppointmentService appointmentService;
 
     @GetMapping("/getall/{id}")
-    public ResponseEntity<ArrayList<Appointment>> getAll(@PathVariable("id") String id) {
+    public ResponseEntity<ArrayList<Appointment>> getAll(@PathVariable("id") String id)
+    {
         int ID = Integer.valueOf(id);
         return new ResponseEntity<>(new ArrayList<Appointment>(), HttpStatus.OK);
     }
 
     @GetMapping("/notifications/{id}")
-    public ResponseEntity<ArrayList<Appointment>> notifications(@PathVariable("id") String id) {
+    public ResponseEntity<ArrayList<Appointment>> notifications(@PathVariable("id") String id)
+    {
         int ID = Integer.valueOf(id);
         return new ResponseEntity<>(new ArrayList<Appointment>(), HttpStatus.OK);
     }
 
-    @PostMapping(value = { "/book", "/book/" })
-    public AppointmentDto bookAppointment(@RequestBody Appointment appointment) {
-        if (appointment == null) {
+    @PostMapping(value = {"/book", "/book/"})
+    public AppointmentDto bookAppointment(@RequestBody Appointment appointment)
+    {
+        if (appointment == null)
+        {
             throw new IllegalArgumentException(
                     "Invalid appointment. Please submit a valid appointment booking to be created.");
         }
@@ -47,8 +49,9 @@ public class AppointmentController {
         return convertToDto(a);
     }
 
-    @PutMapping(value = { "/pay", "/pay/" })
-    public AppointmentDto payAppointment(@RequestParam(name = "appointmentId") int appointmentId) {
+    @PutMapping(value = {"/pay", "/pay/"})
+    public ResponseEntity<AppointmentDto> payAppointment(@RequestParam(name = "appointmentId") int appointmentId)
+    {
         Appointment appointment = appointmentService.getAppointmentById(appointmentId);
         appointment.setPaid(true);
         return new ResponseEntity<AppointmentDto>(convertToDto(appointment), HttpStatus.OK);
