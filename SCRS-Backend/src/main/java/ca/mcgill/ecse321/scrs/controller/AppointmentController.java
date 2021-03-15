@@ -12,11 +12,18 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 
 @RestController
-@RequestMapping(path = "/api/notification", produces = MediaType.APPLICATION_JSON_VALUE)
-public class NotificationController
+@RequestMapping(path = "/api/appointment", produces = MediaType.APPLICATION_JSON_VALUE)
+public class AppointmentController
 {
     @GetMapping("/getall/{id}")
     public ResponseEntity<ArrayList<Appointment>> getAll(@PathVariable("id") String id)
+    {
+        int ID = Integer.valueOf(id);
+        return new ResponseEntity<>(new ArrayList<Appointment>(), HttpStatus.OK);
+    }
+
+    @GetMapping("/notifications/{id}")
+    public ResponseEntity<ArrayList<Appointment>> notifications(@PathVariable("id") String id)
     {
         int ID = Integer.valueOf(id);
         return new ResponseEntity<>(new ArrayList<Appointment>(), HttpStatus.OK);
