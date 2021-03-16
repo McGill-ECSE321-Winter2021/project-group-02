@@ -5,4 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface SCRSUserRepository extends CrudRepository<SCRSUser, Integer>
 {
+    SCRSUser findByScrsUserId(int Id);
 }

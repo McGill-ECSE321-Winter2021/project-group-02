@@ -64,4 +64,10 @@ public class AssistantService
         assistantRepository.save(assistant);
         return assistant;
     }
+
+    @Transactional
+    public Assistant deleteAssistant(Assistant assistant) {
+        assistantRepository.delete(assistant);
+        return assistant;
+    }
 }

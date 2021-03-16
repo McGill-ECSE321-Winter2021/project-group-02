@@ -21,4 +21,9 @@ public class SCRSUserService {
     public List<SCRSUser> getAllSCRSUsers() {
         return toList(scrsUserRepository.findAll());
     }
+
+    @Transactional
+    public SCRSUser getSCRSUserByID(int id) {
+        return scrsUserRepository.findByScrsUserId(id);
+    }
 }

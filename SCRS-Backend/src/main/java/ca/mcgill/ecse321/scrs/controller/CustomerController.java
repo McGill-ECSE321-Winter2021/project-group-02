@@ -3,13 +3,13 @@ package ca.mcgill.ecse321.scrs.controller;
 import ca.mcgill.ecse321.scrs.dto.CustomerDto;
 import ca.mcgill.ecse321.scrs.model.Customer;
 import ca.mcgill.ecse321.scrs.service.CustomerService;
+import ca.mcgill.ecse321.scrs.service.SCRSUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDTO;
-import static ca.mcgill.ecse321.scrs.controller.Helper.hash;
+import static ca.mcgill.ecse321.scrs.controller.Helper.*;
 
 @RestController
 @RequestMapping(path = "/api/customer")
@@ -17,6 +17,8 @@ public class CustomerController
 {
     @Autowired
     CustomerService customerService;
+    @Autowired
+    SCRSUserService scrsUserService;
 
     @PostMapping(value = {"/create", "/create/"})
     public ResponseEntity<CustomerDto> createCustomer(@RequestBody Customer customer)
@@ -33,11 +35,15 @@ public class CustomerController
     }
 
     @PutMapping(value = {"/update", "/update/"})
-    public ResponseEntity<CustomerDto> updateCustomer(@RequestBody Customer customer)
+    public ResponseEntity<CustomerDto> updateCustomer(@RequestBody Customer customer, @CookieValue(value = "id") int id)
     {
         if (customer == null)
         {
             throw new IllegalArgumentException("Invalid customer.");
+        }
+        if (!isAdmin(scrsUserService.getSCRSUserByID(id)) && id != customer.getScrsUserId()) //does not have permission to edit.
+        {
+            throw new IllegalArgumentException("You cannot modify a customer account other than your own.");
         }
         if (customerService.getCustomerByID(customer.getScrsUserId()) == null)
         {
@@ -46,4 +52,18 @@ public class CustomerController
         return new ResponseEntity<CustomerDto>(convertToDTO(customerService.updateCustomerInfo(customer)), HttpStatus.OK);
     }
 
+    @DeleteMapping(value = {"/delete", "/delete/"})
+    public ResponseEntity<CustomerDto> deleteCustomer(@RequestParam(value = "id") int customerID, @CookieValue(value = "id") int id)
+    {
+        Customer customer = customerService.getCustomerByID(customerID);
+        if (customer == null)
+        {
+            throw new IllegalArgumentException("Invalid customer. Please submit a valid customer account to be deleted.");
+        }
+        if (!isAdmin(scrsUserService.getSCRSUserByID(id)) && id != customerID) //does not have permission to edit.
+        {
+            throw new IllegalArgumentException("You cannot delete a customer account other than your own.");
+        }
+        return new ResponseEntity<CustomerDto>(convertToDTO(customerService.deleteCustomer(customer)), HttpStatus.OK);
+    }
 }

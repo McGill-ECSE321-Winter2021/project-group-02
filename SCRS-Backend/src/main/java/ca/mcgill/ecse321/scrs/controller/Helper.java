@@ -41,6 +41,11 @@ public class Helper
         return hexString.toString();
     }
 
+    public static boolean isAdmin(SCRSUser user) {
+        if (user == null) return false;
+        else return user instanceof Assistant;
+    }
+
     // ============== DTO CONVERSIONS ===========
 
     public static AppointmentDto convertToDto(Appointment a)
@@ -92,6 +97,6 @@ public class Helper
     {
         if (workspace == null)
             throw new IllegalArgumentException("There is no such workspace!");
-        return new WorkspaceDto(workspace.getWorkspaceID(), workspace.getSpaceType());
+        return new WorkspaceDto(workspace.getWorkspaceID(), workspace.getSpaceName());
     }
 }

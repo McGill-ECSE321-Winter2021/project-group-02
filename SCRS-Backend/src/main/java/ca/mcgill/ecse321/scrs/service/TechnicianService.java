@@ -58,4 +58,10 @@ public class TechnicianService {
         technicianRepository.save(technician);
         return technician;
     }
+
+    @Transactional
+    public Technician deleteTechnician(Technician technician) {
+        technicianRepository.delete(technician);
+        return technician;
+    }
 }
