@@ -1,17 +1,19 @@
 package ca.mcgill.ecse321.scrs.controller;
 
-import ca.mcgill.ecse321.scrs.dto.AssistantDto;
 import ca.mcgill.ecse321.scrs.dto.WorkspaceDto;
-import ca.mcgill.ecse321.scrs.model.Assistant;
 import ca.mcgill.ecse321.scrs.model.Workspace;
 import ca.mcgill.ecse321.scrs.service.SCRSUserService;
 import ca.mcgill.ecse321.scrs.service.WorkspaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import static ca.mcgill.ecse321.scrs.controller.Helper.*;
+import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDto;
+import static ca.mcgill.ecse321.scrs.controller.Helper.isAdmin;
 
 public class WorkspaceController
 {
