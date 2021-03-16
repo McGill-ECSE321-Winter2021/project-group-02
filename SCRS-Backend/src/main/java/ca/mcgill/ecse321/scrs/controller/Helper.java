@@ -13,13 +13,16 @@ public class Helper
 {
     //helper functions
 
-    public static String hash(String string){
-        try{
+    public static String hash(String string)
+    {
+        try
+        {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] encodedHash = digest.digest(
                     string.getBytes(StandardCharsets.UTF_8));
             return bytesToHex(encodedHash);
-        }catch (NoSuchAlgorithmException e){
+        } catch (NoSuchAlgorithmException e)
+        {
             System.out.println("bad algorithm");
         }
         return "error";
@@ -72,8 +75,8 @@ public class Helper
 
     public static TimeslotDto convertToDto(Timeslot timeslot)
     {
-        if(timeslot == null)
-            throw  new IllegalArgumentException("There is no such timeslot!");
+        if (timeslot == null)
+            throw new IllegalArgumentException("There is no such timeslot!");
         WorkspaceDto workspaceDto = convertToDto(timeslot.getWorkspace());
         // check technician convertor
         return new TimeslotDto(timeslot.getTimeSlotID(), timeslot.getStartDate(), timeslot.getEndDate(), timeslot.getStartTime(), timeslot.getEndTime(), workspaceDto);
@@ -82,7 +85,8 @@ public class Helper
     public static List<TimeslotDto> convertToDto(List<Timeslot> timeslots)
     {
         List<TimeslotDto> timeslotDtos = new ArrayList<>();
-        for (Timeslot timeslot : timeslots) {
+        for (Timeslot timeslot : timeslots)
+        {
             timeslotDtos.add(convertToDto(timeslot));
         }
         return timeslotDtos;

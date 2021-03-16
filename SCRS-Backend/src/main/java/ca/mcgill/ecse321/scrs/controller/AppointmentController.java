@@ -36,7 +36,7 @@ public class AppointmentController
     }
 
     @PostMapping(value = {"/book", "/book/"})
-    public AppointmentDto bookAppointment(@RequestBody Appointment appointment)
+    public ResponseEntity<AppointmentDto> bookAppointment(@RequestBody Appointment appointment)
     {
         if (appointment == null)
         {
@@ -46,7 +46,7 @@ public class AppointmentController
         Appointment a = appointmentService.createAppointment(appointment.getAppointmentType(), appointment.getService(),
                 appointment.getNote(), appointment.getPaid(), appointment.getCustomer(),
                 appointment.getTimeslots().toArray(new Timeslot[0]));
-        return convertToDto(a);
+        return new ResponseEntity<AppointmentDto>(convertToDto(a), HttpStatus.OK);
     }
 
     @PutMapping(value = {"/pay", "/pay/"})
