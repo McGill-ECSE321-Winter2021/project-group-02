@@ -1,5 +1,6 @@
 package ca.mcgill.ecse321.scrs.controller;
 
+import ca.mcgill.ecse321.scrs.dao.CustomerRepository;
 import ca.mcgill.ecse321.scrs.dto.AppointmentDto;
 import ca.mcgill.ecse321.scrs.model.Appointment;
 import ca.mcgill.ecse321.scrs.model.Timeslot;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDto;
 
@@ -19,17 +21,27 @@ import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDto;
 public class AppointmentController {
     @Autowired
     AppointmentService appointmentService;
+    @Autowired
+    private CustomerRepository customerRepository;
 
-    @GetMapping("/getall/{id}")
-    public ResponseEntity<ArrayList<Appointment>> getAll(@PathVariable("id") String id) {
-        int ID = Integer.valueOf(id);
-        return new ResponseEntity<>(new ArrayList<Appointment>(), HttpStatus.OK);
+    @GetMapping("/getall")
+    public ResponseEntity<List<Appointment>> getAll(@CookieValue(value = "id", defaultValue = "-1") String id) {
+        if(id.equals("-1") || id == null)return new ResponseEntity<>(null, HttpStatus.OK);
+        int ID = Integer.parseInt(id);
+
+        List<Appointment> list = appointmentService.getAppointmentsByCustomer(customerRepository.findByScrsUserId(ID));
+
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-    @GetMapping("/notifications/{id}")
-    public ResponseEntity<ArrayList<Appointment>> notifications(@PathVariable("id") String id) {
-        int ID = Integer.valueOf(id);
-        return new ResponseEntity<>(new ArrayList<Appointment>(), HttpStatus.OK);
+    @GetMapping("/notifications")
+    public ResponseEntity<List<Appointment>> notifications(@CookieValue(value = "id", defaultValue = "-1") String id) {
+        if(id.equals("-1") || id == null)return new ResponseEntity<>(null, HttpStatus.OK);
+        int ID = Integer.parseInt(id);
+
+        List<Appointment> list = appointmentService.getAppointmentsByCustomer(customerRepository.findByScrsUserId(ID));
+
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @PostMapping(value = { "/book", "/book/" })

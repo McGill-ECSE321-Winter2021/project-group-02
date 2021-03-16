@@ -25,11 +25,8 @@ public class LoginController
     public ResponseEntity<Boolean> loginCustomer(@RequestParam("email") String email, @RequestParam("password") String password, HttpServletResponse response) {
 
         String hashedPassword = Helper.hash(password);
-        System.out.println(email + ", " + password + ", " + hashedPassword);
 
         Customer customer = customerRepository.findByEmail(email);
-
-        System.out.println(customer.getPassword());
 
         if(customer == null || !customer.getPassword().equals(hashedPassword)) return new ResponseEntity<Boolean>(false, HttpStatus.OK);
 
@@ -44,7 +41,6 @@ public class LoginController
     public ResponseEntity<Boolean> loginAssistant(@RequestParam("email") String email, @RequestParam("password") String password, HttpServletResponse response) {
 
         String hashedPassword = Helper.hash(password);
-        System.out.println(email + ", " + password + ", " + hashedPassword);
 
         Customer customer = customerRepository.findByEmail(email);
 
@@ -52,7 +48,7 @@ public class LoginController
 
         if(customer == null || !customer.getPassword().equals(hashedPassword)) return new ResponseEntity<Boolean>(false, HttpStatus.OK);
 
-        String id = "-1";
+        String id = ((Integer)customer.getScrsUserId()).toString();
         Cookie cookie = new Cookie("id", id);
         response.addCookie(cookie);
 
@@ -63,7 +59,6 @@ public class LoginController
     public ResponseEntity<Boolean> loginTechnician(@RequestParam("email") String email, @RequestParam("password") String password, HttpServletResponse response) {
 
         String hashedPassword = Helper.hash(password);
-        System.out.println(email + ", " + password + ", " + hashedPassword);
 
         Customer customer = customerRepository.findByEmail(email);
 
@@ -71,7 +66,7 @@ public class LoginController
 
         if(customer == null || !customer.getPassword().equals(hashedPassword)) return new ResponseEntity<Boolean>(false, HttpStatus.OK);
 
-        String id = "-1";
+        String id = ((Integer)customer.getScrsUserId()).toString();
         Cookie cookie = new Cookie("id", id);
         response.addCookie(cookie);
 
