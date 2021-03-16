@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Time;
 import java.util.List;
 
 import static ca.mcgill.ecse321.scrs.service.ServiceHelpers.toList;
@@ -28,6 +29,7 @@ public class TechnicianService
         technicianRepository.save(technician);
         return technician;
     }
+
 
     @Transactional
     public List<Technician> getAllTechnicians()
@@ -60,6 +62,7 @@ public class TechnicianService
     }
 
     @Transactional
+<<<<<<< Updated upstream
     public Technician updateTechnicianInfo(Technician technician)
     {
         technicianRepository.save(technician);
@@ -72,4 +75,7 @@ public class TechnicianService
         technicianRepository.delete(technician);
         return technician;
     }
+=======
+    public Technician getTechnicianById(int id){ return technicianRepository.findByScrsUserId(id);}
+>>>>>>> Stashed changes
 }

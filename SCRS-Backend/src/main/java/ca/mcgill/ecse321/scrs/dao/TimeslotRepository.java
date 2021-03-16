@@ -15,4 +15,6 @@ public interface TimeslotRepository extends CrudRepository<Timeslot, Integer>
     List<Timeslot> findByWorkspace(Workspace ws);
 
     List<Timeslot> findByTechnicians(Technician technicians);
+
+
 }

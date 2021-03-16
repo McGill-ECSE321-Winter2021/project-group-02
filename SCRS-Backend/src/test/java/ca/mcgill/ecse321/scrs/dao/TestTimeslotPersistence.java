@@ -135,4 +135,44 @@ public class TestTimeslotPersistence
         assertEquals(actualTimeslot.getTimeSlotID(), ts.getTimeSlotID());
         assertEquals(actualTimeslot.getWorkspace().getWorkspaceID(), ts.getWorkspace().getWorkspaceID());
     }
+
+    /**
+     * Association test of the Timeslot class.
+     * @author Alexandra Gafencu
+     */
+    @Test
+    @Transactional
+    public void testPersistAndLoadTimeslotByTechnician()
+    {
+        SCRS scrs = new SCRS();
+        Workspace ws = new Workspace("test", scrs);
+        Technician technician = new Technician("name", "password", "name@mail.mcgill.ca", "111-1111", scrs);
+        Timeslot ts1 = new Timeslot(new Date(0), new Date(LocalDate.now().toEpochDay()), new Time(0), new Time(LocalDate.now().toEpochDay()), ws);
+        Timeslot ts2 = new Timeslot(new Date(0), new Date(LocalDate.now().toEpochDay()), new Time(0), new Time(LocalDate.now().toEpochDay()), ws);
+        Timeslot ts3 = new Timeslot(new Date(0), new Date(LocalDate.now().toEpochDay()), new Time(0), new Time(LocalDate.now().toEpochDay()), ws);
+
+        ts1.addTechnician(technician);
+        ts2.addTechnician(technician);
+        ts3.addTechnician(technician);
+
+
+        scrsRepository.save(scrs);
+        workspaceRepository.save(ws);
+        technicianRepository.save(technician);
+        timeslotRepository.save(ts1);
+        timeslotRepository.save(ts2);
+        timeslotRepository.save(ts3);
+
+
+        List<Timeslot> actualTimeslots = timeslotRepository.findByTechnicians(technician);
+
+        assertEquals(3, actualTimeslots.size());
+        Timeslot actualTimeslot = actualTimeslots.get(0);
+
+        assertEquals(actualTimeslot.getTimeSlotID(), ts1.getTimeSlotID());
+        assertEquals(actualTimeslot.getWorkspace().getWorkspaceID(), ts1.getWorkspace().getWorkspaceID());
+    }
+
+
+
 }

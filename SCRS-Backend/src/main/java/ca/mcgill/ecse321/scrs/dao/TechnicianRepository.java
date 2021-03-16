@@ -15,4 +15,5 @@ public interface TechnicianRepository extends CrudRepository<Technician, Integer
     Technician findByName(String name);
 
     Technician findByPhone(String phone);
+
 }

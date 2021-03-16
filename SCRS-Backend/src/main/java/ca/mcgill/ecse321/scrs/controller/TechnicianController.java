@@ -2,16 +2,36 @@ package ca.mcgill.ecse321.scrs.controller;
 
 import ca.mcgill.ecse321.scrs.dto.CustomerDto;
 import ca.mcgill.ecse321.scrs.dto.TechnicianDto;
+<<<<<<< Updated upstream
 import ca.mcgill.ecse321.scrs.model.Customer;
 import ca.mcgill.ecse321.scrs.model.Technician;
 import ca.mcgill.ecse321.scrs.service.SCRSUserService;
+=======
+import ca.mcgill.ecse321.scrs.dto.TimeslotDto;
+import ca.mcgill.ecse321.scrs.model.Appointment;
+import ca.mcgill.ecse321.scrs.model.Technician;
+import ca.mcgill.ecse321.scrs.model.Timeslot;
+import ca.mcgill.ecse321.scrs.model.Workspace;
+>>>>>>> Stashed changes
 import ca.mcgill.ecse321.scrs.service.TechnicianService;
+import ca.mcgill.ecse321.scrs.service.TimeslotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+<<<<<<< Updated upstream
 
 import static ca.mcgill.ecse321.scrs.controller.Helper.*;
+=======
+
+import java.sql.Date;
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
+
+import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDTO;
+import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDto;
+>>>>>>> Stashed changes
 
 @RestController
 @RequestMapping(path = "/api/technician")
@@ -21,6 +41,9 @@ public class TechnicianController
     TechnicianService technicianService;
     @Autowired
     SCRSUserService scrsUserService;
+
+    @Autowired
+    TimeslotService timeslotService;
 
     @PostMapping(value = {"/create", "/create/"})
     public ResponseEntity<TechnicianDto> createTechnician(@RequestBody Technician technician, @CookieValue(value = "id", defaultValue = "-1") String ID)
@@ -87,4 +110,17 @@ public class TechnicianController
         }
         return new ResponseEntity<TechnicianDto>(convertToDTO(technicianService.deleteTechnician(technician)), HttpStatus.OK);
     }
+
+    //List<TimeslotDto> convertToDto
+
+    @GetMapping("/viewtechnicianschedule/{id}")
+    public ResponseEntity<ArrayList<TimeslotDto>> getAll(@PathVariable("id") String id) {
+        int ID = Integer.parseInt(id);
+        Technician technician=technicianService.getTechnicianById(ID);
+        List<TimeslotDto> timeslots=Helper.convertToDto((timeslotService.getTimeslotsByTechnician(technician)));
+
+        return new ResponseEntity<ArrayList<TimeslotDto>>(new ArrayList<>(timeslots), HttpStatus.OK);
+    }
+
+
 }
