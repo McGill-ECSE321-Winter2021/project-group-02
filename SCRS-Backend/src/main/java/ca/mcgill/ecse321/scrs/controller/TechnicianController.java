@@ -1,37 +1,20 @@
 package ca.mcgill.ecse321.scrs.controller;
 
-import ca.mcgill.ecse321.scrs.dto.CustomerDto;
 import ca.mcgill.ecse321.scrs.dto.TechnicianDto;
-<<<<<<< Updated upstream
-import ca.mcgill.ecse321.scrs.model.Customer;
+import ca.mcgill.ecse321.scrs.dto.TimeslotDto;
 import ca.mcgill.ecse321.scrs.model.Technician;
 import ca.mcgill.ecse321.scrs.service.SCRSUserService;
-=======
-import ca.mcgill.ecse321.scrs.dto.TimeslotDto;
-import ca.mcgill.ecse321.scrs.model.Appointment;
-import ca.mcgill.ecse321.scrs.model.Technician;
-import ca.mcgill.ecse321.scrs.model.Timeslot;
-import ca.mcgill.ecse321.scrs.model.Workspace;
->>>>>>> Stashed changes
 import ca.mcgill.ecse321.scrs.service.TechnicianService;
 import ca.mcgill.ecse321.scrs.service.TimeslotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-<<<<<<< Updated upstream
 
-import static ca.mcgill.ecse321.scrs.controller.Helper.*;
-=======
-
-import java.sql.Date;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDTO;
-import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDto;
->>>>>>> Stashed changes
+import static ca.mcgill.ecse321.scrs.controller.Helper.*;
 
 @RestController
 @RequestMapping(path = "/api/technician")
@@ -61,7 +44,7 @@ public class TechnicianController
         {
             throw new IllegalArgumentException("You do not have permission to create a technician account.");
         }
-        if ( technicianService.getTechnicianByEmail(technician.getEmail()) != null)
+        if (technicianService.getTechnicianByEmail(technician.getEmail()) != null)
         {
             throw new IllegalArgumentException("Email already in use, please try a different email address.");
         }
@@ -114,11 +97,24 @@ public class TechnicianController
     //List<TimeslotDto> convertToDto
 
     @GetMapping("/viewtechnicianschedule/{id}")
-    public ResponseEntity<ArrayList<TimeslotDto>> getAll(@PathVariable("id") String id) {
-        int ID = Integer.parseInt(id);
-        Technician technician=technicianService.getTechnicianById(ID);
-        List<TimeslotDto> timeslots=Helper.convertToDto((timeslotService.getTimeslotsByTechnician(technician)));
-
+    public ResponseEntity<ArrayList<TimeslotDto>> getAll(@PathVariable("id") String technicianId, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    {
+        int id = Integer.parseInt(ID);
+        int technicianID = Integer.parseInt(technicianId);
+        if (id == -1)
+        {
+            throw new IllegalArgumentException("Please login to view the technician schedule.");
+        }
+        Technician technician = technicianService.getTechnicianById(technicianID);
+        if (technician == null)
+        {
+            throw new IllegalArgumentException("Invalid technician. Please submit a valid technician account to view the schedule.");
+        }
+        if (!isAdmin(scrsUserService.getSCRSUserByID(id)) && id != technicianID) //does not have permission to view.
+        {
+            throw new IllegalArgumentException("You cannot view a technician's schedule other than your own.");
+        }
+        List<TimeslotDto> timeslots = Helper.convertToDto((timeslotService.getTimeslotsByTechnician(technician)));
         return new ResponseEntity<ArrayList<TimeslotDto>>(new ArrayList<>(timeslots), HttpStatus.OK);
     }
 

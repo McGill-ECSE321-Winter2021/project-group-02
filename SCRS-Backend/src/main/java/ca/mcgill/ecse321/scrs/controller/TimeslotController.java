@@ -6,16 +6,21 @@ import ca.mcgill.ecse321.scrs.dto.TimeslotDto;
 import ca.mcgill.ecse321.scrs.model.Appointment.AppointmentType;
 import ca.mcgill.ecse321.scrs.model.Technician;
 import ca.mcgill.ecse321.scrs.model.Timeslot;
+import ca.mcgill.ecse321.scrs.model.Workspace;
+import ca.mcgill.ecse321.scrs.service.SCRSUserService;
 import ca.mcgill.ecse321.scrs.service.TimeslotService;
+import ca.mcgill.ecse321.scrs.service.WorkspaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ca.mcgill.ecse321.scrs.controller.Helper.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDTO;
+import static ca.mcgill.ecse321.scrs.controller.Helper.isAdmin;
 
 @RestController
 @RequestMapping(path = "/api/timeslot")
@@ -33,14 +38,18 @@ public class TimeslotController
     }
 
     @PostMapping(value = {"/assignTechTimeslot", "/assignTechTimeslot/"})
-    public ResponseEntity<TechnicianDto> assignTechnicianToTimeslot(@RequestBody Technician technician, @RequestBody Timeslot timeslot) {
+    public ResponseEntity<TechnicianDto> assignTechnicianToTimeslot(@RequestBody Technician technician, @RequestBody Timeslot timeslot)
+    {
         if (technician == null) throw new IllegalArgumentException("Invalid technician");
         if (timeslot == null) throw new IllegalArgumentException("Invalid timeslot");
 
-        if (timeslot.getTechnicians().contains(timeslot)) throw new IllegalArgumentException("Technician already assigned to timeslot");
+        if (timeslot.getTechnicians().contains(timeslot))
+            throw new IllegalArgumentException("Technician already assigned to timeslot");
 
         timeslotService.assignTechnicianToTimeslot(technician, timeslot);
 
         return new ResponseEntity<>(convertToDTO(technician), HttpStatus.OK);
     }
+
+
 }
