@@ -2,7 +2,6 @@ package ca.mcgill.ecse321.scrs.service;
 
 import ca.mcgill.ecse321.scrs.dao.AppointmentRepository;
 import ca.mcgill.ecse321.scrs.dao.TimeslotRepository;
-import ca.mcgill.ecse321.scrs.model.Appointment;
 import ca.mcgill.ecse321.scrs.model.Technician;
 import ca.mcgill.ecse321.scrs.model.Timeslot;
 import org.springframework.beans.factory.annotation.Autowired;
