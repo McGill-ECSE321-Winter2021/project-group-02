@@ -23,8 +23,13 @@ public class TechnicianController
     SCRSUserService scrsUserService;
 
     @PostMapping(value = {"/create", "/create/"})
-    public ResponseEntity<TechnicianDto> createTechnician(@RequestBody Technician technician, @CookieValue(value = "id") int id)
+    public ResponseEntity<TechnicianDto> createTechnician(@RequestBody Technician technician, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
+        int id = Integer.parseInt(ID);
+        if (id == -1)
+        {
+            throw new IllegalArgumentException("Please login to create a technician account.");
+        }
         if (technician == null)
         {
             throw new IllegalArgumentException("Invalid technician. Please submit a valid technician account to be created.");
@@ -41,8 +46,13 @@ public class TechnicianController
     }
 
     @PutMapping(value = {"/update", "/update/"})
-    public ResponseEntity<TechnicianDto> updateAssistant(@RequestBody Technician technician, @CookieValue(value = "id") int id)
+    public ResponseEntity<TechnicianDto> updateAssistant(@RequestBody Technician technician, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
+        int id = Integer.parseInt(ID);
+        if (id == -1)
+        {
+            throw new IllegalArgumentException("Please login to modify a technician account.");
+        }
         if (technician == null)
         {
             throw new IllegalArgumentException("Invalid technician.");
@@ -59,8 +69,13 @@ public class TechnicianController
     }
 
     @DeleteMapping(value = {"/delete", "/delete/"})
-    public ResponseEntity<TechnicianDto> deleteTechnician(@RequestParam(value = "id") int technicianID, @CookieValue(value = "id") int id)
+    public ResponseEntity<TechnicianDto> deleteTechnician(@RequestParam(value = "id") int technicianID, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
+        int id = Integer.parseInt(ID);
+        if (id == -1)
+        {
+            throw new IllegalArgumentException("Please login to delete a technician account.");
+        }
         Technician technician = technicianService.getTechnicianByID(technicianID);
         if (technician == null)
         {

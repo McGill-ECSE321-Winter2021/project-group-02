@@ -35,8 +35,13 @@ public class CustomerController
     }
 
     @PutMapping(value = {"/update", "/update/"})
-    public ResponseEntity<CustomerDto> updateCustomer(@RequestBody Customer customer, @CookieValue(value = "id") int id)
+    public ResponseEntity<CustomerDto> updateCustomer(@RequestBody Customer customer, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
+        int id = Integer.parseInt(ID);
+        if (id == -1)
+        {
+            throw new IllegalArgumentException("Please login to modify a customer account.");
+        }
         if (customer == null)
         {
             throw new IllegalArgumentException("Invalid customer.");
@@ -53,8 +58,13 @@ public class CustomerController
     }
 
     @DeleteMapping(value = {"/delete", "/delete/"})
-    public ResponseEntity<CustomerDto> deleteCustomer(@RequestParam(value = "id") int customerID, @CookieValue(value = "id") int id)
+    public ResponseEntity<CustomerDto> deleteCustomer(@RequestParam(value = "id") int customerID, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
+        int id = Integer.parseInt(ID);
+        if (id == -1)
+        {
+            throw new IllegalArgumentException("Please login to delete a customer account.");
+        }
         Customer customer = customerService.getCustomerByID(customerID);
         if (customer == null)
         {

@@ -23,8 +23,13 @@ public class WorkspaceController
     SCRSUserService scrsUserService;
 
     @PostMapping(value = {"/create", "/create/"})
-    public ResponseEntity<WorkspaceDto> createWorkspace(@RequestParam(value = "name") String workspaceName, @CookieValue(value = "id") int id)
+    public ResponseEntity<WorkspaceDto> createWorkspace(@RequestParam(value = "name") String workspaceName, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
+        int id = Integer.parseInt(ID);
+        if (id == -1)
+        {
+            throw new IllegalArgumentException("Please login to add a workspace.");
+        }
         if (!isAdmin(scrsUserService.getSCRSUserByID(id))) //does not have permission to edit.
         {
             throw new IllegalArgumentException("You do not have permission to create a workspace.");
@@ -37,8 +42,13 @@ public class WorkspaceController
     }
 
     @DeleteMapping(value = {"/delete", "/delete/"})
-    public ResponseEntity<WorkspaceDto> deleteWorkspace(@RequestParam(value = "id") int workspaceId, @CookieValue(value = "id") int id)
+    public ResponseEntity<WorkspaceDto> deleteWorkspace(@RequestParam(value = "id") int workspaceId, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
+        int id = Integer.parseInt(ID);
+        if (id == -1)
+        {
+            throw new IllegalArgumentException("Please login to delete a workspace.");
+        }
         Workspace workspace = workspaceService.getWorkspaceById(workspaceId);
         if (workspace == null)
         {

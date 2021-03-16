@@ -35,8 +35,13 @@ public class AssistantController
     }
 
     @PutMapping(value = {"/update", "/update/"})
-    public ResponseEntity<AssistantDto> updateAssistant(@RequestBody Assistant assistant, @CookieValue(value = "id") int id)
+    public ResponseEntity<AssistantDto> updateAssistant(@RequestBody Assistant assistant, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
+        int id = Integer.parseInt(ID);
+        if (id == -1)
+        {
+            throw new IllegalArgumentException("Please login to modify an assistant account.");
+        }
         if (assistant == null)
         {
             throw new IllegalArgumentException("Invalid assistant");
@@ -53,8 +58,13 @@ public class AssistantController
     }
 
     @DeleteMapping(value = {"/delete", "/delete/"})
-    public ResponseEntity<AssistantDto> deleteAssistant(@RequestParam(value = "id") int assistantID, @CookieValue(value = "id") int id)
+    public ResponseEntity<AssistantDto> deleteAssistant(@RequestParam(value = "id") int assistantID, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
+        int id = Integer.parseInt(ID);
+        if (id == -1)
+        {
+            throw new IllegalArgumentException("Please login to delete an assistant account.");
+        }
         Assistant assistant = assistantService.getAssistantByID(assistantID);
         if (assistant == null)
         {
