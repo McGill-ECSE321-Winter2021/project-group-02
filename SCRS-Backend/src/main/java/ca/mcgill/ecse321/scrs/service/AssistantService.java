@@ -14,10 +14,11 @@ import static ca.mcgill.ecse321.scrs.service.ServiceHelpers.toList;
 public class AssistantService
 {
     @Autowired
-    public AssistantRepository assistantRepository;
+    AssistantRepository assistantRepository;
 
     @Transactional
-    public Assistant createAssistant(String email, String name, String password, String phone) {
+    public Assistant createAssistant(String email, String name, String password, String phone)
+    {
         Assistant assistant = new Assistant();
         assistant.setEmail(email);
         assistant.setName(name);
@@ -28,22 +29,39 @@ public class AssistantService
     }
 
     @Transactional
-    public List<Assistant> getAllAssistants() {
+    public Assistant getAssistantByID(int id)
+    {
+        return assistantRepository.findByScrsUserId(id);
+    }
+
+    @Transactional
+    public List<Assistant> getAllAssistants()
+    {
         return toList(assistantRepository.findAll());
     }
 
     @Transactional
-    public Assistant getAssistantByEmail(String email) {
+    public Assistant getAssistantByEmail(String email)
+    {
         return assistantRepository.findByEmail(email);
     }
 
     @Transactional
-    public Assistant getAssistantByName(String name) {
+    public Assistant getAssistantByName(String name)
+    {
         return assistantRepository.findByName(name);
     }
 
     @Transactional
-    public Assistant getAssistantByPhone(String phone) {
+    public Assistant getAssistantByPhone(String phone)
+    {
         return assistantRepository.findByPhone(phone);
+    }
+
+    @Transactional
+    public Assistant updateAssistantInfo(Assistant assistant)
+    {
+        assistantRepository.save(assistant);
+        return assistant;
     }
 }

@@ -56,4 +56,21 @@ public class AppointmentController
         appointment.setPaid(true);
         return new ResponseEntity<AppointmentDto>(convertToDto(appointment), HttpStatus.OK);
     }
+    
+    @PutMapping(value = {"/rate-appointment", "/rate-appointment/"})
+    public ResponseEntity<AppointmentDto> rateAppointment(@RequestParam(name = "appointmentId") int appointmentId, @RequestParam(name = "rating") int rating) {
+        if (rating > 10 || rating < 0) throw new IllegalArgumentException("Invalid rating");
+
+        Appointment appointment = appointmentService.rateAppointment(appointmentId, rating);
+        return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
+    }
+
+    @PutMapping(value = {"/modifyAppointment", "/modifyAppointment/"})
+    public ResponseEntity<AppointmentDto> modifyAppointment(@RequestBody Appointment appt) {
+        if (appt == null) throw new IllegalArgumentException("Invalid appointment");
+
+        appointmentService.modifyAppointment(appt);
+        return new ResponseEntity<>(convertToDto(appt), HttpStatus.OK);
+    }
+
 }

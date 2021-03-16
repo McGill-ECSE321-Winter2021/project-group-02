@@ -1,7 +1,10 @@
 package ca.mcgill.ecse321.scrs.controller;
 
 
+import ca.mcgill.ecse321.scrs.dto.TechnicianDto;
 import ca.mcgill.ecse321.scrs.dto.TimeslotDto;
+import ca.mcgill.ecse321.scrs.model.Appointment.AppointmentType;
+import ca.mcgill.ecse321.scrs.model.Technician;
 import ca.mcgill.ecse321.scrs.model.Timeslot;
 import ca.mcgill.ecse321.scrs.service.TimeslotService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Date;
 import java.util.List;
+
+import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDTO;
 
 @RestController
 @RequestMapping(path = "/api/timeslot")
@@ -31,10 +36,21 @@ public class TimeslotController
     }
 
     @GetMapping(value = {"/getAvailableTimeslot", "/getAvailableTimeslot/"})
-    public ResponseEntity<List<TimeslotDto>> getServiceTimeslot(@RequestParam(name = "startDate") Date startDate, @RequestParam(name = "endDate") Date endDate)
+    public ResponseEntity<List<TimeslotDto>> getAvailableTimeslot(@RequestParam(name = "startDate") Date startDate, @RequestParam(name = "endDate") Date endDate)
     {
         List<Timeslot> availableTimeslots = timeslotService.getAvailableTimeslots(startDate, endDate);
         return new ResponseEntity<List<TimeslotDto>>(Helper.convertToDto(availableTimeslots), HttpStatus.OK);
     }
 
+    @PostMapping(value = {"/assignTechTimeslot", "/assignTechTimeslot/"})
+    public ResponseEntity<TechnicianDto> assignTechnicianToTimeslot(@RequestBody Technician technician, @RequestBody Timeslot timeslot) {
+        if (technician == null) throw new IllegalArgumentException("Invalid technician");
+        if (timeslot == null) throw new IllegalArgumentException("Invalid timeslot");
+
+        if (timeslot.getTechnicians().contains(timeslot)) throw new IllegalArgumentException("Technician already assigned to timeslot");
+
+        timeslotService.assignTechnicianToTimeslot(technician, timeslot);
+
+        return new ResponseEntity<>(convertToDTO(technician), HttpStatus.OK);
+    }
 }
