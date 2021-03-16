@@ -105,7 +105,7 @@ public class TechnicianController
         {
             throw new IllegalArgumentException("Please login to view the technician schedule.");
         }
-        Technician technician = technicianService.getTechnicianById(technicianID);
+        Technician technician = technicianService.getTechnicianByID(technicianID);
         if (technician == null)
         {
             throw new IllegalArgumentException("Invalid technician. Please submit a valid technician account to view the schedule.");

@@ -62,7 +62,6 @@ public class TechnicianService
     }
 
     @Transactional
-<<<<<<< Updated upstream
     public Technician updateTechnicianInfo(Technician technician)
     {
         technicianRepository.save(technician);
@@ -75,7 +74,4 @@ public class TechnicianService
         technicianRepository.delete(technician);
         return technician;
     }
-=======
-    public Technician getTechnicianById(int id){ return technicianRepository.findByScrsUserId(id);}
->>>>>>> Stashed changes
 }
