@@ -69,7 +69,7 @@ public class TestWorkspacePersistence {
 
         Workspace actualWorkspace = workspaceRepository.findByWorkspaceID(workspace.getWorkspaceID());
         assertNotNull(actualWorkspace);
-        assertEquals(workspace.getSpaceType(), actualWorkspace.getSpaceType());
+        assertEquals(workspace.getSpaceName(), actualWorkspace.getSpaceName());
         assertNotNull(actualWorkspace.getAvailabilities().get(0));
         assertEquals(workspace.getAvailabilities().get(0), actualWorkspace.getAvailabilities().get(0));
     }
