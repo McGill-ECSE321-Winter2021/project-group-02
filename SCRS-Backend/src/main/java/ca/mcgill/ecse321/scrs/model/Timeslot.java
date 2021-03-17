@@ -43,7 +43,7 @@ public class Timeslot
         }
     }
 
-    protected Timeslot()
+    public Timeslot()
     {
     }
 
