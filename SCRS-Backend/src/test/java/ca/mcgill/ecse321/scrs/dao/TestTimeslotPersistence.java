@@ -53,6 +53,7 @@ public class TestTimeslotPersistence
 
     /**
      * Attribute test of the Timeslot class.
+     *
      * @author Roey Borsteinas
      */
     @Test
@@ -86,6 +87,7 @@ public class TestTimeslotPersistence
 
     /**
      * Association test of the Timeslot class.
+     *
      * @author Roey Borsteinas
      */
     @Test
@@ -114,6 +116,7 @@ public class TestTimeslotPersistence
 
     /**
      * Association test of the Timeslot class.
+     *
      * @author Roey Borsteinas
      */
     @Test
@@ -173,6 +176,36 @@ public class TestTimeslotPersistence
         assertEquals(actualTimeslot.getWorkspace().getWorkspaceID(), ts1.getWorkspace().getWorkspaceID());
     }
 
+     *
+     * @author Simon Nakane Marcil
+     */
+    @Test
+    @Transactional
+    public void testPersistAndLoadTimeslotByStartDateGreaterThanEqualAndStartDateLessThanEqual()
+    {
+        SCRS scrs = new SCRS();
+        Workspace ws = new Workspace("test", scrs);
+        Date day = new Date(2000, 2, 21);
+        Date nextDay = new Date(2000, 2, 22);
+        Date nextMonth = new Date(2000, 3, 21);
+        Date previousDay = new Date(2000, 2, 20);
+        Timeslot ts1 = new Timeslot(day, new Date(LocalDate.now().toEpochDay()), new Time(0), new Time(LocalDate.now().toEpochDay()), ws);
+        Timeslot ts2 = new Timeslot(nextDay, new Date(LocalDate.now().toEpochDay()), new Time(0), new Time(LocalDate.now().toEpochDay()), ws);
+        Timeslot ts3 = new Timeslot(previousDay, new Date(LocalDate.now().toEpochDay()), new Time(0), new Time(LocalDate.now().toEpochDay()), ws);
+        Timeslot ts4 = new Timeslot(nextMonth, new Date(LocalDate.now().toEpochDay()), new Time(0), new Time(LocalDate.now().toEpochDay()), ws);
+        scrsRepository.save(scrs);
+        workspaceRepository.save(ws);
+        timeslotRepository.save(ts2);
+        timeslotRepository.save(ts3);
+        timeslotRepository.save(ts1);
+        timeslotRepository.save(ts4);
 
+        List<Timeslot> actualTimeslots = timeslotRepository.findAllByStartDateGreaterThanEqualAndStartDateLessThanEqualOrderByStartDate(day, nextDay);
 
+        assertEquals(2, actualTimeslots.size());
+        Timeslot actualTimeslot = actualTimeslots.get(0);
+
+        assertEquals(actualTimeslot.getTimeSlotID(), ts1.getTimeSlotID());
+        assertEquals(actualTimeslot.getStartTime(), ts1.getStartTime());
+    }
 }

@@ -3,7 +3,6 @@ package ca.mcgill.ecse321.scrs.controller;
 
 import ca.mcgill.ecse321.scrs.dto.TechnicianDto;
 import ca.mcgill.ecse321.scrs.dto.TimeslotDto;
-import ca.mcgill.ecse321.scrs.model.Appointment.AppointmentType;
 import ca.mcgill.ecse321.scrs.model.Technician;
 import ca.mcgill.ecse321.scrs.model.Timeslot;
 import ca.mcgill.ecse321.scrs.model.Workspace;
@@ -14,10 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ca.mcgill.ecse321.scrs.controller.Helper.*;
 
 import java.sql.Time;
 import java.util.ArrayList;
+import java.sql.Date;
 import java.util.List;
 
 import static ca.mcgill.ecse321.scrs.controller.Helper.*;
@@ -33,11 +32,19 @@ public class TimeslotController
     @Autowired
     SCRSUserService scrsUserService;
 
-    @GetMapping(value = {"/getServiceTimeslot", "/getServiceTimeslot/"})
-    public List<TimeslotDto> getServiceTimeslot(@RequestParam(name = "appointmentType") AppointmentType type)
+
+    @GetMapping(value = {"/getTimeslots", "/getTimeslots/"})
+    public ResponseEntity<List<TimeslotDto>> getTimeslots()
     {
-        // TODO find available timeslots based on selected appointment type
-        return null;
+        List<Timeslot> timeslots = timeslotService.getAllTimeslots();
+        return new ResponseEntity<List<TimeslotDto>>(Helper.convertToDto(timeslots), HttpStatus.OK);
+    }
+
+    @GetMapping(value = {"/getAvailableTimeslot", "/getAvailableTimeslot/"})
+    public ResponseEntity<List<TimeslotDto>> getAvailableTimeslot(@RequestParam(name = "startDate") Date startDate, @RequestParam(name = "endDate") Date endDate)
+    {
+        List<Timeslot> availableTimeslots = timeslotService.getAvailableTimeslots(startDate, endDate);
+        return new ResponseEntity<List<TimeslotDto>>(Helper.convertToDto(availableTimeslots), HttpStatus.OK);
     }
 
     @PostMapping(value = {"/assignTechTimeslot", "/assignTechTimeslot/"})
