@@ -1,5 +1,6 @@
 package ca.mcgill.ecse321.scrs.controller;
 
+import ca.mcgill.ecse321.scrs.dao.CustomerRepository;
 import ca.mcgill.ecse321.scrs.dto.AppointmentDto;
 import ca.mcgill.ecse321.scrs.model.Appointment;
 import ca.mcgill.ecse321.scrs.model.Timeslot;
@@ -10,7 +11,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDto;
 
@@ -20,26 +25,57 @@ public class AppointmentController
 {
     @Autowired
     AppointmentService appointmentService;
+    @Autowired
+    private CustomerRepository customerRepository;
 
-    @GetMapping("/getall/{id}")
-    public ResponseEntity<ArrayList<Appointment>> getAll(@PathVariable("id") String id)
-    {
-        int ID = Integer.valueOf(id);
-        return new ResponseEntity<>(new ArrayList<Appointment>(), HttpStatus.OK);
+    @GetMapping("/getall")
+    public ResponseEntity<List<AppointmentDto>> getAllAppointments(@CookieValue(value = "id", defaultValue = "-1") String id) {
+        if(id.equals("-1") || id == null)return new ResponseEntity<>(null, HttpStatus.OK);
+        int ID = Integer.parseInt(id);
+
+        List<Appointment> list = appointmentService.getAppointmentsByCustomer(customerRepository.findByScrsUserId(ID));
+        List<AppointmentDto> dtoList = new ArrayList<>();
+
+        for(int i = 0 ; i < list.size() ; i++){
+            dtoList.add(convertToDto(list.get(i)));
+        }
+
+        return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
 
-    @GetMapping("/notifications/{id}")
-    public ResponseEntity<ArrayList<Appointment>> notifications(@PathVariable("id") String id)
-    {
-        int ID = Integer.valueOf(id);
-        return new ResponseEntity<>(new ArrayList<Appointment>(), HttpStatus.OK);
+    @GetMapping("/notifications")
+    public ResponseEntity<List<AppointmentDto>> notifications(@CookieValue(value = "id", defaultValue = "-1") String id) {
+        if(id.equals("-1") || id == null)return new ResponseEntity<>(null, HttpStatus.OK);
+        int ID = Integer.parseInt(id);
+
+        List<Appointment> list = appointmentService.getAppointmentsByCustomer(customerRepository.findByScrsUserId(ID));
+
+        //finding the same date next week
+        Date now = new Date(LocalDate.now().toEpochDay());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        calendar.add(Calendar.DATE, 7);
+        Date nextWeek = new Date(calendar.getTimeInMillis());
+
+        List<AppointmentDto> notificationList = new ArrayList<>();
+        for(int i = 0 ; i < list.size() ; i++){
+            List<Timeslot> timeslots = list.get(i).getTimeslots();
+            AppointmentDto appointmentDto = convertToDto(list.get(i));
+            for(int j = 0 ; j < timeslots.size() ; j++){
+                if(timeslots.get(j).getStartDate().compareTo(now) < 0 && timeslots.get(j).getStartDate().compareTo(nextWeek) > 0){
+                    appointmentDto.getTimeslots().remove(j);
+                }
+            }
+            if(!appointmentDto.getTimeslots().isEmpty()) notificationList.add(appointmentDto);
+        }
+
+        return new ResponseEntity<>(notificationList, HttpStatus.OK);
     }
 
-    @PostMapping(value = {"/book", "/book/"})
-    public ResponseEntity<AppointmentDto> bookAppointment(@RequestBody Appointment appointment)
-    {
-        if (appointment == null)
-        {
+    @PostMapping(value = { "/book", "/book/" })
+    public ResponseEntity<AppointmentDto> bookAppointment(@RequestBody Appointment appointment) {
+        if (appointment == null) {
+
             throw new IllegalArgumentException(
                     "Invalid appointment. Please submit a valid appointment booking to be created.");
         }
@@ -49,12 +85,12 @@ public class AppointmentController
         return new ResponseEntity<AppointmentDto>(convertToDto(a), HttpStatus.OK);
     }
 
-    @PutMapping(value = {"/pay", "/pay/"})
-    public ResponseEntity<AppointmentDto> payAppointment(@RequestParam(name = "appointmentId") int appointmentId)
-    {
+    @PutMapping(value = { "/pay", "/pay/" })
+    public ResponseEntity<AppointmentDto> payAppointment(@RequestParam(name = "appointmentId") int appointmentId) {
         Appointment appointment = appointmentService.getAppointmentById(appointmentId);
         appointment.setPaid(true);
-        return new ResponseEntity<AppointmentDto>(convertToDto(appointment), HttpStatus.OK);
+        return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
+
     }
     
     @PutMapping(value = {"/rate-appointment", "/rate-appointment/"})
