@@ -45,7 +45,7 @@ public class AppointmentController {
     }
 
     @PostMapping(value = { "/book", "/book/" })
-    public AppointmentDto bookAppointment(@RequestBody Appointment appointment) {
+    public ResponseEntity<AppointmentDto> bookAppointment(@RequestBody Appointment appointment) {
         if (appointment == null) {
             throw new IllegalArgumentException(
                     "Invalid appointment. Please submit a valid appointment booking to be created.");
@@ -53,14 +53,14 @@ public class AppointmentController {
         Appointment a = appointmentService.createAppointment(appointment.getAppointmentType(), appointment.getService(),
                 appointment.getNote(), appointment.getPaid(), appointment.getCustomer(),
                 appointment.getTimeslots().toArray(new Timeslot[0]));
-        return convertToDto(a);
+        return new ResponseEntity<AppointmentDto>(convertToDto(a), HttpStatus.OK);
     }
 
     @PutMapping(value = { "/pay", "/pay/" })
-    public AppointmentDto payAppointment(@RequestParam(name = "appointmentId") int appointmentId) {
+    public ResponseEntity<AppointmentDto> payAppointment(@RequestParam(name = "appointmentId") int appointmentId) {
         Appointment appointment = appointmentService.getAppointmentById(appointmentId);
         appointment.setPaid(true);
-        return convertToDto(appointment);
+        return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
     }
     
     @PutMapping(value = {"/rate-appointment", "/rate-appointment/"})

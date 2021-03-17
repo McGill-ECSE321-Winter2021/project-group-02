@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const testingAccounts = async () => {
+const testLogin = async () => {
   const backend_address = "http://localhost:8080";
   let scoreCounter = 0;
   const numberOfTests = 9;
@@ -233,4 +233,4 @@ const testingAccounts = async () => {
   console.log("");
 };
 
-export default testingAccounts;
+export default testLogin;
