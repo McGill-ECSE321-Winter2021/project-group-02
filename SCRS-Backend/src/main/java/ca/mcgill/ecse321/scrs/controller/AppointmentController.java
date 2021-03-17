@@ -21,14 +21,15 @@ import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDto;
 
 @RestController
 @RequestMapping(path = "/api/appointment", produces = MediaType.APPLICATION_JSON_VALUE)
-public class AppointmentController {
+public class AppointmentController
+{
     @Autowired
     AppointmentService appointmentService;
     @Autowired
     private CustomerRepository customerRepository;
 
     @GetMapping("/getall")
-    public ResponseEntity<List<AppointmentDto>> getAll(@CookieValue(value = "id", defaultValue = "-1") String id) {
+    public ResponseEntity<List<AppointmentDto>> getAllAppointments(@CookieValue(value = "id", defaultValue = "-1") String id) {
         if(id.equals("-1") || id == null)return new ResponseEntity<>(null, HttpStatus.OK);
         int ID = Integer.parseInt(id);
 
@@ -74,6 +75,7 @@ public class AppointmentController {
     @PostMapping(value = { "/book", "/book/" })
     public ResponseEntity<AppointmentDto> bookAppointment(@RequestBody Appointment appointment) {
         if (appointment == null) {
+
             throw new IllegalArgumentException(
                     "Invalid appointment. Please submit a valid appointment booking to be created.");
         }
@@ -88,6 +90,7 @@ public class AppointmentController {
         Appointment appointment = appointmentService.getAppointmentById(appointmentId);
         appointment.setPaid(true);
         return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
+
     }
     
     @PutMapping(value = {"/rate-appointment", "/rate-appointment/"})

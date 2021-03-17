@@ -66,4 +66,10 @@ public class CustomerService {
         customerRepository.save(customer);
         return customer;
     }
+
+    @Transactional
+    public Customer deleteCustomer(Customer customer) {
+        customerRepository.delete(customer);
+        return customer;
+    }
 }

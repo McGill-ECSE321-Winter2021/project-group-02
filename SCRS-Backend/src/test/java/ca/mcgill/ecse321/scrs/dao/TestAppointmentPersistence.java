@@ -53,6 +53,7 @@ public class TestAppointmentPersistence
 
     /**
      * Appointment class ID test
+     *
      * @author Alix R-L
      */
     @Test
@@ -92,6 +93,7 @@ public class TestAppointmentPersistence
 
     /**
      * Association test of the Appointment class
+     *
      * @author Alix R-L
      */
     @Test
@@ -107,15 +109,17 @@ public class TestAppointmentPersistence
         scrsRepository.save(system);
         customerRepository.save(customer);
         workspaceRepository.save(workspace);
-        for(int i = 0 ; i < 5 ; i++){
+        for (int i = 0; i < 5; i++)
+        {
             Timeslot timeslot = new Timeslot(new Date(LocalDate.now().toEpochDay()), new Date(LocalDate.now().toEpochDay()), new Time(3333), new Time(6666), workspace);
-            Appointment appointment = new Appointment(Appointment.AppointmentType.CarWash, "beep", "shrimp was good",90, "boop", false, customer, system, timeslot );
+            Appointment appointment = new Appointment(Appointment.AppointmentType.CarWash, "beep", "shrimp was good", 90, "boop", false, customer, system, timeslot);
             timeslotRepository.save(timeslot);
             appointmentRepository.save(appointment);
         }
-        for(int i = 0 ; i < 3 ; i++){
+        for (int i = 0; i < 3; i++)
+        {
             Timeslot timeslot = new Timeslot(new Date(LocalDate.now().toEpochDay()), new Date(LocalDate.now().toEpochDay()), new Time(3333), new Time(6666), workspace);
-            Appointment differentAppointment = new Appointment(Appointment.AppointmentType.Checkup, "beep", "shrimp was good",90, "boop", false, customer, system, timeslot );
+            Appointment differentAppointment = new Appointment(Appointment.AppointmentType.Checkup, "beep", "shrimp was good", 90, "boop", false, customer, system, timeslot);
             timeslotRepository.save(timeslot);
             appointmentRepository.save(differentAppointment);
         }
@@ -128,6 +132,7 @@ public class TestAppointmentPersistence
 
     /**
      * Attribute test of the Appointment class
+     *
      * @author Alix R-L
      */
     @Test
@@ -143,15 +148,17 @@ public class TestAppointmentPersistence
         scrsRepository.save(system);
         customerRepository.save(customer);
         workspaceRepository.save(workspace);
-        for(int i = 0 ; i < 5 ; i++){
+        for (int i = 0; i < 5; i++)
+        {
             Timeslot timeslot = new Timeslot(new Date(LocalDate.now().toEpochDay()), new Date(LocalDate.now().toEpochDay()), new Time(3333), new Time(6666), workspace);
-            Appointment appointment = new Appointment(Appointment.AppointmentType.CarWash, "beep", "shrimp was good",90, "boop", true, customer, system, timeslot );
+            Appointment appointment = new Appointment(Appointment.AppointmentType.CarWash, "beep", "shrimp was good", 90, "boop", true, customer, system, timeslot);
             timeslotRepository.save(timeslot);
             appointmentRepository.save(appointment);
         }
-        for(int i = 0 ; i < 3 ; i++){
+        for (int i = 0; i < 3; i++)
+        {
             Timeslot timeslot = new Timeslot(new Date(LocalDate.now().toEpochDay()), new Date(LocalDate.now().toEpochDay()), new Time(3333), new Time(6666), workspace);
-            Appointment differentAppointment = new Appointment(Appointment.AppointmentType.CarWash, "beep", "shrimp was good",90, "boop", false, customer, system, timeslot );
+            Appointment differentAppointment = new Appointment(Appointment.AppointmentType.CarWash, "beep", "shrimp was good", 90, "boop", false, customer, system, timeslot);
             timeslotRepository.save(timeslot);
             appointmentRepository.save(differentAppointment);
         }
@@ -164,6 +171,7 @@ public class TestAppointmentPersistence
 
     /**
      * Association test of the Appointment class
+     *
      * @author Alix R-L
      */
     @Test
@@ -179,15 +187,17 @@ public class TestAppointmentPersistence
         scrsRepository.save(system);
         customerRepository.save(customer);
         workspaceRepository.save(workspace);
-        for(int i = 0 ; i < 5 ; i++){
+        for (int i = 0; i < 5; i++)
+        {
             Timeslot timeslot = new Timeslot(new Date(LocalDate.now().toEpochDay()), new Date(LocalDate.now().toEpochDay()), new Time(3333), new Time(6666), workspace);
-            Appointment appointment = new Appointment(Appointment.AppointmentType.CarWash, "beep", "shrimp was good",90, "boop", true, customer, system, timeslot );
+            Appointment appointment = new Appointment(Appointment.AppointmentType.CarWash, "beep", "shrimp was good", 90, "boop", true, customer, system, timeslot);
             timeslotRepository.save(timeslot);
             appointmentRepository.save(appointment);
         }
-        for(int i = 0 ; i < 3 ; i++){
+        for (int i = 0; i < 3; i++)
+        {
             Timeslot timeslot = new Timeslot(new Date(LocalDate.now().toEpochDay()), new Date(LocalDate.now().toEpochDay()), new Time(3333), new Time(6666), workspace);
-            Appointment differentAppointment = new Appointment(Appointment.AppointmentType.CarWash, "beep", "shrimp was good",90, "boop", false, customer, system, timeslot );
+            Appointment differentAppointment = new Appointment(Appointment.AppointmentType.CarWash, "beep", "shrimp was good", 90, "boop", false, customer, system, timeslot);
             timeslotRepository.save(timeslot);
             appointmentRepository.save(differentAppointment);
         }
@@ -196,5 +206,31 @@ public class TestAppointmentPersistence
         List<Appointment> appointment1 = appointmentRepository.findAppointmentsByCustomer(customer);
         assertNotNull(appointment1);
         assertEquals(appointment1.size(), 8);
+    }
+
+    /**
+     * Association test of the Appointment class
+     *
+     * @author Simon Nakane Marcil
+     */
+    @Test
+    @Transactional
+    public void testPersistAndExistsAppointmentByTimeslots()
+    {
+        SCRS system = new SCRS();
+        Customer customer = new Customer("Rick Roll", "You just got Rick Rolled", "Ha Gottem@gmail.com", "(666) 666-6666", system);
+        Workspace workspace = new Workspace("mom get out of my room I'm playing Minecraft", system);
+        Timeslot timeslot = new Timeslot(new Date(0), new Date(LocalDate.now().toEpochDay()), new Time(0), new Time(LocalDate.now().toEpochDay()), workspace);
+
+        scrsRepository.save(system);
+        customerRepository.save(customer);
+        workspaceRepository.save(workspace);
+        timeslotRepository.save(timeslot);
+
+        assertEquals(false, appointmentRepository.existsByTimeslots(timeslot));
+
+        Appointment appointment = new Appointment(Appointment.AppointmentType.CarWash, "beep", "shrimp was good", 90, "boop", false, customer, system, timeslot);
+        appointmentRepository.save(appointment);
+        assertEquals(true, appointmentRepository.existsByTimeslots(timeslot));
     }
 }
