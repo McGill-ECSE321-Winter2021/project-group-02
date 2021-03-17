@@ -1,16 +1,19 @@
 package ca.mcgill.ecse321.scrs.controller;
 
-import ca.mcgill.ecse321.scrs.dao.AssistantRepository;
-import ca.mcgill.ecse321.scrs.dao.CustomerRepository;
-import ca.mcgill.ecse321.scrs.dao.TechnicianRepository;
 import ca.mcgill.ecse321.scrs.model.Assistant;
 import ca.mcgill.ecse321.scrs.model.Customer;
 import ca.mcgill.ecse321.scrs.model.Technician;
+import ca.mcgill.ecse321.scrs.service.AssistantService;
+import ca.mcgill.ecse321.scrs.service.CustomerService;
+import ca.mcgill.ecse321.scrs.service.TechnicianService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -21,26 +24,29 @@ public class LoginController
 {
 
     @Autowired
-    private CustomerRepository customerRepository;
+    private CustomerService customerService;
     @Autowired
-    private AssistantRepository assistantRepository;
+    private AssistantService assistantService;
     @Autowired
-    private TechnicianRepository technicianRepository;
+    private TechnicianService technicianService;
 
     @PostMapping (value = {"/customer", "/customer/"})
     public ResponseEntity<Boolean> loginCustomer(@RequestParam("email") String email, @RequestParam("password") String password, HttpServletResponse response) {
 
         String hashedPassword = Helper.hash(password);
 
-        Customer customer = customerRepository.findByEmail(email);
+        Customer customer = customerService.getCustomerByEmail(email);
 
-        if(customer == null || !customer.getPassword().equals(hashedPassword)) return new ResponseEntity<Boolean>(false, HttpStatus.OK);
+        if(customer == null || !customer.getPassword().equals(hashedPassword))
+        {
+            return new ResponseEntity<>(false, HttpStatus.OK);
+        }
 
         String id = ((Integer)customer.getScrsUserId()).toString();
         Cookie cookie = new Cookie("id", id);
         response.addCookie(cookie);
 
-        return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
     @PostMapping (value = {"/assistant", "/assistant/"})
@@ -48,15 +54,18 @@ public class LoginController
 
         String hashedPassword = Helper.hash(password);
 
-        Assistant assistant = assistantRepository.findByEmail(email);
+        Assistant assistant = assistantService.getAssistantByEmail(email);
 
-        if(assistant == null || !assistant.getPassword().equals(hashedPassword)) return new ResponseEntity<Boolean>(false, HttpStatus.OK);
+        if(assistant == null || !assistant.getPassword().equals(hashedPassword))
+        {
+            return new ResponseEntity<>(false, HttpStatus.OK);
+        }
 
         String id = ((Integer)assistant.getScrsUserId()).toString();
         Cookie cookie = new Cookie("id", id);
         response.addCookie(cookie);
 
-        return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
     @PostMapping (value = {"/technician", "/technician/"})
@@ -64,25 +73,27 @@ public class LoginController
 
         String hashedPassword = Helper.hash(password);
 
-        Technician technician = technicianRepository.findByEmail(email);
+        Technician technician = technicianService.getTechnicianByEmail(email);
 
-        if(technician == null || !technician.getPassword().equals(hashedPassword)) return new ResponseEntity<Boolean>(false, HttpStatus.OK);
+        if(technician == null || !technician.getPassword().equals(hashedPassword))
+        {
+            return new ResponseEntity<>(false, HttpStatus.OK);
+        }
 
         String id = ((Integer)technician.getScrsUserId()).toString();
         Cookie cookie = new Cookie("id", id);
         response.addCookie(cookie);
 
-        return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
     @PostMapping (value = {"/logout", "/logout/"})
     public ResponseEntity<Boolean> logout(HttpServletResponse response) {
 
-        String id = "-1";
         Cookie cookie = new Cookie("id", null);
         cookie.setMaxAge(0);
         response.addCookie(cookie);
 
-        return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 }

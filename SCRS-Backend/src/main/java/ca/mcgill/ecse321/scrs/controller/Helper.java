@@ -6,6 +6,8 @@ import ca.mcgill.ecse321.scrs.model.*;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Helper
 {
@@ -97,6 +99,20 @@ public class Helper
         TimeslotDto timeslotDto = new TimeslotDto(timeslot.getTimeSlotID(), timeslot.getStartDate(), timeslot.getEndDate(), timeslot.getStartTime(), timeslot.getEndTime(), timeslot.getWorkspace().getWorkspaceID());
         timeslotDto.setTechnicians(timeslot.getTechnicians());
         return timeslotDto;
+    }
+
+    public static List<TimeslotDto> convertToDto(List<Timeslot> timeslots)
+    {
+        if (timeslots == null)
+        {
+            throw new IllegalArgumentException("There is no such timeslot list!");
+        }
+        ArrayList<TimeslotDto> timeslotsDto = new ArrayList<>();
+        for (Timeslot timeslot: timeslots)
+        {
+            timeslotsDto.add(convertToDto(timeslot));
+        }
+        return timeslotsDto;
     }
 
     public static WorkspaceDto convertToDto(Workspace workspace)

@@ -26,7 +26,6 @@ public class TechnicianController
     TechnicianService technicianService;
     @Autowired
     SCRSUserService scrsUserService;
-
     @Autowired
     TimeslotService timeslotService;
 
