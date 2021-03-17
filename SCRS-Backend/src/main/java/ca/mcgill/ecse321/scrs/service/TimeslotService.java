@@ -41,16 +41,23 @@ public class TimeslotService
         timeslotRepository.save(ts);
     }
 
-    public List<Timeslot> getTimeslotsByTechnician(Technician technician)
+    @Transactional
+    public List<Timeslot> getTimeslotsByTechnician(Technician technician, Date startDate, Date endDate)
     {
-        return toList(timeslotRepository.findByTechnicians(technician));
+        List<Timeslot> timeslotsInPeriod = timeslotRepository.findAllByStartDateGreaterThanEqualAndStartDateLessThanEqualOrderByStartDate(startDate,endDate);
+        List<Timeslot> technicianTimeslots= toList(timeslotRepository.findByTechnicians(technician));
+
+        technicianTimeslots.retainAll(timeslotsInPeriod);
+        return timeslotsInPeriod;
     }
 
+    @Transactional
     public List<Timeslot> getTimeslotsByWorkspace(Workspace workspace)
     {
         return toList(timeslotRepository.findByWorkspace(workspace));
     }
 
+    @Transactional
     public Timeslot getTimeslotById(int id)
     {
         return timeslotRepository.findByTimeSlotID(id);
