@@ -1,7 +1,6 @@
 package ca.mcgill.ecse321.scrs.service;
 
 import ca.mcgill.ecse321.scrs.dao.CustomerRepository;
-import ca.mcgill.ecse321.scrs.model.Appointment;
 import ca.mcgill.ecse321.scrs.model.Customer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

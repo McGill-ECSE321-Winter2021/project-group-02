@@ -22,13 +22,13 @@ public class AppointmentController {
 
     @GetMapping("/getall/{id}")
     public ResponseEntity<ArrayList<Appointment>> getAll(@PathVariable("id") String id) {
-        int ID = Integer.valueOf(id);
+        int ID = Integer.parseInt(id);
         return new ResponseEntity<>(new ArrayList<Appointment>(), HttpStatus.OK);
     }
 
     @GetMapping("/notifications/{id}")
     public ResponseEntity<ArrayList<Appointment>> notifications(@PathVariable("id") String id) {
-        int ID = Integer.valueOf(id);
+        int ID = Integer.parseInt(id);
         return new ResponseEntity<>(new ArrayList<Appointment>(), HttpStatus.OK);
     }
 

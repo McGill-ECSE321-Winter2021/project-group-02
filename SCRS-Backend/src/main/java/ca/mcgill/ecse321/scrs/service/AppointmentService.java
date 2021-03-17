@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static ca.mcgill.ecse321.scrs.service.ServiceHelpers.toList;
@@ -59,18 +58,19 @@ public class AppointmentService {
 
     @Transactional
     public List<Appointment> getAppointmentsByCustomer(Customer customer) {
-        return new ArrayList<>(appointmentRepository.findAppointmentsByCustomer(customer));
+        return appointmentRepository.findAppointmentsByCustomer(customer);
     }
 
     @Transactional
-    public List<Appointment> getAppointmentsByTimeslot(Timeslot timeslot) {
-        return new ArrayList<>(appointmentRepository.findAppointmentsByTimeslots(timeslot));
+    public Appointment getAppointmentByTimeslot(Timeslot timeslot) {
+        return appointmentRepository.findByTimeslotsContains(timeslot);
     }
 
     @Transactional
     public Appointment rateAppointment(int appointmentId, int rating) {
         Appointment appointment = getAppointmentById(appointmentId);
         if (appointment == null) throw new IllegalArgumentException("No such appointment!");
+        if (rating > 10 || rating < 0) throw new IllegalArgumentException("Invalid rating");
         appointment.setRating(rating);
         appointmentRepository.save(appointment);
         return appointment;
@@ -81,6 +81,10 @@ public class AppointmentService {
     {
         if (appt == null) throw new IllegalArgumentException("Invalid appointment");
         if (appointmentRepository.findByAppointmentID(appt.getAppointmentID()) == null) throw new IllegalArgumentException("No such appointment exists");
+        if (appt.getAppointmentType() == null) throw new IllegalArgumentException("Invalid appointment type.");
+        if (appt.getCustomer() == null) throw new IllegalArgumentException("Invalid customer.");
+        if (appt.getTimeslots() == null || appt.getTimeslots().size() == 0) throw new IllegalArgumentException("No valid timeslots selected.");
+        if (appt.getRating() > 10 || appt.getRating() < 0) throw new IllegalArgumentException("Invalid rating");
         appointmentRepository.save(appt);
         return appt;
     }
@@ -88,8 +92,6 @@ public class AppointmentService {
     @Transactional
     public Appointment deleteAppointment(Appointment appt)
     {
-        if (appt == null) throw new IllegalArgumentException("Invalid appointment");
-        if (appointmentRepository.findByAppointmentID(appt.getAppointmentID()) == null) throw new IllegalArgumentException("No such appointment exists");
         appointmentRepository.delete(appt);
         return appt;
     }

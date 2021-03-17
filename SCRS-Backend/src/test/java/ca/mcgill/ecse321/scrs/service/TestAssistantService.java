@@ -402,7 +402,6 @@ public class TestAssistantService
         assertEquals(assistant.getName(), deleted.getName());
         assertEquals(assistant.getEmail(), deleted.getEmail());
         assertEquals(assistant.getPhone(), deleted.getPhone());
-
     }
 
     @Test
