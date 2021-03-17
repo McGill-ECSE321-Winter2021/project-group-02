@@ -1,5 +1,6 @@
 package ca.mcgill.ecse321.scrs.service;
 
+import ca.mcgill.ecse321.scrs.dao.AppointmentRepository;
 import ca.mcgill.ecse321.scrs.dao.TimeslotRepository;
 import ca.mcgill.ecse321.scrs.dao.WorkspaceRepository;
 import ca.mcgill.ecse321.scrs.model.Technician;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.sql.Time;
+
 import java.util.List;
 
 import static ca.mcgill.ecse321.scrs.service.ServiceHelpers.toList;
@@ -23,7 +25,7 @@ public class TimeslotService
     TimeslotRepository timeslotRepository;
 
     @Autowired
-    WorkspaceRepository workspaceRepository;
+    AppointmentRepository appointmentRepository;
 
     @Transactional
     public List<Timeslot> getAllTimeslots()
@@ -32,6 +34,14 @@ public class TimeslotService
     }
 
     @Transactional
+    public List<Timeslot> getAvailableTimeslots(Date startDate, Date endDate)
+    {
+        List<Timeslot> timeslotsInPeriod = timeslotRepository.findAllByStartDateGreaterThanEqualAndStartDateLessThanEqualOrderByStartDate(startDate, endDate);
+        timeslotsInPeriod.removeIf(timeslot -> appointmentRepository.existsByTimeslots(timeslot));
+        return timeslotsInPeriod;
+    }
+    
+    @Transactional    
     public void assignTechnicianToTimeslot(Technician tech, Timeslot ts)
     {
         if (tech == null) throw new IllegalArgumentException("Invalid technician");
