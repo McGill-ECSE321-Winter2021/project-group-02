@@ -36,9 +36,10 @@ public class TimeslotService
         timeslotsInPeriod.removeIf(timeslot -> appointmentRepository.existsByTimeslots(timeslot));
         return timeslotsInPeriod;
     }
-
-    @Transactional
-    public void assignTechnicianToTimeslot(Technician tech, Timeslot ts) {
+    
+    @Transactional    
+    public void assignTechnicianToTimeslot(Technician tech, Timeslot ts)
+    {
         if (tech == null) throw new IllegalArgumentException("Invalid technician");
         if (ts == null) throw new IllegalArgumentException("Invalid timeslot");
 

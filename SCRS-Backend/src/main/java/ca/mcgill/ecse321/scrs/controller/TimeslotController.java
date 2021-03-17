@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ca.mcgill.ecse321.scrs.controller.Helper.*;
 
 import java.sql.Date;
 import java.util.List;
@@ -33,7 +32,7 @@ public class TimeslotController
     }
 
     @GetMapping(value = {"/getAvailableTimeslot", "/getAvailableTimeslot/"})
-    public ResponseEntity<List<TimeslotDto>> getServiceTimeslot(@RequestParam(name = "startDate") Date startDate, @RequestParam(name = "endDate") Date endDate)
+    public ResponseEntity<List<TimeslotDto>> getAvailableTimeslot(@RequestParam(name = "startDate") Date startDate, @RequestParam(name = "endDate") Date endDate)
     {
         List<Timeslot> availableTimeslots = timeslotService.getAvailableTimeslots(startDate, endDate);
         return new ResponseEntity<List<TimeslotDto>>(Helper.convertToDto(availableTimeslots), HttpStatus.OK);
