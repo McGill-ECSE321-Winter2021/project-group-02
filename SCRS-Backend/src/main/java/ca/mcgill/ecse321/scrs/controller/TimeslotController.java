@@ -16,11 +16,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ca.mcgill.ecse321.scrs.controller.Helper.*;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDTO;
-import static ca.mcgill.ecse321.scrs.controller.Helper.isAdmin;
+import static ca.mcgill.ecse321.scrs.controller.Helper.*;
 
 @RestController
 @RequestMapping(path = "/api/timeslot")
@@ -29,6 +29,9 @@ public class TimeslotController
 
     @Autowired
     TimeslotService timeslotService;
+
+    @Autowired
+    SCRSUserService scrsUserService;
 
     @GetMapping(value = {"/getServiceTimeslot", "/getServiceTimeslot/"})
     public List<TimeslotDto> getServiceTimeslot(@RequestParam(name = "appointmentType") AppointmentType type)
@@ -49,6 +52,61 @@ public class TimeslotController
         timeslotService.assignTechnicianToTimeslot(technician, timeslot);
 
         return new ResponseEntity<>(convertToDTO(technician), HttpStatus.OK);
+    }
+
+    @PostMapping(value = {"/create","/create/"})
+    public ResponseEntity<TimeslotDto> createTimeslot(@RequestBody Timeslot timeslot, @RequestBody Workspace workspace, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    {
+        int id = Integer.parseInt(ID);
+        if (id == -1)
+        {
+            throw new IllegalArgumentException("Please login to create a timeslot.");
+        }
+        if (workspace == null)
+        {
+            throw new IllegalArgumentException("Invalid workspace.");
+        }
+        if (timeslot == null)
+        {
+            throw new IllegalArgumentException("Invalid timeslot. Please submit a valid timeslot to be created.");
+        }
+        if (!isAdmin(scrsUserService.getSCRSUserByID(id))) //does not have permission to edit.
+        {
+            throw new IllegalArgumentException("You do not have permission to create a timeslot.");
+        }
+        if (workspace.getAvailabilities().contains(timeslot)){
+            throw new IllegalArgumentException("This timeslot has already been created");
+        }
+        return new ResponseEntity<TimeslotDto>(convertToDto(timeslotService.createTimeslot(timeslot.getStartDate(),timeslot.getEndDate(),timeslot.getStartTime(),timeslot.getEndTime(),workspace)),HttpStatus.OK);
+
+    }
+
+    @DeleteMapping(value = {"/delete", "/delete/"})
+    public ResponseEntity<TimeslotDto> deleteTimeslot(@RequestParam(value = "id") int timeslotID, @RequestBody Workspace workspace, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    {
+        int id = Integer.parseInt(ID);
+        if (id == -1)
+        {
+            throw new IllegalArgumentException("Please login to delete a timeslot.");
+        }
+        Timeslot timeslot = timeslotService.getTimeslotById(id);
+        if (workspace == null)
+        {
+            throw new IllegalArgumentException("Invalid workspace.");
+        }
+        if (timeslot == null)
+        {
+            throw new IllegalArgumentException("Invalid technician. Please submit a valid timeslot to be deleted.");
+        }
+        if (!isAdmin(scrsUserService.getSCRSUserByID(id)))
+        {
+            throw new IllegalArgumentException("You do not have permission to delete a timeslot.");
+        }
+        if (!workspace.getAvailabilities().contains(timeslot))
+        {
+            throw new IllegalArgumentException("Timeslot not assignment");
+        }
+        return new ResponseEntity<TimeslotDto>(convertToDto(timeslotService.deleteTimeslot(timeslot)), HttpStatus.OK);
     }
 
 

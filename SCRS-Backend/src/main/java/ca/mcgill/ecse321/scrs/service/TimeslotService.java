@@ -51,6 +51,18 @@ public class TimeslotService
         return toList(timeslotRepository.findByWorkspace(workspace));
     }
 
+    public Timeslot getTimeslotById(int id)
+    {
+        return timeslotRepository.findByTimeSlotID(id);
+    }
+
+    @Transactional
+    public Timeslot deleteTimeslot(Timeslot timeslot)
+    {
+        timeslotRepository.delete(timeslot);
+        return timeslot;
+    }
+
     @Transactional
     public Timeslot createTimeslot(Date startDate, Date endDate, Time startTime, Time endTime, Workspace workspace)
     {
@@ -63,25 +75,6 @@ public class TimeslotService
         return timeslot;
     }
 
-    @Transactional
-    public void assignTimeslotToWorkspace(Timeslot timeslot, Workspace workspace)
-    {
-        if (timeslot == null) throw new IllegalArgumentException("Invalid timeslot");
-        if (workspace == null) throw new IllegalArgumentException("Invalid workspace");
 
-        workspace.addAvailability(timeslot);
-        workspaceRepository.save(workspace);
-    }
-
-    @Transactional
-    public void unassignTimeslotToWorkspace(Timeslot timeslot, Workspace workspace)
-    {
-        if (timeslot == null) throw new IllegalArgumentException("Invalid timeslot");
-        if (workspace == null) throw new IllegalArgumentException("Invalid workspace");
-
-        workspace.removeAvailability(timeslot);
-        workspaceRepository.save(workspace);
-
-    }
 
 }

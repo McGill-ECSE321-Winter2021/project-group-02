@@ -91,27 +91,6 @@ public class WorkspaceController
         return new ResponseEntity<ArrayList<TimeslotDto>>(new ArrayList<>(timeslots),HttpStatus.OK);
 
     }
-    @PostMapping(value = {"/assignTimeslotWorkspace", "/assignTimeslotWorkspace/"})
-    public ResponseEntity<TimeslotDto> assignTimeslotToWorkspace(@RequestBody Timeslot timeslot, @RequestBody Workspace workspace) {
-        if (timeslot == null) throw new IllegalArgumentException("Invalid timeslot");
-        if (workspace == null) throw new IllegalArgumentException("Invalid workspace");
 
-        if(workspace.getAvailabilities().contains(timeslot)) throw new IllegalArgumentException("Timeslot already assigned to workspace");
-
-        timeslotService.assignTimeslotToWorkspace(timeslot, workspace);
-
-        return new ResponseEntity<>(convertToDto(timeslot), HttpStatus.OK);
-    }
-
-    @PostMapping(value = {"/unassignTimeslotWorkspace", "/unassignTimeslotWorkspace/"})
-    public ResponseEntity<TimeslotDto> unassignTimeslotToWorkspace(@RequestBody Timeslot timeslot, @RequestBody Workspace workspace) {
-        if (timeslot == null) throw new IllegalArgumentException("Invalid timeslot");
-        if (workspace == null) throw new IllegalArgumentException("Invalid workspace");
-
-        if(!workspace.getAvailabilities().contains(timeslot)) throw new IllegalArgumentException("Timeslot is not previously assigned to workspace");
-
-        timeslotService.unassignTimeslotToWorkspace(timeslot, workspace);
-        return new ResponseEntity<>(convertToDto(timeslot), HttpStatus.OK);
-    }
 
 }

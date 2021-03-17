@@ -94,9 +94,7 @@ public class TechnicianController
         return new ResponseEntity<TechnicianDto>(convertToDTO(technicianService.deleteTechnician(technician)), HttpStatus.OK);
     }
 
-    //List<TimeslotDto> convertToDto
-
-    @GetMapping("/viewtechnicianschedule/{id}")
+    @GetMapping("/viewschedule/{id}")
     public ResponseEntity<ArrayList<TimeslotDto>> getAll(@PathVariable("id") String technicianId, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
         int id = Integer.parseInt(ID);
