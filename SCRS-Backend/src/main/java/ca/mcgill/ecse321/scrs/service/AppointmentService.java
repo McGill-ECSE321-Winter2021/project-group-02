@@ -1,6 +1,8 @@
 package ca.mcgill.ecse321.scrs.service;
 
 import ca.mcgill.ecse321.scrs.dao.AppointmentRepository;
+import ca.mcgill.ecse321.scrs.dao.CustomerRepository;
+import ca.mcgill.ecse321.scrs.dao.TimeslotRepository;
 import ca.mcgill.ecse321.scrs.model.Appointment;
 import ca.mcgill.ecse321.scrs.model.Customer;
 import ca.mcgill.ecse321.scrs.model.Timeslot;
@@ -18,9 +20,22 @@ public class AppointmentService {
 
     @Autowired
     AppointmentRepository appointmentRepository;
+    @Autowired
+    CustomerRepository customerRepository;
+    @Autowired
+    TimeslotRepository timeslotRepository;
 
     @Transactional
     public Appointment createAppointment(Appointment.AppointmentType appointmentType, String service, String note, boolean paid, Customer customer, Timeslot... timeslots) {
+        if(appointmentType == null) throw new IllegalArgumentException("Please submit a valid appointment type.");
+        if(customer == null || customerRepository.findByScrsUserId(customer.getScrsUserId()) == null) throw new IllegalArgumentException("Please submit a valid customer.");
+        try
+        {
+            if(timeslots.length == 0 || timeslotRepository.findByTimeSlotID(timeslots[0].getTimeSlotID()) == null) throw new IllegalArgumentException("Please select at least one valid timeslot.");
+        } catch (NullPointerException e)
+        {
+            throw new IllegalArgumentException("Please select at least one valid timeslot.");
+        }
         Appointment appointment = new Appointment();
         appointment.setAppointmentType(appointmentType);
         appointment.setService(service);
@@ -62,10 +77,20 @@ public class AppointmentService {
     }
 
     @Transactional
-    public void modifyAppointment(Appointment appt)
+    public Appointment modifyAppointment(Appointment appt)
     {
         if (appt == null) throw new IllegalArgumentException("Invalid appointment");
         if (appointmentRepository.findByAppointmentID(appt.getAppointmentID()) == null) throw new IllegalArgumentException("No such appointment exists");
         appointmentRepository.save(appt);
+        return appt;
+    }
+
+    @Transactional
+    public Appointment deleteAppointment(Appointment appt)
+    {
+        if (appt == null) throw new IllegalArgumentException("Invalid appointment");
+        if (appointmentRepository.findByAppointmentID(appt.getAppointmentID()) == null) throw new IllegalArgumentException("No such appointment exists");
+        appointmentRepository.delete(appt);
+        return appt;
     }
 }

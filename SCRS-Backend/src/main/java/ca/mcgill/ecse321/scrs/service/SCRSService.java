@@ -11,4 +11,6 @@ public class SCRSService {
     @Autowired
     SCRSRepository scrsRepository;
 
+    //No tests  since there are no service methods in the SCRSService class
+
 }
