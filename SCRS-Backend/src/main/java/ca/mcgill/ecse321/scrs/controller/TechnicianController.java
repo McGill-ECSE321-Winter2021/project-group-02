@@ -1,14 +1,19 @@
 package ca.mcgill.ecse321.scrs.controller;
 
 import ca.mcgill.ecse321.scrs.dto.TechnicianDto;
-import ca.mcgill.ecse321.scrs.model.Customer;
+import ca.mcgill.ecse321.scrs.dto.TimeslotDto;
 import ca.mcgill.ecse321.scrs.model.Technician;
 import ca.mcgill.ecse321.scrs.service.SCRSUserService;
 import ca.mcgill.ecse321.scrs.service.TechnicianService;
+import ca.mcgill.ecse321.scrs.service.TimeslotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 import static ca.mcgill.ecse321.scrs.controller.Helper.*;
 
@@ -20,6 +25,9 @@ public class TechnicianController
     TechnicianService technicianService;
     @Autowired
     SCRSUserService scrsUserService;
+
+    @Autowired
+    TimeslotService timeslotService;
 
     @PostMapping(value = {"/create", "/create/"})
     public ResponseEntity<TechnicianDto> createTechnician(@RequestBody Technician technician, @CookieValue(value = "id", defaultValue = "-1") String ID)
@@ -37,7 +45,7 @@ public class TechnicianController
         {
             //throw new IllegalArgumentException("You do not have permission to create a technician account.");
         }
-        if ( technicianService.getTechnicianByEmail(technician.getEmail()) != null)
+        if (technicianService.getTechnicianByEmail(technician.getEmail()) != null)
         {
             throw new IllegalArgumentException("Email already in use, please try a different email address.");
         }
@@ -86,4 +94,28 @@ public class TechnicianController
         }
         return new ResponseEntity<TechnicianDto>(convertToDTO(technicianService.deleteTechnician(technician)), HttpStatus.OK);
     }
+
+    @GetMapping("/viewschedule/{id}")
+    public ResponseEntity<ArrayList<TimeslotDto>> getAllByDate(@PathVariable("id") String technicianId, @RequestParam(name = "startDate") Date startDate, @RequestParam(name = "endDate") Date endDate, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    {
+        int id = Integer.parseInt(ID);
+        int technicianID = Integer.parseInt(technicianId);
+        if (id == -1)
+        {
+            throw new IllegalArgumentException("Please login to view the technician schedule.");
+        }
+        Technician technician = technicianService.getTechnicianByID(technicianID);
+        if (technician == null)
+        {
+            throw new IllegalArgumentException("Invalid technician. Please submit a valid technician account to view the schedule.");
+        }
+        if (!isAdmin(scrsUserService.getSCRSUserByID(id)) && id != technicianID) //does not have permission to view.
+        {
+            throw new IllegalArgumentException("You cannot view a technician's schedule other than your own.");
+        }
+        List<TimeslotDto> timeslots = Helper.convertToDto((timeslotService.getTimeslotsByTechnicianBetweenDates(technician, startDate, endDate)));
+        return new ResponseEntity<ArrayList<TimeslotDto>>(new ArrayList<>(timeslots), HttpStatus.OK);
+    }
+
+
 }
