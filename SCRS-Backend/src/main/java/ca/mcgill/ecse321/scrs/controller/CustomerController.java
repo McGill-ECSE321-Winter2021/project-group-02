@@ -34,7 +34,7 @@ public class CustomerController
             return new ResponseEntity<CustomerDto>(new CustomerDto(), HttpStatus.ALREADY_REPORTED);
             //throw new IllegalArgumentException("Email already in use, please try a different email address.");
         }
-        return new ResponseEntity<CustomerDto>(convertToDTO(customerService.createCustomer(customer.getEmail(), customer.getName(), hash(customer.getPassword()), customer.getPhone())), HttpStatus.OK);
+        return new ResponseEntity<CustomerDto>(convertToDto(customerService.createCustomer(customer.getEmail(), customer.getName(), hash(customer.getPassword()), customer.getPhone())), HttpStatus.OK);
     }
 
     @PutMapping(value = {"/update", "/update/"})
@@ -59,7 +59,7 @@ public class CustomerController
             return new ResponseEntity<CustomerDto>(new CustomerDto(), HttpStatus.NOT_ACCEPTABLE);
             //throw new IllegalArgumentException("No such customer found.");
         }
-        return new ResponseEntity<CustomerDto>(convertToDTO(customerService.updateCustomerInfo(customer)), HttpStatus.OK);
+        return new ResponseEntity<CustomerDto>(convertToDto(customerService.updateCustomerInfo(customer)), HttpStatus.OK);
     }
 
     @DeleteMapping(value = {"/delete", "/delete/"})
@@ -81,6 +81,6 @@ public class CustomerController
         {
             // throw new IllegalArgumentException("You cannot delete a customer account other than your own.");
         }
-        return new ResponseEntity<CustomerDto>(convertToDTO(customerService.deleteCustomer(customer)), HttpStatus.OK);
+        return new ResponseEntity<CustomerDto>(convertToDto(customerService.deleteCustomer(customer)), HttpStatus.OK);
     }
 }

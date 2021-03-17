@@ -1,28 +1,30 @@
 package ca.mcgill.ecse321.scrs.dto;
 
+import ca.mcgill.ecse321.scrs.model.Timeslot;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class WorkspaceDto
 {
     private int workspaceId;
-    private String spaceType;
-    private List<TimeslotDto> availabilities;
+    private String spaceName;
+    private ArrayList<Integer> timeslotsId;
 
     public WorkspaceDto()
     {
     }
 
-    public WorkspaceDto(int id, String type)
+    public WorkspaceDto(int id, String name)
     {
-        this(id, type, new ArrayList<TimeslotDto>());
+        this(id, name, new ArrayList<Integer>());
     }
 
-    public WorkspaceDto(int id, String type, List<TimeslotDto> availabilityList)
+    public WorkspaceDto(int id, String name, ArrayList<Integer> timeslotsId)
     {
         workspaceId = id;
-        spaceType = type;
-        availabilities = availabilityList;
+        spaceName = name;
+        this.timeslotsId = timeslotsId;
     }
 
     public int getWorkspaceId()
@@ -30,18 +32,22 @@ public class WorkspaceDto
         return workspaceId;
     }
 
-    public String getSpaceType()
+    public String getSpaceName()
     {
-        return spaceType;
+        return spaceName;
     }
 
-    public List<TimeslotDto> getAvailabilities()
+    public List<Integer> getTimeslotsId()
     {
-        return availabilities;
+        return timeslotsId;
     }
 
-    public void setAvailabilities(List<TimeslotDto> availabilityList)
+    public void setTimeslotsId(List<Timeslot> availabilities)
     {
-        availabilities = availabilityList;
+        this.timeslotsId = new ArrayList<Integer>();
+        for (Timeslot timeslot: availabilities)
+        {
+            timeslotsId.add(timeslot.getTimeSlotID());
+        }
     }
 }

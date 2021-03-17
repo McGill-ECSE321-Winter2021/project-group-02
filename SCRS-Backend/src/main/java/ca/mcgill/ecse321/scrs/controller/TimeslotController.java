@@ -58,7 +58,7 @@ public class TimeslotController
 
         timeslotService.assignTechnicianToTimeslot(technician, timeslot);
 
-        return new ResponseEntity<>(convertToDTO(technician), HttpStatus.OK);
+        return new ResponseEntity<>(Helper.convertToDto(technician), HttpStatus.OK);
     }
 
     @PostMapping(value = {"/create/{id}"})

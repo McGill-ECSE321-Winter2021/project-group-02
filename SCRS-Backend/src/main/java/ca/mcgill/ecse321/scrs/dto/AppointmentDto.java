@@ -1,6 +1,7 @@
 package ca.mcgill.ecse321.scrs.dto;
 
 import ca.mcgill.ecse321.scrs.model.Appointment.AppointmentType;
+import ca.mcgill.ecse321.scrs.model.Timeslot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,31 +9,30 @@ import java.util.List;
 public class AppointmentDto
 {
     private int appointmentId;
-    private AppointmentType appointmentType;
+    private String appointmentType;
     private String service;
     private String note;
     private int rating;
     private String feedback;
     private boolean paymentStatus;
-    private CustomerDto customer;
-    private List<TimeslotDto> timeslots;
+    private int customerId;
+    private ArrayList<Integer> timeslotsId;
 
     public AppointmentDto()
     {
     }
 
-    public AppointmentDto(int id, AppointmentType type, String service, String note, CustomerDto customer, List<TimeslotDto> timeslotList)
+    public AppointmentDto(int id, String type, String service, String note, int customerId, ArrayList<Integer> timeslotsId)
     {
-        this(id, type, service, note, -1, null, false, customer, timeslotList);
+        this(id, type, service, note, -1, null, false, customerId, timeslotsId);
     }
 
-    @SuppressWarnings("unchecked")
-    public AppointmentDto(int id, AppointmentType type, String service, String note, CustomerDto customer)
+    public AppointmentDto(int id, String type, String service, String note, int rating, String feedback, boolean isPaid, int customerId)
     {
-        this(id, type, service, note, -1, null, false, customer, new ArrayList<TimeslotDto>());
+        this(id, type, service, note, rating, feedback, isPaid, customerId, new ArrayList<Integer>());
     }
 
-    public AppointmentDto(int id, AppointmentType type, String service, String note, int rating, String feedback, boolean isPaid, CustomerDto customer, List<TimeslotDto> timeslotList)
+    public AppointmentDto(int id, String type, String service, String note, int rating, String feedback, boolean isPaid, int customerId, ArrayList<Integer> timeslotsId)
     {
         appointmentId = id;
         appointmentType = type;
@@ -41,8 +41,8 @@ public class AppointmentDto
         this.rating = rating;
         this.feedback = feedback;
         paymentStatus = isPaid;
-        this.customer = customer;
-        timeslots = timeslotList;
+        this.customerId = customerId;
+        this.timeslotsId = timeslotsId;
     }
 
     public int getAppointmentId()
@@ -52,7 +52,7 @@ public class AppointmentDto
 
     public AppointmentType getAppointmentType()
     {
-        return appointmentType;
+        return AppointmentType.valueOf(appointmentType);
     }
 
     public String getService()
@@ -80,18 +80,22 @@ public class AppointmentDto
         return paymentStatus;
     }
 
-    public CustomerDto getCustomer()
+    public int getCustomerId()
     {
-        return customer;
+        return customerId;
     }
 
-    public List<TimeslotDto> getTimeslots()
+    public ArrayList<Integer> getTimeslotsId()
     {
-        return timeslots;
+        return timeslotsId;
     }
 
-    public void setTimeslots(List<TimeslotDto> timeslots)
+    public void setTimeslots(List<Timeslot> timeslots)
     {
-        this.timeslots = timeslots;
+        this.timeslotsId = new ArrayList<Integer>();
+        for (Timeslot timeslot: timeslots)
+        {
+            timeslotsId.add(timeslot.getTimeSlotID());
+        }
     }
 }

@@ -1,5 +1,8 @@
 package ca.mcgill.ecse321.scrs.dto;
 
+import ca.mcgill.ecse321.scrs.model.Technician;
+import ca.mcgill.ecse321.scrs.model.Timeslot;
+
 import java.sql.Date;
 import java.sql.Time;
 import java.util.ArrayList;
@@ -12,26 +15,26 @@ public class TimeslotDto
     private Date endDate;
     private Time startTime;
     private Time endTime;
-    private WorkspaceDto workspace;
-    private List<TechnicianDto> technicians;
+    private int workspaceId;
+    private ArrayList<Integer> techniciansId;
 
     public TimeslotDto()
     {
     }
 
-    public TimeslotDto(int id, Date startDate, Date endDate, Time startTime, Time endTime, WorkspaceDto workspace) {
-        this(id, startDate, endDate, startTime, endTime, workspace, new ArrayList<TechnicianDto>());
+    public TimeslotDto(int id, Date startDate, Date endDate, Time startTime, Time endTime, int workspaceId) {
+        this(id, startDate, endDate, startTime, endTime, workspaceId, new ArrayList<Integer>());
     }
 
-    public TimeslotDto(int id, Date startDate, Date endDate, Time startTime, Time endTime, WorkspaceDto workspace, List<TechnicianDto> technicians)
+    public TimeslotDto(int id, Date startDate, Date endDate, Time startTime, Time endTime, int workspaceId, ArrayList<Integer> techniciansId)
     {
         timeslotId = id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.startTime =startTime;
         this.endTime = endTime;
-        this.workspace = workspace;
-        this.technicians = technicians;
+        this.workspaceId = workspaceId;
+        this.techniciansId = techniciansId;
     }
 
     public int getTimeslotId()
@@ -59,18 +62,22 @@ public class TimeslotDto
         return endTime;
     }
 
-    public WorkspaceDto getWorkspace()
+    public int getWorkspaceId()
     {
-        return workspace;
+        return workspaceId;
     }
 
-    public List<TechnicianDto> getTechnicians()
+    public ArrayList<Integer> getTechniciansId()
     {
-        return technicians;
+        return techniciansId;
     }
 
-    public void setTechnicians(List<TechnicianDto> technicians)
+    public void setTechnicians(List<Technician> technicians)
     {
-        this.technicians = technicians;
+        this.techniciansId = new ArrayList<Integer>();
+        for (Technician technician: technicians)
+        {
+            techniciansId.add(technician.getScrsUserId());
+        }
     }
 }
