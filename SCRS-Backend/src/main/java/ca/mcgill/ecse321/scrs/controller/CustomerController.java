@@ -83,6 +83,6 @@ public class CustomerController
         {
             // throw new IllegalArgumentException("You cannot delete a customer account other than your own.");
         }
-        return new ResponseEntity<CustomerDto>(convertToDto(customerService.deleteCustomer(customer)), HttpStatus.OK);
+        return new ResponseEntity<>(convertToDto(customerService.deleteCustomer(customer)), HttpStatus.OK);
     }
 }
