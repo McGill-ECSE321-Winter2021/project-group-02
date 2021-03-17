@@ -42,7 +42,7 @@ public class TimeslotService
     }
 
     @Transactional
-    public List<Timeslot> getTimeslotsByTechnician(Technician technician, Date startDate, Date endDate)
+    public List<Timeslot> getTimeslotsByTechnicianBetweenDates(Technician technician, Date startDate, Date endDate)
     {
         List<Timeslot> timeslotsInPeriod = timeslotRepository.findAllByStartDateGreaterThanEqualAndStartDateLessThanEqualOrderByStartDate(startDate,endDate);
         List<Timeslot> technicianTimeslots= toList(timeslotRepository.findByTechnicians(technician));

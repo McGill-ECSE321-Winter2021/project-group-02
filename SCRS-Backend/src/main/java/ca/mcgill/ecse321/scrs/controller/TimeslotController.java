@@ -54,8 +54,8 @@ public class TimeslotController
         return new ResponseEntity<>(convertToDTO(technician), HttpStatus.OK);
     }
 
-    @PostMapping(value = {"/create","/create/"})
-    public ResponseEntity<TimeslotDto> createTimeslot(@RequestBody Timeslot timeslot, @RequestBody Workspace workspace, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    @PostMapping(value = {"/create/{id}"})
+    public ResponseEntity<TimeslotDto> createTimeslot(@PathVariable("id") int timeslotID, @RequestBody Workspace workspace, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
         int id = Integer.parseInt(ID);
         if (id == -1)
@@ -66,6 +66,7 @@ public class TimeslotController
         {
             throw new IllegalArgumentException("Invalid workspace.");
         }
+        Timeslot timeslot = timeslotService.getTimeslotById(timeslotID);
         if (timeslot == null)
         {
             throw new IllegalArgumentException("Invalid timeslot. Please submit a valid timeslot to be created.");
@@ -77,19 +78,19 @@ public class TimeslotController
         if (workspace.getAvailabilities().contains(timeslot)){
             throw new IllegalArgumentException("This timeslot has already been created");
         }
-        return new ResponseEntity<TimeslotDto>(convertToDto(timeslotService.createTimeslot(timeslot.getStartDate(),timeslot.getEndDate(),timeslot.getStartTime(),timeslot.getEndTime(),workspace)),HttpStatus.OK);
+        return new ResponseEntity<>(convertToDto(timeslotService.createTimeslot(timeslot.getStartDate(),timeslot.getEndDate(),timeslot.getStartTime(),timeslot.getEndTime(),workspace)),HttpStatus.OK);
 
     }
 
-    @DeleteMapping(value = {"/delete", "/delete/"})
-    public ResponseEntity<TimeslotDto> deleteTimeslot(@RequestParam(value = "id") int timeslotID, @RequestBody Workspace workspace, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    @DeleteMapping(value = {"/delete/{id}"})
+    public ResponseEntity<TimeslotDto> deleteTimeslot(@PathVariable("id") int timeslotID, @RequestBody Workspace workspace, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
         int id = Integer.parseInt(ID);
         if (id == -1)
         {
             throw new IllegalArgumentException("Please login to delete a timeslot.");
         }
-        Timeslot timeslot = timeslotService.getTimeslotById(id);
+        Timeslot timeslot = timeslotService.getTimeslotById(timeslotID);
         if (workspace == null)
         {
             throw new IllegalArgumentException("Invalid workspace.");
@@ -106,7 +107,7 @@ public class TimeslotController
         {
             throw new IllegalArgumentException("Timeslot not assignment");
         }
-        return new ResponseEntity<TimeslotDto>(convertToDto(timeslotService.deleteTimeslot(timeslot)), HttpStatus.OK);
+        return new ResponseEntity<>(convertToDto(timeslotService.deleteTimeslot(timeslot)), HttpStatus.OK);
     }
 
 

@@ -96,7 +96,7 @@ public class TechnicianController
     }
 
     @GetMapping("/viewschedule/{id}")
-    public ResponseEntity<ArrayList<TimeslotDto>> getAll(@PathVariable("id") String technicianId, @RequestParam(name = "startDate") Date startDate, @RequestParam(name = "endDate") Date endDate, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    public ResponseEntity<ArrayList<TimeslotDto>> getAllByDate(@PathVariable("id") String technicianId, @RequestParam(name = "startDate") Date startDate, @RequestParam(name = "endDate") Date endDate, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
         int id = Integer.parseInt(ID);
         int technicianID = Integer.parseInt(technicianId);
@@ -113,7 +113,7 @@ public class TechnicianController
         {
             throw new IllegalArgumentException("You cannot view a technician's schedule other than your own.");
         }
-        List<TimeslotDto> timeslots = Helper.convertToDto((timeslotService.getTimeslotsByTechnician(technician, startDate, endDate)));
+        List<TimeslotDto> timeslots = Helper.convertToDto((timeslotService.getTimeslotsByTechnicianBetweenDates(technician, startDate, endDate)));
         return new ResponseEntity<ArrayList<TimeslotDto>>(new ArrayList<>(timeslots), HttpStatus.OK);
     }
 
