@@ -6,8 +6,6 @@ import ca.mcgill.ecse321.scrs.model.*;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Helper
 {
@@ -50,58 +48,65 @@ public class Helper
         else return user instanceof Assistant;
     }
 
-    // ============== DTO CONVERSIONS ===========
+    // ========== DTO Conversion ==========
 
-    public static AppointmentDto convertToDto(Appointment a)
+    public static AppointmentDto convertToDto(Appointment appointment)
     {
-        if (a == null)
+        if (appointment == null)
+        {
             throw new IllegalArgumentException("There is no such appointment!");
-        CustomerDto customerDto = convertToDTO(a.getCustomer());
-        List<TimeslotDto> timeslots = convertToDto(a.getTimeslots());
-        return new AppointmentDto(a.getAppointmentID(), a.getAppointmentType(), a.getService(), a.getNote(), customerDto, timeslots);
+        }
+        AppointmentDto appointmentDto = new AppointmentDto(appointment.getAppointmentID(), appointment.getAppointmentType().toString(), appointment.getService(), appointment.getNote(), appointment.getRating(), appointment.getFeedback(), appointment.getPaid(), appointment.getCustomer().getScrsUserId());
+        appointmentDto.setTimeslots(appointment.getTimeslots());
+        return appointmentDto;
     }
 
-    public static AssistantDto convertToDTO(Assistant a)
+    public static AssistantDto convertToDto(Assistant assistant)
     {
-        if (a == null) throw new IllegalArgumentException("There is no such assistant!");
-        return new AssistantDto(a.getScrsUserId(), a.getName(), a.getEmail(), a.getPhone());
+        if (assistant == null)
+        {
+            throw new IllegalArgumentException("There is no such assistant!");
+        }
+        return new AssistantDto(assistant.getScrsUserId(), assistant.getName(), assistant.getEmail(), assistant.getPhone());
     }
 
-    public static CustomerDto convertToDTO(Customer c)
+    public static CustomerDto convertToDto(Customer customer)
     {
-        if (c == null) throw new IllegalArgumentException("There is no such customer!");
-        return new CustomerDto(c.getScrsUserId(), c.getName(), c.getEmail(), c.getPhone());
+        if (customer == null)
+        {
+            throw new IllegalArgumentException("There is no such customer!");
+        }
+        return new CustomerDto(customer.getScrsUserId(), customer.getName(), customer.getEmail(), customer.getPhone());
     }
 
-    public static TechnicianDto convertToDTO(Technician t)
+    public static TechnicianDto convertToDto(Technician technician)
     {
-        if (t == null) throw new IllegalArgumentException("There is no such technician!");
-        return new TechnicianDto(t.getScrsUserId(), t.getName(), t.getEmail(), t.getPhone());
+        if (technician == null)
+        {
+            throw new IllegalArgumentException("There is no such technician!");
+        }
+        return new TechnicianDto(technician.getScrsUserId(), technician.getName(), technician.getEmail(), technician.getPhone());
     }
 
     public static TimeslotDto convertToDto(Timeslot timeslot)
     {
         if (timeslot == null)
-            throw new IllegalArgumentException("There is no such timeslot!");
-        WorkspaceDto workspaceDto = convertToDto(timeslot.getWorkspace());
-        // check technician convertor
-        return new TimeslotDto(timeslot.getTimeSlotID(), timeslot.getStartDate(), timeslot.getEndDate(), timeslot.getStartTime(), timeslot.getEndTime(), workspaceDto);
-    }
-
-    public static List<TimeslotDto> convertToDto(List<Timeslot> timeslots)
-    {
-        List<TimeslotDto> timeslotDtos = new ArrayList<>();
-        for (Timeslot timeslot : timeslots)
         {
-            timeslotDtos.add(convertToDto(timeslot));
+            throw new IllegalArgumentException("There is no such timeslot!");
         }
-        return timeslotDtos;
+        TimeslotDto timeslotDto = new TimeslotDto(timeslot.getTimeSlotID(), timeslot.getStartDate(), timeslot.getEndDate(), timeslot.getStartTime(), timeslot.getEndTime(), timeslot.getWorkspace().getWorkspaceID());
+        timeslotDto.setTechnicians(timeslot.getTechnicians());
+        return timeslotDto;
     }
 
     public static WorkspaceDto convertToDto(Workspace workspace)
     {
         if (workspace == null)
+        {
             throw new IllegalArgumentException("There is no such workspace!");
-        return new WorkspaceDto(workspace.getWorkspaceID(), workspace.getSpaceName());
+        }
+        WorkspaceDto workspaceDto = new WorkspaceDto(workspace.getWorkspaceID(), workspace.getSpaceName());
+        workspaceDto.setTimeslotsId(workspace.getAvailabilities());
+        return workspaceDto;
     }
 }
