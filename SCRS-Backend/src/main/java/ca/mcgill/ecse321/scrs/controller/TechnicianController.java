@@ -124,6 +124,4 @@ public class TechnicianController
         List<TimeslotDto> timeslots = Helper.convertToDto((timeslotService.getTimeslotsByTechnicianBetweenDates(technician, startDate, endDate)));
         return new ResponseEntity<ArrayList<TimeslotDto>>(new ArrayList<>(timeslots), HttpStatus.OK);
     }
-
-
 }
