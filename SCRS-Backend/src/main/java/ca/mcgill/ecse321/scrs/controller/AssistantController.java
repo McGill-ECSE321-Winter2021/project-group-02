@@ -34,7 +34,8 @@ public class AssistantController
             return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.ALREADY_REPORTED);
             //throw new IllegalArgumentException("Email already in use, please try a different email address.");
         }
-        return new ResponseEntity<AssistantDto>(convertToDto(assistantService.createAssistant(assistant.getEmail(), assistant.getName(), hash(assistant.getPassword()), assistant.getPhone())), HttpStatus.OK);
+        Assistant newAssistant = assistantService.createAssistant(assistant.getEmail(), assistant.getName(), hash(assistant.getPassword()), assistant.getPhone());
+        return new ResponseEntity<>(convertToDto(newAssistant), HttpStatus.OK);
     }
 
     @PutMapping(value = {"/update", "/update/"})
@@ -59,7 +60,8 @@ public class AssistantController
             return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.NOT_ACCEPTABLE);
             //throw new IllegalArgumentException("No such assistant found.");
         }
-        return new ResponseEntity<AssistantDto>(convertToDto(assistantService.updateAssistantInfo(assistant)), HttpStatus.OK);
+        Assistant updatedAssistant = assistantService.updateAssistantInfo(assistant);
+        return new ResponseEntity<>(convertToDto(updatedAssistant), HttpStatus.OK);
     }
 
     @DeleteMapping(value = {"/delete", "/delete/"})
@@ -80,6 +82,6 @@ public class AssistantController
         {
             //throw new IllegalArgumentException("You do not have permission to edit this account.");
         }
-        return new ResponseEntity<AssistantDto>(convertToDto(assistantService.deleteAssistant(assistant)), HttpStatus.OK);
+        return new ResponseEntity<>(convertToDto(assistantService.deleteAssistant(assistant)), HttpStatus.OK);
     }
 }

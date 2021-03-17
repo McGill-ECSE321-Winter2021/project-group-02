@@ -52,7 +52,8 @@ public class TechnicianController
             return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.ALREADY_REPORTED);
             //throw new IllegalArgumentException("Email already in use, please try a different email address.");
         }
-        return new ResponseEntity<TechnicianDto>(convertToDTO(technicianService.createTechnician(technician.getEmail(), technician.getName(), hash(technician.getPassword()), technician.getPhone())), HttpStatus.OK);
+        Technician newTechnician = technicianService.createTechnician(technician.getEmail(), technician.getName(), hash(technician.getPassword()), technician.getPhone());
+        return new ResponseEntity<>(convertToDto(newTechnician), HttpStatus.OK);
     }
 
     @PutMapping(value = {"/update", "/update/"})
@@ -77,7 +78,8 @@ public class TechnicianController
             return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.NOT_ACCEPTABLE);
             //throw new IllegalArgumentException("No such technician found.");
         }
-        return new ResponseEntity<TechnicianDto>(convertToDTO(technicianService.updateTechnicianInfo(technician)), HttpStatus.OK);
+        Technician updatedTechnician = technicianService.updateTechnicianInfo(technician);
+        return new ResponseEntity<>(convertToDto(updatedTechnician), HttpStatus.OK);
     }
 
     @DeleteMapping(value = {"/delete", "/delete/"})
@@ -98,7 +100,7 @@ public class TechnicianController
         {
             //throw new IllegalArgumentException("You cannot delete a technician account other than your own.");
         }
-        return new ResponseEntity<TechnicianDto>(convertToDTO(technicianService.deleteTechnician(technician)), HttpStatus.OK);
+        return new ResponseEntity<>(convertToDto(technicianService.deleteTechnician(technician)), HttpStatus.OK);
     }
 
     @GetMapping("/viewschedule/{id}")

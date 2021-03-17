@@ -34,7 +34,8 @@ public class CustomerController
             return new ResponseEntity<CustomerDto>(new CustomerDto(), HttpStatus.ALREADY_REPORTED);
             //throw new IllegalArgumentException("Email already in use, please try a different email address.");
         }
-        return new ResponseEntity<CustomerDto>(convertToDto(customerService.createCustomer(customer.getEmail(), customer.getName(), hash(customer.getPassword()), customer.getPhone())), HttpStatus.OK);
+        Customer newCustomer = customerService.createCustomer(customer.getEmail(), customer.getName(), hash(customer.getPassword()), customer.getPhone());
+        return new ResponseEntity<>(convertToDto(newCustomer), HttpStatus.OK);
     }
 
     @PutMapping(value = {"/update", "/update/"})
@@ -59,7 +60,8 @@ public class CustomerController
             return new ResponseEntity<CustomerDto>(new CustomerDto(), HttpStatus.NOT_ACCEPTABLE);
             //throw new IllegalArgumentException("No such customer found.");
         }
-        return new ResponseEntity<CustomerDto>(convertToDto(customerService.updateCustomerInfo(customer)), HttpStatus.OK);
+        Customer updatedCustomer = customerService.updateCustomerInfo(customer);
+        return new ResponseEntity<>(convertToDto(updatedCustomer), HttpStatus.OK);
     }
 
     @DeleteMapping(value = {"/delete", "/delete/"})

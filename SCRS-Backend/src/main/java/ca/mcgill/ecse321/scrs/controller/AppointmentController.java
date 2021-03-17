@@ -86,7 +86,7 @@ public class AppointmentController
         Appointment appointment = appointmentService.createAppointment(appointmentDto.getAppointmentType(),
                 appointmentDto.getService(), appointmentDto.getNote(), appointmentDto.getPaymentStatus(),
                 customerService.getCustomerByID(appointmentDto.getCustomerId()), timeslots.toArray(new Timeslot[0]));
-        return new ResponseEntity<AppointmentDto>(Helper.convertToDto(appointment), HttpStatus.OK);
+        return new ResponseEntity<>(Helper.convertToDto(appointment), HttpStatus.OK);
     }
 
     @PutMapping(value = {"/pay", "/pay/"})
@@ -94,7 +94,7 @@ public class AppointmentController
     {
         Appointment appointment = appointmentService.getAppointmentById(appointmentId);
         appointment.setPaid(true);
-        return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
+        return new ResponseEntity<>(Helper.convertToDto(appointment), HttpStatus.OK);
     }
 
     @PutMapping(value = {"/rate-appointment", "/rate-appointment/"})
@@ -107,13 +107,13 @@ public class AppointmentController
     }
 
     @PutMapping(value = {"/modifyAppointment", "/modifyAppointment/"})
-    public ResponseEntity<AppointmentDto> modifyAppointment(@RequestBody AppointmentDto apptAppointmentDto)
+    public ResponseEntity<AppointmentDto> modifyAppointment(@RequestBody AppointmentDto appointmentDto)
     {
-        if (apptAppointmentDto == null)
+        if (appointmentDto == null)
         {
             throw new IllegalArgumentException("Invalid appointment");
         }
-        Appointment appointment = appointmentService.getAppointmentById(apptAppointmentDto.getAppointmentId());
+        Appointment appointment = appointmentService.getAppointmentById(appointmentDto.getAppointmentId());
         appointmentService.modifyAppointment(appointment);
         return new ResponseEntity<>(Helper.convertToDto(appointment), HttpStatus.OK);
     }
