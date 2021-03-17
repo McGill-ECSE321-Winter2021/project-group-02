@@ -1,6 +1,5 @@
 package ca.mcgill.ecse321.scrs.controller;
 
-import ca.mcgill.ecse321.scrs.dao.CustomerRepository;
 import ca.mcgill.ecse321.scrs.dto.AppointmentDto;
 import ca.mcgill.ecse321.scrs.model.Appointment;
 import ca.mcgill.ecse321.scrs.model.Timeslot;
@@ -19,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import static ca.mcgill.ecse321.scrs.controller.Helper.*;
+
 @RestController
 @RequestMapping(path = "/api/appointment", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AppointmentController
@@ -36,7 +37,7 @@ public class AppointmentController
         if(id.equals("-1") || id == null)return new ResponseEntity<>(null, HttpStatus.OK);
         int ID = Integer.parseInt(id);
 
-        List<Appointment> list = appointmentService.getAppointmentsByCustomer(customerRepository.findByScrsUserId(ID));
+        List<Appointment> list = appointmentService.getAppointmentsByCustomer(customerService.getCustomerByID(ID));
         List<AppointmentDto> dtoList = new ArrayList<>();
 
         for(int i = 0 ; i < list.size() ; i++){
@@ -51,7 +52,7 @@ public class AppointmentController
         if(id.equals("-1") || id == null)return new ResponseEntity<>(null, HttpStatus.OK);
         int ID = Integer.parseInt(id);
 
-        List<Appointment> list = appointmentService.getAppointmentsByCustomer(customerRepository.findByScrsUserId(ID));
+        List<Appointment> list = appointmentService.getAppointmentsByCustomer(customerService.getCustomerByID(ID));
 
         //finding the same date next week
         Date now = new Date(LocalDate.now().toEpochDay());
@@ -66,10 +67,10 @@ public class AppointmentController
             AppointmentDto appointmentDto = convertToDto(list.get(i));
             for(int j = 0 ; j < timeslots.size() ; j++){
                 if(timeslots.get(j).getStartDate().compareTo(now) < 0 && timeslots.get(j).getStartDate().compareTo(nextWeek) > 0){
-                    appointmentDto.getTimeslots().remove(j);
+                    appointmentDto.getTimeslotsId().remove(j);
                 }
             }
-            if(!appointmentDto.getTimeslots().isEmpty()) notificationList.add(appointmentDto);
+            if(!appointmentDto.getTimeslotsId().isEmpty()) notificationList.add(appointmentDto);
         }
 
         return new ResponseEntity<>(notificationList, HttpStatus.OK);
@@ -86,15 +87,15 @@ public class AppointmentController
         Appointment appointment = appointmentService.createAppointment(appointmentDto.getAppointmentType(),
                 appointmentDto.getService(), appointmentDto.getNote(), appointmentDto.getPaymentStatus(),
                 customerService.getCustomerByID(appointmentDto.getCustomerId()), timeslots.toArray(new Timeslot[0]));
-        return new ResponseEntity<>(Helper.convertToDto(appointment), HttpStatus.OK);
+        return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
     }
 
     @PutMapping(value = {"/pay", "/pay/"})
-    public AppointmentDto payAppointment(@RequestParam(name = "appointmentId") int appointmentId)
+    public ResponseEntity<AppointmentDto> payAppointment(@RequestParam(name = "appointmentId") int appointmentId)
     {
         Appointment appointment = appointmentService.getAppointmentById(appointmentId);
         appointment.setPaid(true);
-        return new ResponseEntity<>(Helper.convertToDto(appointment), HttpStatus.OK);
+        return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
     }
 
     @PutMapping(value = {"/rate-appointment", "/rate-appointment/"})
@@ -103,7 +104,7 @@ public class AppointmentController
         if (rating > 10 || rating < 0) throw new IllegalArgumentException("Invalid rating");
 
         Appointment appointment = appointmentService.rateAppointment(appointmentId, rating);
-        return new ResponseEntity<>(Helper.convertToDto(appointment), HttpStatus.OK);
+        return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
     }
 
     @PutMapping(value = {"/modifyAppointment", "/modifyAppointment/"})
@@ -115,7 +116,7 @@ public class AppointmentController
         }
         Appointment appointment = appointmentService.getAppointmentById(appointmentDto.getAppointmentId());
         appointmentService.modifyAppointment(appointment);
-        return new ResponseEntity<>(Helper.convertToDto(appointment), HttpStatus.OK);
+        return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
     }
 
 }
