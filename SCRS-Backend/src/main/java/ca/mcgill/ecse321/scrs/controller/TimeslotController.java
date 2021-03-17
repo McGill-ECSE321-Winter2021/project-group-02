@@ -116,6 +116,4 @@ public class TimeslotController
         }
         return new ResponseEntity<>(convertToDto(timeslotService.deleteTimeslot(timeslot)), HttpStatus.OK);
     }
-
-
 }
