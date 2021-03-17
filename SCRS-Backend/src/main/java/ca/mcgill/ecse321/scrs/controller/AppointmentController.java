@@ -76,7 +76,7 @@ public class AppointmentController
     }
 
     @PostMapping(value = {"/book", "/book/"})
-    public AppointmentDto bookAppointment(@RequestBody AppointmentDto appointmentDto)
+    public ResponseEntity<AppointmentDto> bookAppointment(@RequestBody AppointmentDto appointmentDto)
     {
         if (appointmentDto == null)
         {
@@ -86,7 +86,7 @@ public class AppointmentController
         Appointment appointment = appointmentService.createAppointment(appointmentDto.getAppointmentType(),
                 appointmentDto.getService(), appointmentDto.getNote(), appointmentDto.getPaymentStatus(),
                 customerService.getCustomerByID(appointmentDto.getCustomerId()), timeslots.toArray(new Timeslot[0]));
-        return new ResponseEntity<AppointmentDto>(convertToDto(a), HttpStatus.OK);
+        return new ResponseEntity<AppointmentDto>(Helper.convertToDto(appointment), HttpStatus.OK);
     }
 
     @PutMapping(value = {"/pay", "/pay/"})
