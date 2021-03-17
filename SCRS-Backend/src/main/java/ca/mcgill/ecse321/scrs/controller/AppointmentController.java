@@ -16,39 +16,45 @@ import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDto;
 
 @RestController
 @RequestMapping(path = "/api/appointment", produces = MediaType.APPLICATION_JSON_VALUE)
-public class AppointmentController {
+public class AppointmentController
+{
     @Autowired
     AppointmentService appointmentService;
 
     @GetMapping("/getall/{id}")
-    public ResponseEntity<ArrayList<Appointment>> getAll(@PathVariable("id") String id) {
+    public ResponseEntity<ArrayList<Appointment>> getAll(@PathVariable("id") String id)
+    {
         int ID = Integer.valueOf(id);
         return new ResponseEntity<>(new ArrayList<Appointment>(), HttpStatus.OK);
     }
 
     @GetMapping("/notifications/{id}")
-    public ResponseEntity<ArrayList<Appointment>> notifications(@PathVariable("id") String id) {
+    public ResponseEntity<ArrayList<Appointment>> notifications(@PathVariable("id") String id)
+    {
         int ID = Integer.valueOf(id);
         return new ResponseEntity<>(new ArrayList<Appointment>(), HttpStatus.OK);
     }
 
-    @PostMapping(value = { "/book", "/book/" })
-    public AppointmentDto bookAppointment(@RequestBody Appointment appointment) {
-        if (appointment == null) {
+    @PostMapping(value = {"/book", "/book/"})
+    public ResponseEntity<AppointmentDto> bookAppointment(@RequestBody Appointment appointment)
+    {
+        if (appointment == null)
+        {
             throw new IllegalArgumentException(
                     "Invalid appointment. Please submit a valid appointment booking to be created.");
         }
         Appointment a = appointmentService.createAppointment(appointment.getAppointmentType(), appointment.getService(),
                 appointment.getNote(), appointment.getPaid(), appointment.getCustomer(),
                 appointment.getTimeslots().toArray(new Timeslot[0]));
-        return convertToDto(a);
+        return new ResponseEntity<AppointmentDto>(convertToDto(a), HttpStatus.OK);
     }
 
-    @PutMapping(value = { "/pay", "/pay/" })
-    public AppointmentDto payAppointment(@RequestParam(name = "appointmentId") int appointmentId) {
+    @PutMapping(value = {"/pay", "/pay/"})
+    public ResponseEntity<AppointmentDto> payAppointment(@RequestParam(name = "appointmentId") int appointmentId)
+    {
         Appointment appointment = appointmentService.getAppointmentById(appointmentId);
         appointment.setPaid(true);
-        return convertToDto(appointment);
+        return new ResponseEntity<AppointmentDto>(convertToDto(appointment), HttpStatus.OK);
     }
     
     @PutMapping(value = {"/rate-appointment", "/rate-appointment/"})
