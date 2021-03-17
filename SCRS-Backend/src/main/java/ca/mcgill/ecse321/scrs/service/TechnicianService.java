@@ -11,13 +11,15 @@ import java.util.List;
 import static ca.mcgill.ecse321.scrs.service.ServiceHelpers.toList;
 
 @Service
-public class TechnicianService {
+public class TechnicianService
+{
 
     @Autowired
     TechnicianRepository technicianRepository;
 
     @Transactional
-    public Technician createTechnician(String email, String name, String password, String phone) {
+    public Technician createTechnician(String email, String name, String password, String phone)
+    {
         Technician technician = new Technician();
         technician.setEmail(email);
         technician.setName(name);
@@ -28,27 +30,32 @@ public class TechnicianService {
     }
 
     @Transactional
-    public List<Technician> getAllTechnicians() {
+    public List<Technician> getAllTechnicians()
+    {
         return toList(technicianRepository.findAll());
     }
 
     @Transactional
-    public Technician getTechnicianByID(int id) {
+    public Technician getTechnicianByID(int id)
+    {
         return technicianRepository.findByScrsUserId(id);
     }
 
     @Transactional
-    public Technician getTechnicianByEmail(String email) {
+    public Technician getTechnicianByEmail(String email)
+    {
         return technicianRepository.findByEmail(email);
     }
 
     @Transactional
-    public Technician getTechnicianByName(String name) {
+    public Technician getTechnicianByName(String name)
+    {
         return technicianRepository.findByName(name);
     }
 
     @Transactional
-    public Technician getTechnicianByPhone(String phone) {
+    public Technician getTechnicianByPhone(String phone)
+    {
         return technicianRepository.findByPhone(phone);
     }
 
@@ -56,6 +63,13 @@ public class TechnicianService {
     public Technician updateTechnicianInfo(Technician technician)
     {
         technicianRepository.save(technician);
+        return technician;
+    }
+
+    @Transactional
+    public Technician deleteTechnician(Technician technician)
+    {
+        technicianRepository.delete(technician);
         return technician;
     }
 }

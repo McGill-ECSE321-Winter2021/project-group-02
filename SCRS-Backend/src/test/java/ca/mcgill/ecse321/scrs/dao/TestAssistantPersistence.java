@@ -10,8 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -69,5 +68,23 @@ public class TestAssistantPersistence
         assertEquals(assistant.getEmail(), actualAssistant.getEmail());
         assertEquals(assistant.getPhone(), actualAssistant.getPhone());
         assertEquals(scrs.getScrsId(), actualAssistant.getScrs().getScrsId());
+    }
+
+    /**
+     * Test the persistence of an assistant object in the database.
+     * @author SimonNM
+     */
+    @Test
+    @Transactional
+    public void testPersistAndLoadAssistantByEmail()
+    {
+        SCRS scrs = new SCRS();
+        Assistant assistant = new Assistant("name", "password", "name@mail.mcgill.ca", "111-1111", scrs);
+        scrsRepository.save(scrs);
+        assistantRepository.save(assistant);
+
+        Assistant actualAssistant = assistantRepository.findByEmail("aaaaaaaaaaaaa");
+
+        assertNull(actualAssistant);
     }
 }

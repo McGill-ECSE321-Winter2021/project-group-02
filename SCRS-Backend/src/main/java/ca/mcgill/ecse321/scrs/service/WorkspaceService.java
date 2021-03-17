@@ -11,13 +11,43 @@ import java.util.List;
 import static ca.mcgill.ecse321.scrs.service.ServiceHelpers.toList;
 
 @Service
-public class WorkspaceService {
+public class WorkspaceService
+{
 
     @Autowired
     WorkspaceRepository workspaceRepository;
 
     @Transactional
-    public List<Workspace> getAllWorkspaces() {
+    public Workspace createWorkspace(String name)
+    {
+        Workspace workspace = new Workspace();
+        workspace.setSpaceName(name);
+        workspaceRepository.save(workspace);
+        return workspace;
+    }
+
+    @Transactional
+    public List<Workspace> getAllWorkspaces()
+    {
         return toList(workspaceRepository.findAll());
+    }
+
+    @Transactional
+    public Workspace getWorkspaceById(int id)
+    {
+        return workspaceRepository.findByWorkspaceID(id);
+    }
+
+    @Transactional
+    public Workspace getWorkspaceByName(String name)
+    {
+        return workspaceRepository.findBySpaceName(name);
+    }
+
+    @Transactional
+    public Workspace deleteWorkspace(Workspace workspace)
+    {
+        workspaceRepository.delete(workspace);
+        return workspace;
     }
 }

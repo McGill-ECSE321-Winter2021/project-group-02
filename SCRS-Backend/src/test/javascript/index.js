@@ -1,3 +1,3 @@
-import testingAccounts from "./login.js";
+import testLogin from "./login.js";
 
-testingAccounts();
+testLogin();

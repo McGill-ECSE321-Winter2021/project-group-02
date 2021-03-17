@@ -1,6 +1,8 @@
 package ca.mcgill.ecse321.scrs.controller;
 
+import ca.mcgill.ecse321.scrs.dao.AssistantRepository;
 import ca.mcgill.ecse321.scrs.dao.CustomerRepository;
+import ca.mcgill.ecse321.scrs.dao.TechnicianRepository;
 import ca.mcgill.ecse321.scrs.model.Assistant;
 import ca.mcgill.ecse321.scrs.model.Customer;
 import ca.mcgill.ecse321.scrs.model.Technician;
@@ -20,16 +22,17 @@ public class LoginController
 
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private AssistantRepository assistantRepository;
+    @Autowired
+    private TechnicianRepository technicianRepository;
 
     @PostMapping (value = {"/customer", "/customer/"})
     public ResponseEntity<Boolean> loginCustomer(@RequestParam("email") String email, @RequestParam("password") String password, HttpServletResponse response) {
 
         String hashedPassword = Helper.hash(password);
-        System.out.println(email + ", " + password + ", " + hashedPassword);
 
         Customer customer = customerRepository.findByEmail(email);
-
-        System.out.println(customer.getPassword());
 
         if(customer == null || !customer.getPassword().equals(hashedPassword)) return new ResponseEntity<Boolean>(false, HttpStatus.OK);
 
@@ -44,15 +47,14 @@ public class LoginController
     public ResponseEntity<Boolean> loginAssistant(@RequestParam("email") String email, @RequestParam("password") String password, HttpServletResponse response) {
 
         String hashedPassword = Helper.hash(password);
-        System.out.println(email + ", " + password + ", " + hashedPassword);
 
-        Customer customer = customerRepository.findByEmail(email);
+        System.out.println(email);
 
-        System.out.println(customer.getPassword());
+        Assistant assistant = assistantRepository.findByEmail(email);
 
-        if(customer == null || !customer.getPassword().equals(hashedPassword)) return new ResponseEntity<Boolean>(false, HttpStatus.OK);
+        if(assistant == null || !assistant.getPassword().equals(hashedPassword)) return new ResponseEntity<Boolean>(false, HttpStatus.OK);
 
-        String id = "-1";
+        String id = ((Integer)assistant.getScrsUserId()).toString();
         Cookie cookie = new Cookie("id", id);
         response.addCookie(cookie);
 
@@ -63,15 +65,14 @@ public class LoginController
     public ResponseEntity<Boolean> loginTechnician(@RequestParam("email") String email, @RequestParam("password") String password, HttpServletResponse response) {
 
         String hashedPassword = Helper.hash(password);
-        System.out.println(email + ", " + password + ", " + hashedPassword);
 
-        Customer customer = customerRepository.findByEmail(email);
+        System.out.println(email);
 
-        System.out.println(customer.getPassword());
+        Technician technician = technicianRepository.findByEmail(email);
 
-        if(customer == null || !customer.getPassword().equals(hashedPassword)) return new ResponseEntity<Boolean>(false, HttpStatus.OK);
+        if(technician == null || !technician.getPassword().equals(hashedPassword)) return new ResponseEntity<Boolean>(false, HttpStatus.OK);
 
-        String id = "-1";
+        String id = ((Integer)technician.getScrsUserId()).toString();
         Cookie cookie = new Cookie("id", id);
         response.addCookie(cookie);
 
