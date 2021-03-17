@@ -176,7 +176,7 @@ public class TestTimeslotPersistence
         assertEquals(actualTimeslot.getWorkspace().getWorkspaceID(), ts1.getWorkspace().getWorkspaceID());
     }
 
-     *
+     /**
      * @author Simon Nakane Marcil
      */
     @Test
