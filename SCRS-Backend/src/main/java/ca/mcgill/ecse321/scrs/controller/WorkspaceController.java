@@ -68,7 +68,7 @@ public class WorkspaceController
         return new ResponseEntity<WorkspaceDto>(convertToDto(workspaceService.deleteWorkspace(workspace)), HttpStatus.OK);
     }
 
-    @GetMapping("/viewworkspaceavailabilies/{id}")
+    @GetMapping("/availabilies/{id}")
     public ResponseEntity<ArrayList<TimeslotDto>> getAllAvailableTimeslotsByWorkspace(@PathVariable("id") String workspaceId, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
         int id = Integer.parseInt(ID);
