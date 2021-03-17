@@ -11,7 +11,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDto;
@@ -25,23 +28,47 @@ public class AppointmentController {
     private CustomerRepository customerRepository;
 
     @GetMapping("/getall")
-    public ResponseEntity<List<Appointment>> getAll(@CookieValue(value = "id", defaultValue = "-1") String id) {
+    public ResponseEntity<List<AppointmentDto>> getAll(@CookieValue(value = "id", defaultValue = "-1") String id) {
         if(id.equals("-1") || id == null)return new ResponseEntity<>(null, HttpStatus.OK);
         int ID = Integer.parseInt(id);
 
         List<Appointment> list = appointmentService.getAppointmentsByCustomer(customerRepository.findByScrsUserId(ID));
+        List<AppointmentDto> dtoList = new ArrayList<>();
 
-        return new ResponseEntity<>(list, HttpStatus.OK);
+        for(int i = 0 ; i < list.size() ; i++){
+            dtoList.add(convertToDto(list.get(i)));
+        }
+
+        return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
 
     @GetMapping("/notifications")
-    public ResponseEntity<List<Appointment>> notifications(@CookieValue(value = "id", defaultValue = "-1") String id) {
+    public ResponseEntity<List<AppointmentDto>> notifications(@CookieValue(value = "id", defaultValue = "-1") String id) {
         if(id.equals("-1") || id == null)return new ResponseEntity<>(null, HttpStatus.OK);
         int ID = Integer.parseInt(id);
 
         List<Appointment> list = appointmentService.getAppointmentsByCustomer(customerRepository.findByScrsUserId(ID));
 
-        return new ResponseEntity<>(list, HttpStatus.OK);
+        //finding the same date next week
+        Date now = new Date(LocalDate.now().toEpochDay());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        calendar.add(Calendar.DATE, 7);
+        Date nextWeek = new Date(calendar.getTimeInMillis());
+
+        List<AppointmentDto> notificationList = new ArrayList<>();
+        for(int i = 0 ; i < list.size() ; i++){
+            List<Timeslot> timeslots = list.get(i).getTimeslots();
+            AppointmentDto appointmentDto = convertToDto(list.get(i));
+            for(int j = 0 ; j < timeslots.size() ; j++){
+                if(timeslots.get(j).getStartDate().compareTo(now) < 0 && timeslots.get(j).getStartDate().compareTo(nextWeek) > 0){
+                    appointmentDto.getTimeslots().remove(j);
+                }
+            }
+            if(!appointmentDto.getTimeslots().isEmpty()) notificationList.add(appointmentDto);
+        }
+
+        return new ResponseEntity<>(notificationList, HttpStatus.OK);
     }
 
     @PostMapping(value = { "/book", "/book/" })
