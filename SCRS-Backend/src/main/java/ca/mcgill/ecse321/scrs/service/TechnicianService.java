@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static ca.mcgill.ecse321.scrs.service.ServiceHelpers.checkAccountInfoValidity;
 import static ca.mcgill.ecse321.scrs.service.ServiceHelpers.toList;
 
 @Service
@@ -20,6 +21,7 @@ public class TechnicianService
     @Transactional
     public Technician createTechnician(String email, String name, String password, String phone)
     {
+        checkAccountInfoValidity(email, name, password, phone);
         Technician technician = new Technician();
         technician.setEmail(email);
         technician.setName(name);
@@ -62,6 +64,7 @@ public class TechnicianService
     @Transactional
     public Technician updateTechnicianInfo(Technician technician)
     {
+        checkAccountInfoValidity(technician);
         technicianRepository.save(technician);
         return technician;
     }
