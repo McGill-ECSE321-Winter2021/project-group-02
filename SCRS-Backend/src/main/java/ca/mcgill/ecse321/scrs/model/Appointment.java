@@ -28,13 +28,14 @@ public class Appointment
     // Appointment Associations
     @ManyToOne
     private Customer customer;
-    @OneToMany //0..1 to 1..*
+    @OneToMany(fetch = FetchType.EAGER) //0..1 to 1..*
     private List<Timeslot> timeslots;
     @ManyToOne
     private SCRS scrs;
 
     public Appointment()
     {
+        timeslots = new ArrayList<Timeslot>();
     }
 
     public Appointment(AppointmentType aAppointmentType, String aService, String aNote,
