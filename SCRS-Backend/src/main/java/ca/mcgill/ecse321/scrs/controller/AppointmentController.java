@@ -1,6 +1,7 @@
 package ca.mcgill.ecse321.scrs.controller;
 
 import ca.mcgill.ecse321.scrs.dto.AppointmentDto;
+import ca.mcgill.ecse321.scrs.dto.TimeslotDto;
 import ca.mcgill.ecse321.scrs.model.Appointment;
 import ca.mcgill.ecse321.scrs.model.Customer;
 import ca.mcgill.ecse321.scrs.model.Timeslot;
@@ -35,14 +36,15 @@ public class AppointmentController
 
     @GetMapping(path = {"/getall", "/getall/"})
     public ResponseEntity<List<AppointmentDto>> getAllAppointments(@CookieValue(value = "id", defaultValue = "-1") String id) {
-        if(id.equals("-1") || id == null)return new ResponseEntity<>(null, HttpStatus.OK);
+        if(id == null || id.equals("-1"))return new ResponseEntity<>(null, HttpStatus.OK);
         int ID = Integer.parseInt(id);
 
         List<Appointment> list = appointmentService.getAppointmentsByCustomer(customerService.getCustomerByID(ID));
         List<AppointmentDto> dtoList = new ArrayList<>();
 
-        for(int i = 0 ; i < list.size() ; i++){
-            dtoList.add(convertToDto(list.get(i)));
+        for (Appointment appointment : list)
+        {
+            dtoList.add(convertToDto(appointment));
         }
 
         return new ResponseEntity<>(dtoList, HttpStatus.OK);
@@ -50,7 +52,7 @@ public class AppointmentController
 
     @GetMapping(path = {"/notifications", "/notifications/"})
     public ResponseEntity<List<AppointmentDto>> notifications(@CookieValue(value = "id", defaultValue = "-1") String id) {
-        if(id.equals("-1") || id == null)return new ResponseEntity<>(null, HttpStatus.OK);
+        if(id == null ||id.equals("-1"))return new ResponseEntity<>(null, HttpStatus.OK);
         int ID = Integer.parseInt(id);
 
         List<Appointment> list = appointmentService.getAppointmentsByCustomer(customerService.getCustomerByID(ID));
@@ -63,15 +65,22 @@ public class AppointmentController
         Date nextWeek = new Date(calendar.getTimeInMillis());
 
         List<AppointmentDto> notificationList = new ArrayList<>();
-        for(int i = 0 ; i < list.size() ; i++){
-            List<Timeslot> timeslots = list.get(i).getTimeslots();
-            AppointmentDto appointmentDto = convertToDto(list.get(i));
-            for(int j = 0 ; j < timeslots.size() ; j++){
-                if(timeslots.get(j).getStartDate().compareTo(now) < 0 && timeslots.get(j).getStartDate().compareTo(nextWeek) > 0){
-                    appointmentDto.getTimeslotsId().remove(j);
+        for (Appointment appointment : list)
+        {
+            List<Timeslot> timeslots = appointment.getTimeslots();
+            ArrayList<Integer> newTimeslots = new ArrayList<>();
+            for (Timeslot timeslot : timeslots)
+            {
+                if (timeslot.getStartDate().compareTo(now) >= 0 && timeslot.getStartDate().compareTo(nextWeek) <= 0)
+                {
+                    newTimeslots.add(timeslot.getTimeSlotID());
                 }
             }
-            if(!appointmentDto.getTimeslotsId().isEmpty()) notificationList.add(appointmentDto);
+            if (!newTimeslots.isEmpty())
+            {
+                AppointmentDto appointmentDto = new AppointmentDto(appointment.getAppointmentID(), appointment.getAppointmentType().toString(), appointment.getService(), appointment.getNote(), appointment.getRating(), appointment.getFeedback(), appointment.getPaid(), appointment.getCustomer().getScrsUserId(), newTimeslots);
+                notificationList.add(appointmentDto);
+            }
         }
 
         return new ResponseEntity<>(notificationList, HttpStatus.OK);

@@ -3,6 +3,7 @@ package ca.mcgill.ecse321.scrs.controller;
 import ca.mcgill.ecse321.scrs.dto.CustomerDto;
 import ca.mcgill.ecse321.scrs.dto.TechnicianDto;
 import ca.mcgill.ecse321.scrs.dto.TimeslotDto;
+import ca.mcgill.ecse321.scrs.model.Customer;
 import ca.mcgill.ecse321.scrs.model.Technician;
 import ca.mcgill.ecse321.scrs.model.Timeslot;
 import ca.mcgill.ecse321.scrs.service.SCRSUserService;
@@ -13,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,21 +39,25 @@ public class TechnicianController
         int id = Integer.parseInt(ID);
         if (id == -1)
         {
-            //throw new IllegalArgumentException("Please login to create a technician account.");
+            // TODO handle no login error with cookies (uncomment next line)
+            //return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.UNAUTHORIZED);
+            // Please login to create a technician account.
         }
         if (technician == null)
         {
             return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.EXPECTATION_FAILED);
-            //throw new IllegalArgumentException("Invalid technician. Please submit a valid technician account to be created.");
+            // Invalid technician. Please submit a valid technician account to be created.
         }
         if (!isAdmin(scrsUserService.getSCRSUserByID(id))) //does not have permission to edit.
         {
-            //throw new IllegalArgumentException("You do not have permission to create a technician account.");
+            // TODO handle bad login error with cookies (uncomment next line)
+            //return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.UNAUTHORIZED);
+            // You do not have permission to create a technician account.
         }
         if (technicianService.getTechnicianByEmail(technician.getEmail()) != null)
         {
             return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.ALREADY_REPORTED);
-            //throw new IllegalArgumentException("Email already in use, please try a different email address.");
+            // Email already in use, please try a different email address.
         }
         Technician newTechnician = technicianService.createTechnician(technician.getEmail(), technician.getName(), hash(technician.getPassword()), technician.getPhone());
         return new ResponseEntity<>(convertToDto(newTechnician), HttpStatus.OK);
@@ -62,43 +69,52 @@ public class TechnicianController
         int id = Integer.parseInt(ID);
         if (id == -1)
         {
-            //throw new IllegalArgumentException("Please login to modify a technician account.");
+            // TODO handle no login error with cookies (uncomment next line)
+            //return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.UNAUTHORIZED);
+            // Please login to modify a technician account.
         }
         if (technician == null)
         {
             return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.EXPECTATION_FAILED);
-            //throw new IllegalArgumentException("Invalid technician.");
+            // Invalid technician.
         }
         if (!isAdmin(scrsUserService.getSCRSUserByID(id)) && id != technician.getScrsUserId()) //does not have permission to edit.
         {
-            //throw new IllegalArgumentException(".");
+            // TODO handle bad login error with cookies (uncomment next line)
+            //return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.UNAUTHORIZED);
+            // You do not have permission to create a technician account.
         }
         if (technicianService.getTechnicianByID(technician.getScrsUserId()) == null)
         {
             return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.NOT_ACCEPTABLE);
-            //throw new IllegalArgumentException("No such technician found.");
+            // No such technician found.
         }
         Technician updatedTechnician = technicianService.updateTechnicianInfo(technician);
         return new ResponseEntity<>(convertToDto(updatedTechnician), HttpStatus.OK);
     }
 
-    @DeleteMapping(value = {"/delete", "/delete/"})
-    public ResponseEntity<TechnicianDto> deleteTechnician(@RequestParam(value = "id") int technicianID, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    @DeleteMapping(value = {"/delete/{id}", "/delete/{id}/"})
+    public ResponseEntity<TechnicianDto> deleteTechnician(@PathVariable String id, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
-        int id = Integer.parseInt(ID);
-        if (id == -1)
+        int technicianID = Integer.parseInt(id);
+        int idCookie = Integer.parseInt(ID);
+        if (idCookie == -1)
         {
-            //throw new IllegalArgumentException("Please login to delete a technician account.");
+            // TODO handle no login error with cookies (uncomment next line)
+            //return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.UNAUTHORIZED);
+            // Please login to delete a technician account.
         }
         Technician technician = technicianService.getTechnicianByID(technicianID);
         if (technician == null)
         {
             return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.NOT_ACCEPTABLE);
-            //throw new IllegalArgumentException("Invalid technician. Please submit a valid technician account to be deleted.");
+            // Invalid technician. Please submit a valid technician account to be deleted.
         }
-        if (!isAdmin(scrsUserService.getSCRSUserByID(id)) && id != technicianID) //does not have permission to edit.
+        if (!isAdmin(scrsUserService.getSCRSUserByID(idCookie)) && idCookie != technicianID) //does not have permission to edit.
         {
-            //throw new IllegalArgumentException("You cannot delete a technician account other than your own.");
+            // TODO handle bad login error with cookies (uncomment next line)
+            //return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.UNAUTHORIZED);
+            // You cannot delete a technician account other than your own.
         }
         return new ResponseEntity<>(convertToDto(technicianService.deleteTechnician(technician)), HttpStatus.OK);
     }
