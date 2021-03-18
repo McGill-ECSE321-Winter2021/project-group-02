@@ -214,10 +214,8 @@ const testAssignTimeslotToTechnician = async () => {
   let technicianIdToCheck = -1; // will update this value with the created technician
   let timeslotIdToAssign = -1;
 
-  console.log("");
-
   let wipeDatabaseResponse = await axios.delete(
-      backendAddress + "/api/database/wipe"
+    backendAddress + "/api/database/wipe"
   );
 
   // Set up a technician for test
@@ -229,19 +227,20 @@ const testAssignTimeslotToTechnician = async () => {
     };
 
     let createTechnicianResponse = await axios.post(
-        backendAddress + "/api/technician/create",
-        createTechnicianData);
+      backendAddress + "/api/technician/create",
+      createTechnicianData
+    );
 
     if (createTechnicianResponse.status !== 200)
       throw "Error: Failed to create technician for test 'assignTechnicianToTimeslot'";
 
     technicianIdToCheck = createTechnicianResponse.data.technicianId;
 
-    console.log(`CreatedTechnician with id ${createTechnicianResponse.data.technicianId}`);  // todo
-
-  } catch (e)
-  {
-    console.log("Error: Failed to create technician for test 'assignTechnicianToTimeslot'");
+    //console.log(`CreatedTechnician with id ${createTechnicianResponse.data.technicianId}`);  // todo
+  } catch (e) {
+    console.log(
+      "Error: Failed to create technician for test 'assignTechnicianToTimeslot'"
+    );
     console.log(e);
   }
 
@@ -250,8 +249,9 @@ const testAssignTimeslotToTechnician = async () => {
     let createWorkspaceData = "name=foo";
 
     let createWorkspaceResponse = await axios.post(
-        backendAddress + "/api/workspace/create",
-        createWorkspaceData);
+      backendAddress + "/api/workspace/create",
+      createWorkspaceData
+    );
 
     if (createWorkspaceResponse.status !== 200) {
       throw "Error: Failed to create workspace";
@@ -263,116 +263,105 @@ const testAssignTimeslotToTechnician = async () => {
       startTime: +new Date(),
       endTime: +new Date(),
       workspaceId: createWorkspaceResponse.data.workspaceId,
-      techniciansId: [ ]
+      techniciansId: [],
     };
 
     let createTimeslotResponse = await axios.post(
-        backendAddress + "/api/timeslot/create",
-        createTimeslotData);
+      backendAddress + "/api/timeslot/create",
+      createTimeslotData
+    );
 
-    if (createTimeslotResponse.status !== 200)
-    {
+    if (createTimeslotResponse.status !== 200) {
       throw "Error: Failed to create timeslot for test 'assignTechnicianToTimeslot'";
     }
 
-
     timeslotIdToAssign = createTimeslotResponse.data.timeslotId;
 
-    console.log(`Created Timeslot with id ${createTimeslotResponse.data.timeslotId}`); // todo
-
-  } catch (e)
-  {
-    console.log("Error: Failed to create timeslot for test 'assignTechnicianToTimeslot'");
+    //console.log(`Created Timeslot with id ${createTimeslotResponse.data.timeslotId}`); // todo
+  } catch (e) {
+    console.log(
+      "Error: Failed to create timeslot for test 'assignTechnicianToTimeslot'"
+    );
     console.log(e);
   }
 
   // test assign timeslot to technician
-  try
-  {
+  try {
     let assignTimeslotData = `timeslotId=${timeslotIdToAssign}&technicianId=${technicianIdToCheck}`;
 
     let assignTimeslotResponse = await axios.put(
-        backendAddress + "/api/timeslot/assignTech",
-        assignTimeslotData);
+      backendAddress + "/api/timeslot/assignTech",
+      assignTimeslotData
+    );
 
-    if (assignTimeslotResponse.status !== 200)
-    {
+    if (assignTimeslotResponse.status !== 200) {
       throw "Error: failed to assign timeslot to technician";
     }
 
     scoreCounter++;
-  } catch (e)
-  {
-    console.log("Error: Failed to assign timeslot to technician for test 'assignTechnicianToTimeslot'");
+  } catch (e) {
+    console.log(
+      "Error: Failed to assign timeslot to technician for test 'assignTechnicianToTimeslot'"
+    );
     console.log(e);
   }
 
   // test assign timeslot to technician who already has that timeslot assigned to them
-  try
-  {
+  try {
     let assignTimeslotData = `timeslotId=${timeslotIdToAssign}&technicianId=${technicianIdToCheck}`;
 
     let assignTimeslotResponse = await axios.put(
-        backendAddress + "/api/timeslot/assignTech",
-        assignTimeslotData);
+      backendAddress + "/api/timeslot/assignTech",
+      assignTimeslotData
+    );
 
-    if (assignTimeslotResponse.status === 200)
-    {
+    if (assignTimeslotResponse.status === 200) {
       console.log("Error: duplicate timeslot assigned to technician");
     }
-
-  } catch (e)
-  {
+  } catch (e) {
     scoreCounter++;
   }
 
   // test assign timeslot to technician who doesn't exist
-  try
-  {
+  try {
     let assignTimeslotData = `timeslotId=${timeslotIdToAssign}&technicianId=-1`;
 
     let assignTimeslotResponse = await axios.put(
-        backendAddress + "/api/timeslot/assignTech",
-        assignTimeslotData);
+      backendAddress + "/api/timeslot/assignTech",
+      assignTimeslotData
+    );
 
-    if (assignTimeslotResponse.status === 200)
-    {
+    if (assignTimeslotResponse.status === 200) {
       console.log("Error: assigned timeslot to invalid technician");
     }
-
-  } catch (e)
-  {
+  } catch (e) {
     scoreCounter++;
   }
 
   // test assign timeslot which doesn't exist to technician
-  try
-  {
+  try {
     let assignTimeslotData = `timeslotId=-1&technicianId=${technicianIdToCheck}`;
 
     let assignTimeslotResponse = await axios.put(
-        backendAddress + "/api/timeslot/assignTech",
-        assignTimeslotData);
+      backendAddress + "/api/timeslot/assignTech",
+      assignTimeslotData
+    );
 
-    if (assignTimeslotResponse.status === 200)
-    {
+    if (assignTimeslotResponse.status === 200) {
       console.log("Error: assigned invalid timeslot to technician");
     }
-
-  } catch (e)
-  {
+  } catch (e) {
     scoreCounter++;
   }
-
 
   //compiling results
   if (scoreCounter === numberOfTests)
     console.log("All the assign technician to timeslot tests were successful!");
   else
     console.log(
-        `${scoreCounter}/${numberOfTests} assign technician to timeslot tests were successful.`
+      `${scoreCounter}/${numberOfTests} assign technician to timeslot tests were successful.`
     );
   console.log("");
 };
 
-export {testTechnician, testAssignTimeslotToTechnician};
+export { testTechnician, testAssignTimeslotToTechnician };
