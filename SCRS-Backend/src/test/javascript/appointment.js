@@ -1,120 +1,118 @@
 import axios from "axios";
 
-const testAppointment = async () => {
+const testAppointmentBookingAndPayment = async () => {
   const backend_address = "http://localhost:8080";
   let scoreCounter = 0;
-  const numberOfTests = 6;
+  const numberOfTests = 2;
+  let customerIdToCheck = -1;
+  let timeslotIdToCheck = -1;
+  let appointmentDataToCheck = null;
 
-  // getting all appointments test 1
+  // ========== test setups ==========
   try {
-    let getTest = await axios.get(
-        backend_address + "/api/appointment/getall"
+    let wipeDatabaseResponse = await axios.delete(
+        backend_address + "/api/database/wipe"
     );
 
-    let responseDataGet = getTest.data;
-    let statusCode = getTest.status;
-    // TODO test respnseData
+    // create customer
+    let createCustomerData = {
+      name: "Bababooey",
+      password: "got bababooied",
+      email: "babaooey@gmail.com",
+      phone: "111-111-1111",
+    };
+    let createCustomerPost = await axios.post(
+        backend_address + "/api/customer/create",
+        createCustomerData);
+    customerIdToCheck = createCustomerPost.data.customerId;
+
+    // create workspace
+    let createWorkspaceData = "name=foo";
+    let createWorkspacePost = await axios.post(
+        backend_address + "/api/workspace/create",
+        createWorkspaceData);
+
+    // create timeslot
+    let createTimeslotData = {
+      startDate: Date.now(),
+      endDate: Date.now(),
+      startTime: +new Date(),
+      endTime: +new Date(),
+      workspaceId: createWorkspacePost.data.workspaceId,
+      techniciansId: [ ]
+    };
+    let createTimeslotPost = await axios.post(
+        backend_address + "/api/timeslot/create",
+        createTimeslotData);
+    timeslotIdToCheck = createTimeslotPost.data.timeslotId;
   } catch (error) {
-    console.log("/getall Test 1 unsuccessful:");
-    console.log(`${error}`);
+    console.log("Setup for testAppointment FAILED");
   }
 
-  // getting notifications test 1
+  // ========== booking an appointment (Test 1) ==========
   try {
-    let getTest = await axios.get(
-        backend_address + "/api/appointment/notifications"
-    );
-
-    let responseDataGet = getTest.data;
-    let statusCode = getTest.status;
-    // TODO test respnseData
-  } catch (error) {
-    console.log("/notifications Test 1 unsuccessful:");
-    console.log(`${error}`);
-  }
-
-  // booking an appointment Test 1
-  try {
-    let sentData = {
-      // TODO write data to send
+    let bookAppointmentData = {
+      appointmentType: "CarWash",
+      service: "Car wash",
+      note: "Hello world",
+      customerId: customerIdToCheck,
+      timeslotsId: [timeslotIdToCheck]
     };
 
-    let postTest = await axios.post(
+    let bookAppointmentResponse = await axios.post(
       backend_address + "/api/appointment/book",
-      sentData
-    );
+        bookAppointmentData);
 
-    let responseDataPost = postTest.data;
-    let statusCode = postTest.status;
-    // TODO test respnseData
-    if (responseDataPost.customerName === sentData.name && statusCode === 200)
-      scoreCounter++;
+    if (bookAppointmentResponse.status === 200) {
+      appointmentDataToCheck = bookAppointmentResponse.data;
+      if (appointmentDataToCheck.appointmentType === bookAppointmentData.appointmentType && appointmentDataToCheck.customerId === bookAppointmentData.customerId) {
+        scoreCounter++;
+      } else {
+        console.log("Test booking an appointment unsuccessful:");
+        console.log(`returned data is erronous: ${appointmentDataToCheck}`);
+      }
+    }
     else {
-      console.log("Test 1 unsuccessful:");
-      if (responseDataPost.name === sentData.name)
-        console.log(`returned data is erronous: ${responseDataPost}`);
-      if (statusCode !== 200)
-        console.log(`status code not as expected: ${statusCode}`);
+      console.log("Test booking an appointment unsuccessful:");
+      console.log(`status code not as expected: ${bookAppointmentResponse.status}`);
     }
   } catch (error) {
-    console.log("/book Test 1 unsuccessful:");
-    console.log(`${error}`);
+    console.log("Test booking an appointment unsuccessful:");
+    console.log(error);
   }
 
-  // paying an appointment Test 1
+  // ========== paying an appointment (Test 2) ==========
   try {
-    let sentData = "appointmentId=1" // TODO write data to send
+    if (appointmentDataToCheck.paymentStatus) {
+      console.log("Test paying an appointment unsuccessful:");
+      console.log("Appointment is already payed");
+    } else {
+      let paymentData = `appointmentId=${appointmentDataToCheck.appointmentId}`;
 
-    let putTest = await axios.put(
-        backend_address + "/api/appointment/pay",
-        sentData
-    );
+      let paymentResponse = await axios.put(
+          backend_address + "/api/appointment/pay",
+          paymentData);
 
-    let responseDataPut = putTest.data;
-    let statusCode = putTest.status;
-    // TODO test respnseData
+      if(paymentResponse.status === 200 && paymentResponse.data.paymentStatus) {
+        scoreCounter++;
+      } else {
+        console.log("Test paying an appointment FAILED: ")
+        if (paymentResponse.status !== 200)
+        {
+          console.log("\tUnexpected status code returned");
+        }
+        else if (!paymentResponse.data.paymentStatus)
+        {
+          console.log(`\tAppointment was not payed returned ${paymentResponse}`);
+        }
+      }
+    }
   } catch (error) {
-    console.log("/pay Test 1 unsuccessful:");
-    console.log(`${error}`);
+    console.log("Test paying an appointment unsuccessful:");
+    console.log(error);
   }
 
-  // rating an appointment Test 1
-  try {
-    let sentData = "appointmentId=1&rating=10" // TODO write data to send
-
-    let putTest = await axios.put(
-        backend_address + "/api/appointment/rate-appointment",
-        sentData
-    );
-
-    let responseDataPut = putTest.data;
-    let statusCode = putTest.status;
-    // TODO test respnseData
-  } catch (error) {
-    console.log("/rate-appointment Test 1 unsuccessful:");
-    console.log(`${error}`);
-  }
-
-  // modifying an appointment Test 1
-  try {
-    let sentData = {
-      // TODO write data to send
-    };
-
-    let putTest = await axios.put(
-        backend_address + "/api/appointment/modifyAppointment",
-        sentData
-    );
-
-    let responseDataPut = putTest.data;
-    let statusCode = putTest.status;
-    // TODO test respnseData
-  } catch (error) {
-    console.log("/modifyAppointment Test 1 unsuccessful:");
-    console.log(`${error}`);
-  }
-
-  //compiling results
+  // ========== compiling results ==========
   if (scoreCounter === numberOfTests)
     console.log("All the login tests were successful!");
   else
@@ -470,4 +468,4 @@ const testModifyAppointment = async () => {
   console.log("");
 }
 
-export { testAppointment, testRateAppointment, testModifyAppointment };
+export { testAppointmentBookingAndPayment, testRateAppointment, testModifyAppointment };
