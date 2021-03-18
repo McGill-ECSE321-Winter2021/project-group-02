@@ -31,48 +31,43 @@ public class WorkspaceController
     {
         if (workspaceName == null)
         {
-            throw new IllegalArgumentException("Invalid workspace name.");
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(convertToDto(workspaceService.createWorkspace(workspaceName)), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(convertToDto(workspaceService.createWorkspace(workspaceName)), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @DeleteMapping(value = {"/delete", "/delete/"})
-    public ResponseEntity<WorkspaceDto> deleteWorkspace(@RequestParam(value = "id") int workspaceId, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    @DeleteMapping(value = {"/delete/{id}", "/delete/{id}/"})
+    public ResponseEntity<WorkspaceDto> deleteWorkspace(@PathVariable("id") int workspaceId)
     {
-        int id = Integer.parseInt(ID);
-        if (id == -1)
-        {
-            throw new IllegalArgumentException("Please login to delete a workspace.");
+        try {
+            Workspace workspace = workspaceService.getWorkspaceById(workspaceId);
+            if (workspace == null)
+            {
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            return new ResponseEntity<>(convertToDto(workspaceService.deleteWorkspace(workspace)), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        if (!isAdmin(scrsUserService.getSCRSUserByID(id))) //does not have permission to edit.
-        {
-            throw new IllegalArgumentException("You do not have permission to edit workspaces.");
-        }
-        Workspace workspace = workspaceService.getWorkspaceById(workspaceId);
-        if (workspace == null)
-        {
-            throw new IllegalArgumentException("Invalid workspace ID. Please submit a valid workspace to be deleted.");
-        }
-        return new ResponseEntity<>(convertToDto(workspaceService.deleteWorkspace(workspace)), HttpStatus.OK);
     }
 
-    @GetMapping(value = {"/availabilities","/availabilities/"})
-    public ResponseEntity<List<TimeslotDto>> getAllAvailableTimeslotsByWorkspace(@RequestParam(value = "id") int workspaceId, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    @GetMapping(value = {"/availabilities/{id}","/availabilities/{id}/"})
+    public ResponseEntity<List<TimeslotDto>> getAllAvailableTimeslotsByWorkspace(@PathVariable("id") int workspaceId)
     {
-        int id = Integer.parseInt(ID);
-        if (id == -1)
-        {
-            throw new IllegalArgumentException("Please login to view the workspace availabilities.");
+        try {
+            Workspace workspace= workspaceService.getWorkspaceById(workspaceId);
+            if(workspace==null)
+            {
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            return new ResponseEntity<>(convertToDto(timeslotService.getTimeslotsByWorkspace(workspace)),HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        if(!isAdmin(scrsUserService.getSCRSUserByID(id))) //does not have permission to view
-        {
-            throw new IllegalArgumentException("You do not have permission to view workspace availabilities.");
-        }
-        Workspace workspace= workspaceService.getWorkspaceById(workspaceId);
-        if(workspace==null)
-        {
-            throw new IllegalArgumentException("Invalid workspace. Please submit a valid workspace to view the availabilities.");
-        }
-        return new ResponseEntity<>(convertToDto(timeslotService.getTimeslotsByWorkspace(workspace)),HttpStatus.OK);
+
     }
 }

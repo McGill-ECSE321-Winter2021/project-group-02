@@ -22,7 +22,7 @@ public class Timeslot
     private Time endTime;
 
     // Timeslot Associations
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Technician> technicians;
     @ManyToOne
     private Workspace workspace;
