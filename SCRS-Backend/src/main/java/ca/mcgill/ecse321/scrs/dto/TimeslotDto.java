@@ -75,9 +75,12 @@ public class TimeslotDto
     public void setTechnicians(List<Technician> technicians)
     {
         this.techniciansId = new ArrayList<Integer>();
-        for (Technician technician: technicians)
+        if (technicians != null)
         {
-            techniciansId.add(technician.getScrsUserId());
+            for (Technician technician: technicians)
+            {
+                techniciansId.add(technician.getScrsUserId());
+            }
         }
     }
 }

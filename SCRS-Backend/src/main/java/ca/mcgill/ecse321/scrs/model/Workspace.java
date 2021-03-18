@@ -19,7 +19,7 @@ public class Workspace
     private String spaceName;
 
     // Workspace Associations
-    @OneToMany(mappedBy = "workspace")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "workspace")
     private List<Timeslot> availabilities;
     @ManyToOne
     private SCRS scrs;
