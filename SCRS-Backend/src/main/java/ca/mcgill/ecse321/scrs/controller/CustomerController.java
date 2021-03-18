@@ -62,7 +62,7 @@ public class CustomerController
         return new ResponseEntity<CustomerDto>(convertToDTO(customerService.updateCustomerInfo(customer)), HttpStatus.OK);
     }
 
-    @DeleteMapping(value = {"/delete", "/delete/"}, consumes = MediaType.)
+    @DeleteMapping(value = {"/delete", "/delete/"})
     public ResponseEntity<CustomerDto> deleteCustomer(@RequestParam(value = "id") String customerIDString, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
         int customerID = Integer.parseInt(customerIDString);
