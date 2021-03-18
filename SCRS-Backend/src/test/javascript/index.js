@@ -1,3 +1,8 @@
 import testLogin from "./login.js";
+import testCustomer from "./customer.js";
 
-testLogin();
+console.log("");
+
+testLogin().then(() => {
+  testCustomer();
+});

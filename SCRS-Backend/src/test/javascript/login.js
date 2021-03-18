@@ -5,8 +5,6 @@ const testLogin = async () => {
   let scoreCounter = 0;
   const numberOfTests = 9;
 
-  console.log("");
-
   //testing customer login with non-existing account
   try {
     let sentData = "email=babaooey@gmail.com&password=got bababooied";

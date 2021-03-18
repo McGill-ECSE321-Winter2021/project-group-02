@@ -6,13 +6,14 @@ import ca.mcgill.ecse321.scrs.service.CustomerService;
 import ca.mcgill.ecse321.scrs.service.SCRSUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static ca.mcgill.ecse321.scrs.controller.Helper.*;
 
 @RestController
-@RequestMapping(path = "/api/customer")
+@RequestMapping(path = "/api/customer",produces = MediaType.APPLICATION_JSON_VALUE)
 public class CustomerController
 {
     @Autowired
@@ -25,11 +26,13 @@ public class CustomerController
     {
         if (customer == null)
         {
-            throw new IllegalArgumentException("Invalid customer. Please submit a valid customer account to be created.");
+            return new ResponseEntity<CustomerDto>(new CustomerDto(), HttpStatus.EXPECTATION_FAILED);
+            //throw new IllegalArgumentException("Invalid customer. Please submit a valid customer account to be created.");
         }
         if (customerService.getCustomerByEmail(customer.getEmail()) != null)
         {
-            throw new IllegalArgumentException("Email already in use, please try a different email address.");
+            return new ResponseEntity<CustomerDto>(new CustomerDto(), HttpStatus.ALREADY_REPORTED);
+            //throw new IllegalArgumentException("Email already in use, please try a different email address.");
         }
         return new ResponseEntity<CustomerDto>(convertToDTO(customerService.createCustomer(customer.getEmail(), customer.getName(), hash(customer.getPassword()), customer.getPhone())), HttpStatus.OK);
     }
@@ -40,39 +43,43 @@ public class CustomerController
         int id = Integer.parseInt(ID);
         if (id == -1)
         {
-            throw new IllegalArgumentException("Please login to modify a customer account.");
+            //throw new IllegalArgumentException("Please login to modify a customer account.");
         }
         if (customer == null)
         {
-            throw new IllegalArgumentException("Invalid customer.");
+            return new ResponseEntity<CustomerDto>(new CustomerDto(), HttpStatus.EXPECTATION_FAILED);
+            //throw new IllegalArgumentException("Invalid customer.");
         }
         if (!isAdmin(scrsUserService.getSCRSUserByID(id)) && id != customer.getScrsUserId()) //does not have permission to edit.
         {
-            throw new IllegalArgumentException("You cannot modify a customer account other than your own.");
+            //throw new IllegalArgumentException("You cannot modify a customer account other than your own.");
         }
         if (customerService.getCustomerByID(customer.getScrsUserId()) == null)
         {
-            throw new IllegalArgumentException("No such customer found.");
+            return new ResponseEntity<CustomerDto>(new CustomerDto(), HttpStatus.NOT_ACCEPTABLE);
+            //throw new IllegalArgumentException("No such customer found.");
         }
         return new ResponseEntity<CustomerDto>(convertToDTO(customerService.updateCustomerInfo(customer)), HttpStatus.OK);
     }
 
-    @DeleteMapping(value = {"/delete", "/delete/"})
-    public ResponseEntity<CustomerDto> deleteCustomer(@RequestParam(value = "id") int customerID, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    @DeleteMapping(value = {"/delete", "/delete/"}, consumes = MediaType.)
+    public ResponseEntity<CustomerDto> deleteCustomer(@RequestParam(value = "id") String customerIDString, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
+        int customerID = Integer.parseInt(customerIDString);
         int id = Integer.parseInt(ID);
         if (id == -1)
         {
-            throw new IllegalArgumentException("Please login to delete a customer account.");
+            //throw new IllegalArgumentException("Please login to delete a customer account.");
         }
         Customer customer = customerService.getCustomerByID(customerID);
         if (customer == null)
         {
-            throw new IllegalArgumentException("Invalid customer. Please submit a valid customer account to be deleted.");
+            return new ResponseEntity<CustomerDto>(new CustomerDto(), HttpStatus.NOT_ACCEPTABLE);
+            //throw new IllegalArgumentException("Invalid customer. Please submit a valid customer account to be deleted.");
         }
         if (!isAdmin(scrsUserService.getSCRSUserByID(id)) && id != customerID) //does not have permission to edit.
         {
-            throw new IllegalArgumentException("You cannot delete a customer account other than your own.");
+            // throw new IllegalArgumentException("You cannot delete a customer account other than your own.");
         }
         return new ResponseEntity<CustomerDto>(convertToDTO(customerService.deleteCustomer(customer)), HttpStatus.OK);
     }

@@ -48,8 +48,6 @@ public class LoginController
 
         String hashedPassword = Helper.hash(password);
 
-        System.out.println(email);
-
         Assistant assistant = assistantRepository.findByEmail(email);
 
         if(assistant == null || !assistant.getPassword().equals(hashedPassword)) return new ResponseEntity<Boolean>(false, HttpStatus.OK);
@@ -65,8 +63,6 @@ public class LoginController
     public ResponseEntity<Boolean> loginTechnician(@RequestParam("email") String email, @RequestParam("password") String password, HttpServletResponse response) {
 
         String hashedPassword = Helper.hash(password);
-
-        System.out.println(email);
 
         Technician technician = technicianRepository.findByEmail(email);
 
