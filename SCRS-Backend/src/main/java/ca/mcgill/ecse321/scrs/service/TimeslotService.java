@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Date;
 import java.sql.Time;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static ca.mcgill.ecse321.scrs.service.ServiceHelpers.toList;
@@ -26,6 +27,17 @@ public class TimeslotService
 
     @Autowired
     AppointmentRepository appointmentRepository;
+
+    @Transactional
+    public List<Timeslot> getTimeslotsById(List<Integer> timeslotsId)
+    {
+        ArrayList<Timeslot> timeslots = new ArrayList<Timeslot>();
+        for (int id: timeslotsId)
+        {
+            timeslots.add(timeslotRepository.findByTimeSlotID(id));
+        }
+        return timeslots;
+    }
 
     @Transactional
     public List<Timeslot> getAllTimeslots()

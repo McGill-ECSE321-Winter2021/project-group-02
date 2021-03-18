@@ -2,28 +2,25 @@ package ca.mcgill.ecse321.scrs.controller;
 
 import ca.mcgill.ecse321.scrs.dto.TimeslotDto;
 import ca.mcgill.ecse321.scrs.dto.WorkspaceDto;
-import ca.mcgill.ecse321.scrs.model.Timeslot;
 import ca.mcgill.ecse321.scrs.model.Workspace;
 import ca.mcgill.ecse321.scrs.service.SCRSUserService;
 import ca.mcgill.ecse321.scrs.service.TimeslotService;
 import ca.mcgill.ecse321.scrs.service.WorkspaceService;
-import org.hibernate.jdbc.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDto;
-import static ca.mcgill.ecse321.scrs.controller.Helper.isAdmin;
+import static ca.mcgill.ecse321.scrs.controller.Helper.*;
 
+@RestController
+@RequestMapping(path = "/api/workspace")
 public class WorkspaceController
 {
     @Autowired
     TimeslotService timeslotService;
-
     @Autowired
     WorkspaceService workspaceService;
     @Autowired
@@ -45,7 +42,7 @@ public class WorkspaceController
         {
             throw new IllegalArgumentException("Invalid workspace name.");
         }
-        return new ResponseEntity<WorkspaceDto>(convertToDto(workspaceService.createWorkspace(workspaceName)), HttpStatus.OK);
+        return new ResponseEntity<>(convertToDto(workspaceService.createWorkspace(workspaceName)), HttpStatus.OK);
     }
 
     @DeleteMapping(value = {"/delete", "/delete/"})
@@ -56,41 +53,35 @@ public class WorkspaceController
         {
             throw new IllegalArgumentException("Please login to delete a workspace.");
         }
+        if (!isAdmin(scrsUserService.getSCRSUserByID(id))) //does not have permission to edit.
+        {
+            throw new IllegalArgumentException("You do not have permission to edit workspaces.");
+        }
         Workspace workspace = workspaceService.getWorkspaceById(workspaceId);
         if (workspace == null)
         {
             throw new IllegalArgumentException("Invalid workspace ID. Please submit a valid workspace to be deleted.");
         }
-        if (!isAdmin(scrsUserService.getSCRSUserByID(id))) //does not have permission to edit.
-        {
-            throw new IllegalArgumentException("You do not have permission to edit workspaces.");
-        }
-        return new ResponseEntity<WorkspaceDto>(convertToDto(workspaceService.deleteWorkspace(workspace)), HttpStatus.OK);
+        return new ResponseEntity<>(convertToDto(workspaceService.deleteWorkspace(workspace)), HttpStatus.OK);
     }
 
-    @GetMapping("/availabilies/{id}")
-    public ResponseEntity<ArrayList<TimeslotDto>> getAllAvailableTimeslotsByWorkspace(@PathVariable("id") String workspaceId, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    @GetMapping(value = {"/availabilities","/availabilities/"})
+    public ResponseEntity<List<TimeslotDto>> getAllAvailableTimeslotsByWorkspace(@RequestParam(value = "id") int workspaceId, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
         int id = Integer.parseInt(ID);
-        int workspaceID = Integer.parseInt(workspaceId);
         if (id == -1)
         {
             throw new IllegalArgumentException("Please login to view the workspace availabilities.");
-        }
-        Workspace workspace= workspaceService.getWorkspaceById(workspaceID);
-        if(workspace==null)
-        {
-            throw new IllegalArgumentException("Invalid workspace. Please submit a valid workspace to view the availabilities.");
-
         }
         if(!isAdmin(scrsUserService.getSCRSUserByID(id))) //does not have permission to view
         {
             throw new IllegalArgumentException("You do not have permission to view workspace availabilities.");
         }
-        List<TimeslotDto> timeslots= Helper.convertToDto((timeslotService.getTimeslotsByWorkspace(workspace)));
-        return new ResponseEntity<ArrayList<TimeslotDto>>(new ArrayList<>(timeslots),HttpStatus.OK);
-
+        Workspace workspace= workspaceService.getWorkspaceById(workspaceId);
+        if(workspace==null)
+        {
+            throw new IllegalArgumentException("Invalid workspace. Please submit a valid workspace to view the availabilities.");
+        }
+        return new ResponseEntity<>(convertToDto(timeslotService.getTimeslotsByWorkspace(workspace)),HttpStatus.OK);
     }
-
-
 }
