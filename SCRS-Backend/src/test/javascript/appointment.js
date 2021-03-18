@@ -323,5 +323,151 @@ const testRateAppointment = async () => {
   console.log("");
 }
 
+const testModifyAppointment = async () => {
+  const backend_address = "http://localhost:8080";
+  let scoreCounter = 0;
+  const numberOfTests = 2;
+  let customerIdToCheck = -1;
+  let appointmentToModify = {};
 
-export { testAppointment, testRateAppointment};
+  let wipeDatabaseResponse = await axios.delete(
+      backend_address + "/api/database/wipe"
+  );
+
+  // ------------ Begin setting up state for test ---------------
+  //creating customer account
+  try {
+    let createCustomerData = {
+      name: "Bababooey",
+      password: "got bababooied",
+      email: "babaooey@gmail.com",
+      phone: "111-111-1111",
+    };
+
+    let createCustomerPost = await axios.post(
+        backend_address + "/api/customer/create",
+        createCustomerData
+    );
+
+    if (createCustomerPost.status !== 200)
+    {
+      throw "Error: Failed to create customer";
+    }
+    else
+    {
+      customerIdToCheck = createCustomerPost.data.customerId;
+    }
+
+  } catch (error) {
+    console.log(error);
+  }
+
+  //booking an appointment
+
+  try {
+    let createWorkspaceData = "name=foo";
+
+    let createWorkspacePost = await axios.post(
+        backend_address + "/api/workspace/create",
+        createWorkspaceData);
+
+    if (createWorkspacePost.status !== 200) {
+      throw "Error: Failed to create workspace";
+    }
+
+    let createTimeslotData = {
+      startDate: Date.now(),
+      endDate: Date.now(),
+      startTime: +new Date(),
+      endTime: +new Date(),
+      workspaceId: createWorkspacePost.data.workspaceId,
+      techniciansId: [ ]
+    };
+
+    let createTimeslotPost = await axios.post(
+        backend_address + "/api/timeslot/create",
+        createTimeslotData);
+
+    if (createTimeslotPost.status !== 200)
+    {
+      throw "Error: Failed to create timeslot";
+    }
+
+    let createAppointmentData = {
+      appointmentType: "CarWash",
+      service: "beep",
+      note: "beep",
+      paid: "false",
+      customerId: customerIdToCheck,
+      timeslotsId: [
+        createTimeslotPost.data.timeslotId
+      ],
+    };
+
+    let createAppointmentPost = await axios.post(
+        backend_address + "/api/appointment/book",
+        createAppointmentData
+    );
+
+    if (createAppointmentPost.status !== 200) throw "Booking appointment failed";
+    appointmentToModify = createAppointmentPost.data;
+
+  } catch (error) {
+    console.log(error);
+  }
+
+  // ------------ End setting up state for test ---------------
+
+  // Modify appointment
+  try {
+    // give the appointment we just created a rating of 10
+    let modifyAppointmentData = appointmentToModify;
+    modifyAppointmentData.note = "Modified appointment note";
+
+    let modifyAppointmentResponse = await axios.put(
+        backend_address + "/api/appointment/modifyAppointment",
+        modifyAppointmentData
+    );
+
+    if (modifyAppointmentResponse.status === 200 && modifyAppointmentResponse.data.note === "Modified appointment note"){
+      scoreCounter++;
+    }
+    else {
+      console.log("Test FAILED: ");
+      if (modifyAppointmentResponse.status !== 200)
+      {
+        console.log("\tUnexpected status code returned");
+      }
+        console.log(`\tUnexpected note returned ${modifyAppointmentResponse.data.note}`);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+
+  try {
+    // give the appointment we just created a rating of 10
+    let modifyAppointmentData = appointmentToModify;
+    modifyAppointmentData.appointmentId = -1;
+
+    let modifyAppointmentResponse = await axios.put(
+        backend_address + "/api/appointment/modifyAppointment",
+        modifyAppointmentData
+    );
+
+    if (modifyAppointmentResponse.status === 200)
+      console.log("Error: Modified an invalid appointment");
+  } catch (error) {
+    scoreCounter++;
+  }
+
+  //compiling results
+  if (scoreCounter === numberOfTests)
+    console.log("All the modify appointment tests were successful!");
+  else
+    console.log(
+        `${scoreCounter}/${numberOfTests} modify appointment tests were successful.`
+    );
+  console.log("");
+}
+
+export { testAppointment, testRateAppointment, testModifyAppointment };
