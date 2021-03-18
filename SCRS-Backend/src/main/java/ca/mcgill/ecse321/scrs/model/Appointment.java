@@ -35,6 +35,7 @@ public class Appointment
 
     public Appointment()
     {
+        timeslots = new ArrayList<>();
     }
 
     public Appointment(AppointmentType aAppointmentType, String aService, String aNote,
