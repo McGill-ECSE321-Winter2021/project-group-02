@@ -47,24 +47,40 @@ public class TimeslotController
         return new ResponseEntity<>(convertToDto(availableTimeslots), HttpStatus.OK);
     }
 
-    @PostMapping(value = {"/assignTechTimeslot", "/assignTechTimeslot/"})
-    public ResponseEntity<TimeslotDto> assignTechnicianToTimeslot(@RequestBody TimeslotDto timeslotDto)
+    @PutMapping(value = {"/assignTech", "/assignTech/"})
+    public ResponseEntity<TimeslotDto> assignTechnicianToTimeslot(@RequestParam(name = "timeslotId") int timeslotId, @RequestParam(name = "technicianId") int technicianId)
     {
-        if (timeslotDto == null)
+        Timeslot timeslot = timeslotService.getTimeslotById(timeslotId);
+        if (timeslot == null)
         {
-            throw new IllegalArgumentException("Invalid timeslot");
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        Timeslot timeslot = timeslotService.getTimeslotById(timeslotDto.getTimeslotId());
-        if (timeslot.getTechnicians().contains(timeslot))
-        {
-            throw new IllegalArgumentException("Technician already assigned to timeslot");
-        }
-        for(int technicianId: timeslotDto.getTechniciansId())
+
+        try
         {
             Technician technician = technicianService.getTechnicianByID(technicianId);
-            timeslotService.assignTechnicianToTimeslot(technician, timeslot);
+            if (technician != null)
+            {
+                List<Technician> technicians = timeslot.getTechnicians();
+                if (technicians != null)
+                {
+                    if (technicians.stream()
+                            .anyMatch(alreadyAssignedTech -> alreadyAssignedTech.getScrsUserId() == technicianId))
+                    {
+                        // technician already assigned to timeslot
+                        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
+                }
+
+                timeslotService.assignTechnicianToTimeslot(technician, timeslot);
+                return new ResponseEntity<>(convertToDto(timeslot), HttpStatus.OK);
+            }
         }
-        return new ResponseEntity<>(convertToDto(timeslot), HttpStatus.OK);
+        catch (Exception e)
+        {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PostMapping(value = {"/create", "/create/"})
