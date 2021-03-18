@@ -660,11 +660,9 @@ public class TestAppointmentService
     @Test
     public void testDeleteNull()
     {
-        Appointment appointment = null;
         Appointment deleted = null;
         try
         {
-            appointment = service.createAppointment(testType, null, null, false, testCustomer, timeslots.toArray(new Timeslot[0]));
             deleted = service.deleteAppointment(null);
         } catch (IllegalArgumentException e)
         {
