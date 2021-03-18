@@ -1,5 +1,6 @@
 package ca.mcgill.ecse321.scrs.controller;
 
+import ca.mcgill.ecse321.scrs.dto.CustomerDto;
 import ca.mcgill.ecse321.scrs.dto.TechnicianDto;
 import ca.mcgill.ecse321.scrs.dto.TimeslotDto;
 import ca.mcgill.ecse321.scrs.model.Technician;
@@ -39,7 +40,8 @@ public class TechnicianController
         }
         if (technician == null)
         {
-            throw new IllegalArgumentException("Invalid technician. Please submit a valid technician account to be created.");
+            return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.EXPECTATION_FAILED);
+            //throw new IllegalArgumentException("Invalid technician. Please submit a valid technician account to be created.");
         }
         if (!isAdmin(scrsUserService.getSCRSUserByID(id))) //does not have permission to edit.
         {
@@ -47,7 +49,8 @@ public class TechnicianController
         }
         if (technicianService.getTechnicianByEmail(technician.getEmail()) != null)
         {
-            throw new IllegalArgumentException("Email already in use, please try a different email address.");
+            return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.ALREADY_REPORTED);
+            //throw new IllegalArgumentException("Email already in use, please try a different email address.");
         }
         return new ResponseEntity<TechnicianDto>(convertToDTO(technicianService.createTechnician(technician.getEmail(), technician.getName(), hash(technician.getPassword()), technician.getPhone())), HttpStatus.OK);
     }
@@ -62,15 +65,17 @@ public class TechnicianController
         }
         if (technician == null)
         {
-            throw new IllegalArgumentException("Invalid technician.");
+            return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.EXPECTATION_FAILED);
+            //throw new IllegalArgumentException("Invalid technician.");
         }
         if (!isAdmin(scrsUserService.getSCRSUserByID(id)) && id != technician.getScrsUserId()) //does not have permission to edit.
         {
-            throw new IllegalArgumentException(".");
+            //throw new IllegalArgumentException(".");
         }
         if (technicianService.getTechnicianByID(technician.getScrsUserId()) == null)
         {
-            throw new IllegalArgumentException("No such technician found.");
+            return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.NOT_ACCEPTABLE);
+            //throw new IllegalArgumentException("No such technician found.");
         }
         return new ResponseEntity<TechnicianDto>(convertToDTO(technicianService.updateTechnicianInfo(technician)), HttpStatus.OK);
     }
@@ -86,11 +91,12 @@ public class TechnicianController
         Technician technician = technicianService.getTechnicianByID(technicianID);
         if (technician == null)
         {
-            throw new IllegalArgumentException("Invalid technician. Please submit a valid technician account to be deleted.");
+            return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.NOT_ACCEPTABLE);
+            //throw new IllegalArgumentException("Invalid technician. Please submit a valid technician account to be deleted.");
         }
         if (!isAdmin(scrsUserService.getSCRSUserByID(id)) && id != technicianID) //does not have permission to edit.
         {
-            throw new IllegalArgumentException("You cannot delete a technician account other than your own.");
+            //throw new IllegalArgumentException("You cannot delete a technician account other than your own.");
         }
         return new ResponseEntity<TechnicianDto>(convertToDTO(technicianService.deleteTechnician(technician)), HttpStatus.OK);
     }

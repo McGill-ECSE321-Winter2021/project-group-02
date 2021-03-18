@@ -1,6 +1,7 @@
 package ca.mcgill.ecse321.scrs.controller;
 
 import ca.mcgill.ecse321.scrs.dto.AssistantDto;
+import ca.mcgill.ecse321.scrs.dto.CustomerDto;
 import ca.mcgill.ecse321.scrs.model.Assistant;
 import ca.mcgill.ecse321.scrs.service.AssistantService;
 import ca.mcgill.ecse321.scrs.service.SCRSUserService;
@@ -25,11 +26,13 @@ public class AssistantController
     {
         if (assistant == null)
         {
-            throw new IllegalArgumentException("Invalid assistant. Please submit a valid assistant account to be created.");
+            return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.EXPECTATION_FAILED);
+            //throw new IllegalArgumentException("Invalid assistant. Please submit a valid assistant account to be created.");
         }
         if (assistantService.getAssistantByEmail(assistant.getEmail()) != null)
         {
-            throw new IllegalArgumentException("Email already in use, please try a different email address.");
+            return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.ALREADY_REPORTED);
+            //throw new IllegalArgumentException("Email already in use, please try a different email address.");
         }
         return new ResponseEntity<AssistantDto>(convertToDTO(assistantService.createAssistant(assistant.getEmail(), assistant.getName(), hash(assistant.getPassword()), assistant.getPhone())), HttpStatus.OK);
     }
@@ -44,15 +47,17 @@ public class AssistantController
         }
         if (assistant == null)
         {
-            throw new IllegalArgumentException("Invalid assistant");
+            return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.EXPECTATION_FAILED);
+            //throw new IllegalArgumentException("Invalid assistant");
         }
         if (!isAdmin(scrsUserService.getSCRSUserByID(id))) //does not have permission to edit.
         {
-            throw new IllegalArgumentException("You do not have permission to edit an admin account.");
+            //throw new IllegalArgumentException("You do not have permission to edit an admin account.");
         }
         if (assistantService.getAssistantByID(assistant.getScrsUserId()) == null)
         {
-            throw new IllegalArgumentException("No such assistant found.");
+            return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.NOT_ACCEPTABLE);
+            //throw new IllegalArgumentException("No such assistant found.");
         }
         return new ResponseEntity<AssistantDto>(convertToDTO(assistantService.updateAssistantInfo(assistant)), HttpStatus.OK);
     }
@@ -68,11 +73,12 @@ public class AssistantController
         Assistant assistant = assistantService.getAssistantByID(assistantID);
         if (assistant == null)
         {
-            throw new IllegalArgumentException("Invalid assistant. Please submit a valid assistant account to be deleted.");
+            return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.NOT_ACCEPTABLE);
+            //throw new IllegalArgumentException("Invalid assistant. Please submit a valid assistant account to be deleted.");
         }
         if (!isAdmin(scrsUserService.getSCRSUserByID(id))) //does not have permission to edit.
         {
-            throw new IllegalArgumentException("You do not have permission to edit this account.");
+            //throw new IllegalArgumentException("You do not have permission to edit this account.");
         }
         return new ResponseEntity<AssistantDto>(convertToDTO(assistantService.deleteAssistant(assistant)), HttpStatus.OK);
     }
