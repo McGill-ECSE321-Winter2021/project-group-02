@@ -27,17 +27,8 @@ public class WorkspaceController
     SCRSUserService scrsUserService;
 
     @PostMapping(value = {"/create", "/create/"})
-    public ResponseEntity<WorkspaceDto> createWorkspace(@RequestParam(value = "name") String workspaceName, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    public ResponseEntity<WorkspaceDto> createWorkspace(@RequestParam(value = "name") String workspaceName)
     {
-        int id = Integer.parseInt(ID);
-        if (id == -1)
-        {
-            throw new IllegalArgumentException("Please login to add a workspace.");
-        }
-        if (!isAdmin(scrsUserService.getSCRSUserByID(id))) //does not have permission to edit.
-        {
-            throw new IllegalArgumentException("You do not have permission to create a workspace.");
-        }
         if (workspaceName == null)
         {
             throw new IllegalArgumentException("Invalid workspace name.");

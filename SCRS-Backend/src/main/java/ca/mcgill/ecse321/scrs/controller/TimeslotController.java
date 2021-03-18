@@ -68,21 +68,13 @@ public class TimeslotController
     }
 
     @PostMapping(value = {"/create", "/create/"})
-    public ResponseEntity<TimeslotDto> createTimeslot(@RequestBody TimeslotDto timeslotDto, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    public ResponseEntity<TimeslotDto> createTimeslot(@RequestBody TimeslotDto timeslotDto)
     {
-        int id = Integer.parseInt(ID);
-        if (id == -1)
-        {
-            throw new IllegalArgumentException("Please login to create a timeslot.");
-        }
-        if (!isAdmin(scrsUserService.getSCRSUserByID(id))) //does not have permission to edit.
-        {
-            throw new IllegalArgumentException("You do not have permission to create a timeslot.");
-        }
         if (timeslotDto == null)
         {
             throw new IllegalArgumentException("Invalid timeslot.");
         }
+
         Workspace workspace = workspaceService.getWorkspaceById(timeslotDto.getWorkspaceId());
         Timeslot newTimeslot = timeslotService.createTimeslot(timeslotDto.getStartDate(),timeslotDto.getEndDate(),timeslotDto.getStartTime(),timeslotDto.getEndTime(),workspace);
         return new ResponseEntity<>(convertToDto(newTimeslot),HttpStatus.OK);

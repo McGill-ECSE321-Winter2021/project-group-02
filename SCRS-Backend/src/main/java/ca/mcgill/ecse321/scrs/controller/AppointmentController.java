@@ -2,6 +2,7 @@ package ca.mcgill.ecse321.scrs.controller;
 
 import ca.mcgill.ecse321.scrs.dto.AppointmentDto;
 import ca.mcgill.ecse321.scrs.model.Appointment;
+import ca.mcgill.ecse321.scrs.model.Customer;
 import ca.mcgill.ecse321.scrs.model.Timeslot;
 import ca.mcgill.ecse321.scrs.service.AppointmentService;
 import ca.mcgill.ecse321.scrs.service.CustomerService;
@@ -84,9 +85,15 @@ public class AppointmentController
             throw new IllegalArgumentException("Invalid appointment. Please submit a valid appointment booking to be created.");
         }
         List<Timeslot> timeslots = timeslotService.getTimeslotsById(appointmentDto.getTimeslotsId());
+        if (timeslots == null)
+        {
+            throw new IllegalArgumentException("Appointment does not have any time associated with it");
+        }
+
+        Customer customer = customerService.getCustomerByID(appointmentDto.getCustomerId());
         Appointment appointment = appointmentService.createAppointment(appointmentDto.getAppointmentType(),
                 appointmentDto.getService(), appointmentDto.getNote(), appointmentDto.getPaymentStatus(),
-                customerService.getCustomerByID(appointmentDto.getCustomerId()), timeslots.toArray(new Timeslot[0]));
+               customer , timeslots.toArray(new Timeslot[0]));
         return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
     }
 
@@ -98,13 +105,21 @@ public class AppointmentController
         return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
     }
 
-    @PutMapping(value = {"/rate-appointment", "/rate-appointment/"})
+    @PutMapping(value = {"/rate", "/rate/"})
     public ResponseEntity<AppointmentDto> rateAppointment(@RequestParam(name = "appointmentId") int appointmentId, @RequestParam(name = "rating") int rating)
     {
-        if (rating > 10 || rating < 0) throw new IllegalArgumentException("Invalid rating");
+        if (rating > 10 || rating < 0)
+        {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-        Appointment appointment = appointmentService.rateAppointment(appointmentId, rating);
-        return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
+        try {
+            Appointment appointment = appointmentService.rateAppointment(appointmentId, rating);
+            return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
+        } catch (Exception e)
+        {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PutMapping(value = {"/modifyAppointment", "/modifyAppointment/"})
