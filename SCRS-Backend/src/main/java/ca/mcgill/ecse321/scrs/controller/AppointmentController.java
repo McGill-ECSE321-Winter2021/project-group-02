@@ -3,6 +3,7 @@ package ca.mcgill.ecse321.scrs.controller;
 import ca.mcgill.ecse321.scrs.dto.AppointmentDto;
 import ca.mcgill.ecse321.scrs.dto.TimeslotDto;
 import ca.mcgill.ecse321.scrs.model.Appointment;
+import ca.mcgill.ecse321.scrs.model.Customer;
 import ca.mcgill.ecse321.scrs.model.Timeslot;
 import ca.mcgill.ecse321.scrs.service.AppointmentService;
 import ca.mcgill.ecse321.scrs.service.CustomerService;
@@ -33,56 +34,67 @@ public class AppointmentController
     @Autowired
     TimeslotService timeslotService;
 
-    @GetMapping(path = {"/getall", "/getall/"})
-    public ResponseEntity<List<AppointmentDto>> getAllAppointments(@CookieValue(value = "id", defaultValue = "-1") String id) {
-        if(id == null || id.equals("-1"))return new ResponseEntity<>(null, HttpStatus.OK);
+    @GetMapping(path = {"/getall/{id}", "/getall/{id}/"})
+    public ResponseEntity<List<AppointmentDto>> getAllAppointments(@PathVariable String id) {
+        if(id == null)return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         int ID = Integer.parseInt(id);
 
-        List<Appointment> list = appointmentService.getAppointmentsByCustomer(customerService.getCustomerByID(ID));
+        Customer customer = customerService.getCustomerByID(ID);
+        if(customer == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+
+        List<Appointment> list = appointmentService.getAppointmentsByCustomer(customer);
         List<AppointmentDto> dtoList = new ArrayList<>();
 
-        for (Appointment appointment : list)
-        {
-            dtoList.add(convertToDto(appointment));
+        if(list != null){
+            for (Appointment appointment : list)
+            {
+                dtoList.add(convertToDto(appointment));
+            }
         }
-
         return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
 
-    @GetMapping(path = {"/notifications", "/notifications/"})
-    public ResponseEntity<List<AppointmentDto>> notifications(@CookieValue(value = "id", defaultValue = "-1") String id) {
-        if(id == null ||id.equals("-1"))return new ResponseEntity<>(null, HttpStatus.OK);
+
+    @GetMapping(path = {"/notifications/{id}", "/notifications/{id}/"})
+    public ResponseEntity<List<AppointmentDto>> notifications(@PathVariable String id) {
+        if(id == null)return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         int ID = Integer.parseInt(id);
 
-        List<Appointment> list = appointmentService.getAppointmentsByCustomer(customerService.getCustomerByID(ID));
+        Customer customer = customerService.getCustomerByID(ID);
+        if(customer == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
 
-        //finding the same date next week
-        Date now = new Date(LocalDate.now().toEpochDay());
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(now);
-        calendar.add(Calendar.DATE, 7);
-        Date nextWeek = new Date(calendar.getTimeInMillis());
+        List<Appointment> list = appointmentService.getAppointmentsByCustomer(customer);
 
-        List<AppointmentDto> notificationList = new ArrayList<>();
-        for (Appointment appointment : list)
-        {
-            List<Timeslot> timeslots = appointment.getTimeslots();
-            ArrayList<Integer> newTimeslots = new ArrayList<>();
-            for (Timeslot timeslot : timeslots)
+        if(list != null){
+            //finding the same date next week
+            Date now = new Date(LocalDate.now().toEpochDay());
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(now);
+            calendar.add(Calendar.DATE, 7);
+            Date nextWeek = new Date(calendar.getTimeInMillis());
+
+            List<AppointmentDto> notificationList = new ArrayList<>();
+            for (Appointment appointment : list)
             {
-                if (timeslot.getStartDate().compareTo(now) >= 0 && timeslot.getStartDate().compareTo(nextWeek) <= 0)
+                List<Timeslot> timeslots = appointment.getTimeslots();
+                ArrayList<Integer> newTimeslots = new ArrayList<>();
+                for (Timeslot timeslot : timeslots)
                 {
-                    newTimeslots.add(timeslot.getTimeSlotID());
+                    if (timeslot.getStartDate().compareTo(now) >= 0 && timeslot.getStartDate().compareTo(nextWeek) <= 0)
+                    {
+                        newTimeslots.add(timeslot.getTimeSlotID());
+                    }
+                }
+                if (!newTimeslots.isEmpty())
+                {
+                    AppointmentDto appointmentDto = new AppointmentDto(appointment.getAppointmentID(), appointment.getAppointmentType().toString(), appointment.getService(), appointment.getNote(), appointment.getRating(), appointment.getFeedback(), appointment.getPaid(), appointment.getCustomer().getScrsUserId(), newTimeslots);
+                    notificationList.add(appointmentDto);
                 }
             }
-            if (!newTimeslots.isEmpty())
-            {
-                AppointmentDto appointmentDto = new AppointmentDto(appointment.getAppointmentID(), appointment.getAppointmentType().toString(), appointment.getService(), appointment.getNote(), appointment.getRating(), appointment.getFeedback(), appointment.getPaid(), appointment.getCustomer().getScrsUserId(), newTimeslots);
-                notificationList.add(appointmentDto);
-            }
-        }
 
-        return new ResponseEntity<>(notificationList, HttpStatus.OK);
+
+            return new ResponseEntity<>(notificationList, HttpStatus.OK);
+        }else return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @PostMapping(value = {"/book", "/book/"})

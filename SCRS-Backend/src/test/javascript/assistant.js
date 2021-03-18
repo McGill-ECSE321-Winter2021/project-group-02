@@ -3,7 +3,7 @@ import axios from "axios";
 const testAssistant = async () => {
   const backend_address = "http://localhost:8080";
   let scoreCounter = 0;
-  const numberOfTests = 7;
+  const numberOfTests = 9;
   let id = 0;
 
   //creating assistant account test 1
@@ -87,7 +87,7 @@ const testAssistant = async () => {
   try {
     let sentData = {
       scrsUserId: id,
-      name: "Bababooey",
+      name: "Bababoo",
       password: "got bababooied",
       email: "babaooey@gmail.com",
       phone: "111-111-1111",
@@ -152,34 +152,11 @@ const testAssistant = async () => {
     }
   }
 
-  /*
   //deleting account test 1
   try {
-    let sentData = `id=-1`;
-
     let deleteTest = await axios.delete(
-      backend_address + "/api/assistant/delete",
-      sentData
+      backend_address + `/api/assistant/delete/${id}`
     );
-  } catch (error) {
-    console.log(error);
-    if (error.response.status === 406) scoreCounter++;
-    else {
-      console.log("Test 8 unsuccessful:");
-      console.log(`${error}`);
-    }
-  }
-
-  //deleting account test 2
-  try {
-    let sentData = `id=${id}`;
-
-    let deleteTest = await axios.delete(
-      backend_address + "/api/assistant/delete",
-      sentData
-    );
-
-    console.log(deleteTest);
 
     let statusCode = deleteTest.status;
     if (statusCode === 200) scoreCounter++;
@@ -191,7 +168,19 @@ const testAssistant = async () => {
     console.log("Test 7 unsuccessful:");
     console.log(`${error}`);
   }
-  */
+
+  //deleting account test 2
+  try {
+    let deleteTest = await axios.delete(
+      backend_address + `/api/assistant/delete/${id}`
+    );
+  } catch (error) {
+    if (error.response.status === 406) scoreCounter++;
+    else {
+      console.log("Test 8 unsuccessful:");
+      console.log(`${error}`);
+    }
+  }
 
   //wiping the database
   try {

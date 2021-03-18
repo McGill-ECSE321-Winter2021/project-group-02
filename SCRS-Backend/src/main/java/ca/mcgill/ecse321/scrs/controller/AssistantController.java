@@ -27,12 +27,12 @@ public class AssistantController
         if (assistant == null)
         {
             return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.EXPECTATION_FAILED);
-            //throw new IllegalArgumentException("Invalid assistant. Please submit a valid assistant account to be created.");
+            // Invalid assistant. Please submit a valid assistant account to be created.
         }
         if (assistantService.getAssistantByEmail(assistant.getEmail()) != null)
         {
             return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.ALREADY_REPORTED);
-            //throw new IllegalArgumentException("Email already in use, please try a different email address.");
+            // Email already in use, please try a different email address.
         }
         Assistant newAssistant = assistantService.createAssistant(assistant.getEmail(), assistant.getName(), hash(assistant.getPassword()), assistant.getPhone());
         return new ResponseEntity<>(convertToDto(newAssistant), HttpStatus.OK);
@@ -44,43 +44,52 @@ public class AssistantController
         int id = Integer.parseInt(ID);
         if (id == -1)
         {
-            //throw new IllegalArgumentException("Please login to modify an assistant account.");
+            // TODO handle no login error with cookies (uncomment next line)
+            //return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.UNAUTHORIZED);
+            // Please login to modify an assistant account.
         }
         if (assistant == null)
         {
             return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.EXPECTATION_FAILED);
-            //throw new IllegalArgumentException("Invalid assistant");
+            // Invalid assistant
         }
         if (!isAdmin(scrsUserService.getSCRSUserByID(id))) //does not have permission to edit.
         {
-            //throw new IllegalArgumentException("You do not have permission to edit an admin account.");
+            // TODO handle bad login error with cookies (uncomment next line)
+            //return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.UNAUTHORIZED);
+            // You do not have permission to edit an admin account.
         }
         if (assistantService.getAssistantByID(assistant.getScrsUserId()) == null)
         {
             return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.NOT_ACCEPTABLE);
-            //throw new IllegalArgumentException("No such assistant found.");
+            // No such assistant found.
         }
         Assistant updatedAssistant = assistantService.updateAssistantInfo(assistant);
         return new ResponseEntity<>(convertToDto(updatedAssistant), HttpStatus.OK);
     }
 
-    @DeleteMapping(value = {"/delete", "/delete/"})
-    public ResponseEntity<AssistantDto> deleteAssistant(@RequestParam(value = "id") int assistantID, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    @DeleteMapping(value = {"/delete/{id}", "/delete/{id}/"})
+    public ResponseEntity<AssistantDto> deleteAssistant(@PathVariable String id, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
-        int id = Integer.parseInt(ID);
-        if (id == -1)
+        int assistantID = Integer.parseInt(id);
+        int idCookie = Integer.parseInt(ID);
+        if (idCookie == -1)
         {
-            //throw new IllegalArgumentException("Please login to delete an assistant account.");
+            // TODO handle no login error with cookies (uncomment next line)
+            //return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.UNAUTHORIZED);
+            //Please login to delete an assistant account.
         }
         Assistant assistant = assistantService.getAssistantByID(assistantID);
         if (assistant == null)
         {
             return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.NOT_ACCEPTABLE);
-            //throw new IllegalArgumentException("Invalid assistant. Please submit a valid assistant account to be deleted.");
+            // Invalid assistant. Please submit a valid assistant account to be deleted.
         }
-        if (!isAdmin(scrsUserService.getSCRSUserByID(id))) //does not have permission to edit.
+        if (!isAdmin(scrsUserService.getSCRSUserByID(idCookie))) //does not have permission to edit.
         {
-            //throw new IllegalArgumentException("You do not have permission to edit this account.");
+            // TODO handle bad login error with cookies (uncomment next line)
+            //return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.UNAUTHORIZED);
+            // You do not have permission to edit this account.
         }
         return new ResponseEntity<>(convertToDto(assistantService.deleteAssistant(assistant)), HttpStatus.OK);
     }
