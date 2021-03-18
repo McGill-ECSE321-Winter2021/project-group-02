@@ -54,6 +54,7 @@ public class AppointmentController
         return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
 
+
     @GetMapping(path = {"/notifications/{id}", "/notifications/{id}/"})
     public ResponseEntity<List<AppointmentDto>> notifications(@PathVariable String id) {
         if(id == null)return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
@@ -90,6 +91,7 @@ public class AppointmentController
                     notificationList.add(appointmentDto);
                 }
             }
+
 
             return new ResponseEntity<>(notificationList, HttpStatus.OK);
         }else return new ResponseEntity<>(null, HttpStatus.OK);
