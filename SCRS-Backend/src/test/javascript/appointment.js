@@ -320,6 +320,7 @@ const testRateAppointment = async () => {
     console.log(
         `${scoreCounter}/${numberOfTests} rate appointment tests were successful.`
     );
+  console.log("");
 }
 
 

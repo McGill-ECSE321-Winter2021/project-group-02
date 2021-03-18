@@ -80,23 +80,18 @@ public class TimeslotController
         return new ResponseEntity<>(convertToDto(newTimeslot),HttpStatus.OK);
     }
 
-    @DeleteMapping(value = {"/delete","/delete/"})
-    public ResponseEntity<TimeslotDto> deleteTimeslot(@RequestParam(value = "id") int timeslotID, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    @DeleteMapping(value = {"/delete/{id}","/delete/{id}/"})
+    public ResponseEntity<TimeslotDto> deleteTimeslot(@PathVariable("id") int timeslotID)
     {
-        int id = Integer.parseInt(ID);
-        if (id == -1)
-        {
-            throw new IllegalArgumentException("Please login to delete a timeslot.");
+        try {
+            Timeslot timeslot = timeslotService.getTimeslotById(timeslotID);
+            if (timeslot == null)
+            {
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            return new ResponseEntity<>(convertToDto(timeslotService.deleteTimeslot(timeslot)), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        if (!isAdmin(scrsUserService.getSCRSUserByID(id)))
-        {
-            throw new IllegalArgumentException("You do not have permission to delete a timeslot.");
-        }
-        Timeslot timeslot = timeslotService.getTimeslotById(timeslotID);
-        if (timeslot == null)
-        {
-            throw new IllegalArgumentException("Invalid timeslot. Please submit a valid timeslot to be deleted.");
-        }
-        return new ResponseEntity<>(convertToDto(timeslotService.deleteTimeslot(timeslot)), HttpStatus.OK);
     }
 }

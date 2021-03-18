@@ -76,7 +76,7 @@ public class TimeslotService
     @Transactional
     public List<Timeslot> getTimeslotsByWorkspace(Workspace workspace)
     {
-        return toList(timeslotRepository.findByWorkspace(workspace));
+        return timeslotRepository.findByWorkspace(workspace);
     }
 
     @Transactional
