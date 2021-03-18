@@ -3,7 +3,7 @@ import axios from "axios";
 const testAppointmentBookingAndPayment = async () => {
   const backend_address = "http://localhost:8080";
   let scoreCounter = 0;
-  const numberOfTests = 2;
+  const numberOfTests = 4;
   let customerIdToCheck = -1;
   let timeslotIdToCheck = -1;
   let appointmentDataToCheck = null;
@@ -49,7 +49,7 @@ const testAppointmentBookingAndPayment = async () => {
     console.log("Setup for testAppointment FAILED");
   }
 
-  // ========== booking an appointment (Test 1) ==========
+  // ========== booking an appointment ==========
   try {
     let bookAppointmentData = {
       appointmentType: "CarWash",
@@ -81,7 +81,64 @@ const testAppointmentBookingAndPayment = async () => {
     console.log(error);
   }
 
-  // ========== paying an appointment (Test 2) ==========
+  // ========== booking an appointment with invalid timeslot  ==========
+  try {
+    let bookAppointmentData = {
+      appointmentType: "CarWash",
+      service: "Car wash",
+      note: "Hello world",
+      customerId: customerIdToCheck,
+      timeslotsId: [ -1 ],
+    };
+
+    let bookAppointmentResponse = await axios.post(
+        backend_address + "/api/appointment/book",
+        bookAppointmentData);
+    if (bookAppointmentResponse.status === 200)
+    {
+      console.log("Error: booking an appointment with an invalid timeslot should be impossible");
+    }
+  } catch(e) {
+    scoreCounter++;
+  }
+
+  // ========== booking an appointment with invalid customer  ==========
+  try {
+    // create timeslot
+    let createTimeslotData = {
+      startDate: Date.now(),
+      endDate: Date.now(),
+      startTime: +new Date(),
+      endTime: +new Date(),
+      workspaceId: createWorkspacePost.data.workspaceId,
+      techniciansId: [ ],
+    };
+
+    let createTimeslotPost = await axios.post(
+        backend_address + "/api/timeslot/create",
+        createTimeslotData);
+
+    let bookAppointmentData = {
+      appointmentType: "CarWash",
+      service: "Car wash",
+      note: "Hello world",
+      customerId: -1,
+      timeslotsId: [ createTimeslotPost.data.timeslotId ],
+    };
+
+    let bookAppointmentResponse = await axios.post(
+        backend_address + "/api/appointment/book",
+        bookAppointmentData);
+    if (bookAppointmentResponse.status === 200)
+    {
+      console.log("Error: booking an appointment with an invalid timeslot should be impossible");
+    }
+  } catch(e) {
+    scoreCounter++;
+  }
+
+
+  // ========== paying an appointment ==========
   try {
     if (appointmentDataToCheck.paymentStatus) {
       console.log("Test paying an appointment unsuccessful:");
@@ -114,10 +171,10 @@ const testAppointmentBookingAndPayment = async () => {
 
   // ========== compiling results ==========
   if (scoreCounter === numberOfTests)
-    console.log("All the login tests were successful!");
+    console.log("All the booking tests were successful!");
   else
     console.log(
-      `${scoreCounter}/${numberOfTests} login tests were successful.`
+      `${scoreCounter}/${numberOfTests} booking tests were successful.`
     );
   console.log("");
 };
