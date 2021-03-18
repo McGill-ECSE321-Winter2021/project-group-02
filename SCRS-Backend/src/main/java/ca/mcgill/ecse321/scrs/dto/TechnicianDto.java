@@ -10,7 +10,6 @@ public class TechnicianDto
     {
     }
 
-    @SuppressWarnings("unchecked")
     public TechnicianDto(int id, String name)
     {
         this(id, name, null, null);
