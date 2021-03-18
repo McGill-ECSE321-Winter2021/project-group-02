@@ -1,6 +1,9 @@
 package ca.mcgill.ecse321.scrs.service;
 
 import ca.mcgill.ecse321.scrs.dao.AppointmentRepository;
+import ca.mcgill.ecse321.scrs.dao.CustomerRepository;
+import ca.mcgill.ecse321.scrs.dao.TimeslotRepository;
+import ca.mcgill.ecse321.scrs.dto.AppointmentDto;
 import ca.mcgill.ecse321.scrs.model.Appointment;
 import ca.mcgill.ecse321.scrs.model.Customer;
 import ca.mcgill.ecse321.scrs.model.Timeslot;
@@ -18,6 +21,12 @@ public class AppointmentService {
 
     @Autowired
     AppointmentRepository appointmentRepository;
+
+    @Autowired
+    TimeslotRepository timeslotRepository;
+
+    @Autowired
+    CustomerRepository customerRepository;
 
     @Transactional
     public Appointment createAppointment(Appointment.AppointmentType appointmentType, String service, String note, boolean paid, Customer customer, Timeslot... timeslots) {
@@ -62,10 +71,37 @@ public class AppointmentService {
     }
 
     @Transactional
-    public void modifyAppointment(Appointment appt)
+    public Appointment modifyAppointment(AppointmentDto appt)
     {
         if (appt == null) throw new IllegalArgumentException("Invalid appointment");
-        if (appointmentRepository.findByAppointmentID(appt.getAppointmentID()) == null) throw new IllegalArgumentException("No such appointment exists");
-        appointmentRepository.save(appt);
+        Appointment apptToModify = appointmentRepository.findByAppointmentID(appt.getAppointmentId());
+        if (apptToModify == null) throw new IllegalArgumentException("No such appointment exists");
+
+        apptToModify.setAppointmentType(appt.getAppointmentType());
+        apptToModify.setService(appt.getService());
+        apptToModify.setNote(appt.getNote());
+        apptToModify.setRating(appt.getRating());
+        apptToModify.setFeedback(appt.getFeedback());
+        apptToModify.setPaid(appt.getPaymentStatus());
+
+        List<Integer> timeslots = appt.getTimeslotsId();
+        apptToModify.setTimeslots(); // clear timeslots
+        if (timeslots != null)
+        {
+            // if we are passed some timeslot ids. add them
+            for (Integer timeslotId : timeslots)
+            {
+                Timeslot timeslotToAdd = timeslotRepository.findByTimeSlotID(timeslotId);
+                if (timeslotToAdd != null)
+                {
+                    apptToModify.addTimeslot(timeslotToAdd);
+                }
+            }
+        }
+
+        apptToModify.setCustomer(customerRepository.findByScrsUserId(appt.getCustomerId()));
+
+        appointmentRepository.save(apptToModify);
+        return apptToModify;
     }
 }

@@ -1,5 +1,6 @@
 package ca.mcgill.ecse321.scrs.dto;
 
+import ca.mcgill.ecse321.scrs.model.Appointment;
 import ca.mcgill.ecse321.scrs.model.Appointment.AppointmentType;
 import ca.mcgill.ecse321.scrs.model.Timeslot;
 

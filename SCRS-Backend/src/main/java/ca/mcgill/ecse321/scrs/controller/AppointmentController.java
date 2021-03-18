@@ -136,10 +136,14 @@ public class AppointmentController
     {
         if (appointmentDto == null)
         {
-            throw new IllegalArgumentException("Invalid appointment");
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        Appointment appointment = appointmentService.getAppointmentById(appointmentDto.getAppointmentId());
-        appointmentService.modifyAppointment(appointment);
-        return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
+        try {
+            Appointment modifiedAppt = appointmentService.modifyAppointment(appointmentDto);
+            return new ResponseEntity<>(convertToDto(modifiedAppt), HttpStatus.OK);
+        } catch (Exception e)
+        {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
