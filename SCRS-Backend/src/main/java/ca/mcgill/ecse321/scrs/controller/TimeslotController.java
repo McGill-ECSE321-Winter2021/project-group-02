@@ -41,7 +41,7 @@ public class TimeslotController
     }
 
     @GetMapping(value = {"/getAvailableTimeslot", "/getAvailableTimeslot/"})
-    public ResponseEntity<List<TimeslotDto>> getAvailableTimeslot(@RequestParam(name = "startDate") Date startDate, @RequestParam(name = "endDate") Date endDate)
+    public ResponseEntity<List<TimeslotDto>> getAvailableTimeslot(@RequestParam(value = "startDate") Date startDate, @RequestParam(value = "endDate") Date endDate)
     {
         List<Timeslot> availableTimeslots = timeslotService.getAvailableTimeslots(startDate, endDate);
         return new ResponseEntity<>(convertToDto(availableTimeslots), HttpStatus.OK);
@@ -88,8 +88,8 @@ public class TimeslotController
         return new ResponseEntity<>(convertToDto(newTimeslot),HttpStatus.OK);
     }
 
-    @DeleteMapping(value = {"/delete/{id}"})
-    public ResponseEntity<TimeslotDto> deleteTimeslot(@PathVariable("id") int timeslotID, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    @DeleteMapping(value = {"/delete","/delete/"})
+    public ResponseEntity<TimeslotDto> deleteTimeslot(@RequestParam(value = "id") int timeslotID, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
         int id = Integer.parseInt(ID);
         if (id == -1)

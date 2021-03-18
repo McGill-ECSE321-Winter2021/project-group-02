@@ -65,11 +65,10 @@ public class WorkspaceController
         return new ResponseEntity<>(convertToDto(workspaceService.deleteWorkspace(workspace)), HttpStatus.OK);
     }
 
-    @GetMapping("/availabilities/{id}")
-    public ResponseEntity<List<TimeslotDto>> getAllAvailableTimeslotsByWorkspace(@PathVariable("id") String workspaceId, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    @GetMapping(value = {"/availabilities","/availabilities/"})
+    public ResponseEntity<List<TimeslotDto>> getAllAvailableTimeslotsByWorkspace(@RequestParam(value = "id") int workspaceId, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
         int id = Integer.parseInt(ID);
-        int workspaceID = Integer.parseInt(workspaceId);
         if (id == -1)
         {
             throw new IllegalArgumentException("Please login to view the workspace availabilities.");
@@ -78,15 +77,11 @@ public class WorkspaceController
         {
             throw new IllegalArgumentException("You do not have permission to view workspace availabilities.");
         }
-        Workspace workspace= workspaceService.getWorkspaceById(workspaceID);
+        Workspace workspace= workspaceService.getWorkspaceById(workspaceId);
         if(workspace==null)
         {
             throw new IllegalArgumentException("Invalid workspace. Please submit a valid workspace to view the availabilities.");
-
         }
         return new ResponseEntity<>(convertToDto(timeslotService.getTimeslotsByWorkspace(workspace)),HttpStatus.OK);
-
     }
-
-
 }

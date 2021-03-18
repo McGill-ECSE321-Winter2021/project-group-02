@@ -4,6 +4,7 @@ import ca.mcgill.ecse321.scrs.dto.CustomerDto;
 import ca.mcgill.ecse321.scrs.dto.TechnicianDto;
 import ca.mcgill.ecse321.scrs.dto.TimeslotDto;
 import ca.mcgill.ecse321.scrs.model.Technician;
+import ca.mcgill.ecse321.scrs.model.Timeslot;
 import ca.mcgill.ecse321.scrs.service.SCRSUserService;
 import ca.mcgill.ecse321.scrs.service.TechnicianService;
 import ca.mcgill.ecse321.scrs.service.TimeslotService;
@@ -102,25 +103,24 @@ public class TechnicianController
         return new ResponseEntity<>(convertToDto(technicianService.deleteTechnician(technician)), HttpStatus.OK);
     }
 
-    @GetMapping("/viewschedule/{id}")
-    public ResponseEntity<ArrayList<TimeslotDto>> getAllByDate(@PathVariable("id") String technicianId, @RequestParam(name = "startDate") Date startDate, @RequestParam(name = "endDate") Date endDate, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    @GetMapping(path = {"/viewschedule", "/viewschedule/"})
+    public ResponseEntity<List<TimeslotDto>> getAllByDate(@RequestParam(value = "id") int technicianId, @RequestParam(value = "startDate") Date startDate, @RequestParam(value = "endDate") Date endDate, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
         int id = Integer.parseInt(ID);
-        int technicianID = Integer.parseInt(technicianId);
         if (id == -1)
         {
             throw new IllegalArgumentException("Please login to view the technician schedule.");
         }
-        Technician technician = technicianService.getTechnicianByID(technicianID);
+        Technician technician = technicianService.getTechnicianByID(technicianId);
         if (technician == null)
         {
             throw new IllegalArgumentException("Invalid technician. Please submit a valid technician account to view the schedule.");
         }
-        if (!isAdmin(scrsUserService.getSCRSUserByID(id)) && id != technicianID) //does not have permission to view.
+        if (!isAdmin(scrsUserService.getSCRSUserByID(id)) && id != technicianId) //does not have permission to view.
         {
             throw new IllegalArgumentException("You cannot view a technician's schedule other than your own.");
         }
-        List<TimeslotDto> timeslots = Helper.convertToDto((timeslotService.getTimeslotsByTechnicianBetweenDates(technician, startDate, endDate)));
-        return new ResponseEntity<ArrayList<TimeslotDto>>(new ArrayList<>(timeslots), HttpStatus.OK);
+        List<Timeslot> timeslots = timeslotService.getTimeslotsByTechnicianBetweenDates(technician, startDate, endDate);
+        return new ResponseEntity<>(convertToDto(timeslots), HttpStatus.OK);
     }
 }

@@ -32,7 +32,7 @@ public class AppointmentController
     @Autowired
     TimeslotService timeslotService;
 
-    @GetMapping("/getall")
+    @GetMapping(path = {"/getall", "/getall/"})
     public ResponseEntity<List<AppointmentDto>> getAllAppointments(@CookieValue(value = "id", defaultValue = "-1") String id) {
         if(id.equals("-1") || id == null)return new ResponseEntity<>(null, HttpStatus.OK);
         int ID = Integer.parseInt(id);
@@ -47,7 +47,7 @@ public class AppointmentController
         return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
 
-    @GetMapping("/notifications")
+    @GetMapping(path = {"/notifications", "/notifications/"})
     public ResponseEntity<List<AppointmentDto>> notifications(@CookieValue(value = "id", defaultValue = "-1") String id) {
         if(id.equals("-1") || id == null)return new ResponseEntity<>(null, HttpStatus.OK);
         int ID = Integer.parseInt(id);
@@ -118,5 +118,4 @@ public class AppointmentController
         appointmentService.modifyAppointment(appointment);
         return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
     }
-
 }
