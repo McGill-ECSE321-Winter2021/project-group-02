@@ -47,10 +47,10 @@ If you haven't realized yet, there are only second year computer engineering stu
 ## Effort Table (D2)
 | Team Member | Time Spent (h) | Responsibilities | 
 | --- | --- | --- |
-| Adel | ~25 | Mockito Testing, Service Error Handling, Documentation, Code Validation |
+| Adel | ~25 | Service Creation and Error Handling, Route Creation and Cleanup, Mockito Testing, Documentation, Code Validation |
 | Alex | ~17 | Service Creation, Route Creation, Integration testing, Code Validation |
 | Alix | ~25 | Service Creation, Route Creation, Integration testing Lead, Code Validation |
 | Roey | ~17 | Service Creation, Route Creation, Integration testing, Code Validation, Insulting JavaScript Nonstop |
-| Simon | ~25 | Service Creation, Route Creation, Integration testing, Code Validation |
+| Simon | ~25 | Service Creation, Route Creation, Integration testing, Documentation, Code Validation |
 > Note: The team feels this division of work was very fair and equitable. Everyone is familiar with all facets of the deliverable, including those they have not worked on and a lot of the work was done in call together, which will probably not be reflected in the commit history.  
 ***
