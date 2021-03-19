@@ -35,7 +35,15 @@ public class Appointment
 
     public Appointment()
     {
+        appointmentType = null;
+        service = null;
+        note = null;
+        rating = -1;
+        feedback = null;
+        paid = false;
+        customer = null;
         timeslots = new ArrayList<Timeslot>();
+        scrs = null;
     }
 
     public Appointment(AppointmentType aAppointmentType, String aService, String aNote,

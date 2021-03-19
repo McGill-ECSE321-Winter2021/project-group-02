@@ -13,6 +13,7 @@ public class Assistant extends SCRSUser
 
     public Assistant()
     {
+        super();
     }
 
     public String toString()

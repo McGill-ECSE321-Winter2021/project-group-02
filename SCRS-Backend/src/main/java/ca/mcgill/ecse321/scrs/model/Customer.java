@@ -17,6 +17,8 @@ public class Customer extends SCRSUser
 
     public Customer()
     {
+        super();
+        appointments = null;
     }
 
     public void delete()

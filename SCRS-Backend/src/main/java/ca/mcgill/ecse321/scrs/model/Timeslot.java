@@ -45,9 +45,14 @@ public class Timeslot
 
     public Timeslot()
     {
+        startDate = null;
+        endDate = null;
+        startTime = null;
+        endTime = null;
+        technicians = null;
+        appointment = null;
+        workspace = null;
     }
-
-    ;
 
     public static int minimumNumberOfTechnician()
     {
