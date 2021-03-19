@@ -49,8 +49,7 @@ public class Timeslot
         endDate = null;
         startTime = null;
         endTime = null;
-        technicians = null;
-        appointment = null;
+        technicians = new ArrayList<>();
         workspace = null;
     }
 

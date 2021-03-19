@@ -564,6 +564,7 @@ const testModifyAppointment = async () => {
   try {
     // give the appointment we just created a rating of 10
     let modifyAppointmentData = appointmentToModify;
+    modifyAppointmentData.rating = 10;
     modifyAppointmentData.note = "Modified appointment note";
 
     let modifyAppointmentResponse = await axios.put(
@@ -590,8 +591,8 @@ const testModifyAppointment = async () => {
   }
 
   try {
-    // give the appointment we just created a rating of 10
     let modifyAppointmentData = appointmentToModify;
+    modifyAppointmentData.rating = 5;
     modifyAppointmentData.appointmentId = -1;
 
     let modifyAppointmentResponse = await axios.put(

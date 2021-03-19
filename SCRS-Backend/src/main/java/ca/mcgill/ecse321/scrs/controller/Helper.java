@@ -15,15 +15,18 @@ public class Helper
 
     public static String hash(String string)
     {
-        try
+        if (string != null)
         {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] encodedHash = digest.digest(
-                    string.getBytes(StandardCharsets.UTF_8));
-            return bytesToHex(encodedHash);
-        } catch (NoSuchAlgorithmException e)
-        {
-            System.out.println("bad algorithm");
+            try
+            {
+                MessageDigest digest = MessageDigest.getInstance("SHA-256");
+                byte[] encodedHash = digest.digest(
+                        string.getBytes(StandardCharsets.UTF_8));
+                return bytesToHex(encodedHash);
+            } catch (NoSuchAlgorithmException e)
+            {
+                System.out.println("bad algorithm");
+            }
         }
         return "error";
     }

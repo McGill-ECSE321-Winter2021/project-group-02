@@ -85,7 +85,7 @@ public class AppointmentService {
         if (appt.getAppointmentType() == null) throw new IllegalArgumentException("Invalid appointment type.");
         if (appt.getCustomerId() == -1) throw new IllegalArgumentException("Invalid customer.");
         if (appt.getTimeslotsId() == null || appt.getTimeslotsId().size() == 0) throw new IllegalArgumentException("No valid timeslots selected.");
-        if (appt.getRating() > 10 || appt.getRating() < 0) throw new IllegalArgumentException("Invalid rating");
+        if (appt.getRating() != -1 && (appt.getRating() > 10 || appt.getRating() < 0)) throw new IllegalArgumentException("Invalid rating");
   
         Appointment apptToModify = appointmentRepository.findByAppointmentID(appt.getAppointmentId());
         if (apptToModify == null) throw new IllegalArgumentException("No such appointment exists");

@@ -23,11 +23,7 @@ public class TechnicianService
     public Technician createTechnician(String email, String name, String password, String phone)
     {
         checkAccountInfoValidity(email, name, password, phone);
-        Technician technician = new Technician();
-        technician.setEmail(email);
-        technician.setName(name);
-        technician.setPassword(password);
-        technician.setPhone(phone);
+        Technician technician = new Technician(name, password, email, phone, null);
         technicianRepository.save(technician);
         return technician;
     }

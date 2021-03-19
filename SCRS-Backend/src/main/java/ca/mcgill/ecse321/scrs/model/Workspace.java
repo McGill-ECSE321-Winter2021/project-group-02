@@ -38,9 +38,8 @@ public class Workspace
 
     public Workspace()
     {
-        spaceType = null;
-        availabilities = null;
         scrs = null;
+        availabilities = new ArrayList<>();
     }
 
     public static int minimumNumberOfAvailabilities()
