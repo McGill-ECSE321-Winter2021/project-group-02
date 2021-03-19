@@ -22,15 +22,8 @@ public class Timeslot
     private Time endTime;
 
     // Timeslot Associations
-    @ManyToMany
-    @JoinTable(
-            name = "technician_availabilities",
-            joinColumns = @JoinColumn(name = "timeslot_id"),
-            inverseJoinColumns = @JoinColumn(name = "technician_id")
-    )
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Technician> technicians;
-    @ManyToOne
-    private Appointment appointment;
     @ManyToOne
     private Workspace workspace;
 
@@ -50,7 +43,7 @@ public class Timeslot
         }
     }
 
-    protected Timeslot()
+    public Timeslot()
     {
         startDate = null;
         endDate = null;
@@ -152,16 +145,6 @@ public class Timeslot
         return technicians.indexOf(aTechnician);
     }
 
-    public Appointment getAppointment()
-    {
-        return appointment;
-    }
-
-    public boolean hasAppointment()
-    {
-        return appointment != null;
-    }
-
     public Workspace getWorkspace()
     {
         return workspace;
@@ -170,51 +153,24 @@ public class Timeslot
     /* Code from template association_AddManyToManyMethod */
     public boolean addTechnician(Technician aTechnician)
     {
-        boolean wasAdded = false;
         if (technicians.contains(aTechnician))
         {
             return false;
         }
         technicians.add(aTechnician);
-        if (aTechnician.indexOfAvailability(this) != -1)
-        {
-            wasAdded = true;
-        }
-        else
-        {
-            wasAdded = aTechnician.addAvailability(this);
-            if (!wasAdded)
-            {
-                technicians.remove(aTechnician);
-            }
-        }
-        return wasAdded;
+        return true;
     }
 
     /* Code from template association_RemoveMany */
     public boolean removeTechnician(Technician aTechnician)
     {
-        boolean wasRemoved = false;
         if (!technicians.contains(aTechnician))
         {
-            return wasRemoved;
+            return false;
         }
 
-        int oldIndex = technicians.indexOf(aTechnician);
-        technicians.remove(oldIndex);
-        if (aTechnician.indexOfAvailability(this) == -1)
-        {
-            wasRemoved = true;
-        }
-        else
-        {
-            wasRemoved = aTechnician.removeAvailability(this);
-            if (!wasRemoved)
-            {
-                technicians.add(oldIndex, aTechnician);
-            }
-        }
-        return wasRemoved;
+        technicians.remove(aTechnician);
+        return true;
     }
 
     /* Code from template association_AddIndexControlFunctions */
@@ -262,66 +218,13 @@ public class Timeslot
         return wasAdded;
     }
 
-    /* Code from template association_SetOptionalOneToMandatoryMany */
-    public boolean setAppointment(Appointment aAppointment)
-    {
-        //
-        // This source of this source generation is
-        // association_SetOptionalOneToMandatoryMany.jet
-        // This set file assumes the generation of a maximumNumberOfXXX method does not
-        // exist because
-        // it's not required (No upper bound)
-        //
-        boolean wasSet = false;
-        Appointment existingAppointment = appointment;
-
-        if (existingAppointment == null)
-        {
-            if (aAppointment != null)
-            {
-                if (aAppointment.addTimeslot(this))
-                {
-                    existingAppointment = aAppointment;
-                    wasSet = true;
-                }
-            }
-        }
-        else if (existingAppointment != null)
-        {
-            if (aAppointment == null)
-            {
-                if (Appointment.minimumNumberOfTimeslots() < existingAppointment.numberOfTimeslots())
-                {
-                    existingAppointment.removeTimeslot(this);
-                    existingAppointment = aAppointment; // aAppointment == null
-                    wasSet = true;
-                }
-            }
-            else
-            {
-                if (Appointment.minimumNumberOfTimeslots() < existingAppointment.numberOfTimeslots())
-                {
-                    existingAppointment.removeTimeslot(this);
-                    aAppointment.addTimeslot(this);
-                    existingAppointment = aAppointment;
-                    wasSet = true;
-                }
-            }
-        }
-        if (wasSet)
-        {
-            appointment = existingAppointment;
-        }
-        return wasSet;
-    }
 
     /* Code from template association_SetOneToMany */
     public boolean setWorkspace(Workspace aWorkspace)
     {
-        boolean wasSet = false;
         if (aWorkspace == null)
         {
-            return wasSet;
+            return false;
         }
 
         Workspace existingWorkspace = workspace;
@@ -331,31 +234,12 @@ public class Timeslot
             existingWorkspace.removeAvailability(this);
         }
         workspace.addAvailability(this);
-        wasSet = true;
-        return wasSet;
+        return true;
     }
 
     public void delete()
     {
-        ArrayList<Technician> copyOfTechnician = new ArrayList<Technician>(technicians);
         technicians.clear();
-        for (Technician aTechnician : copyOfTechnician)
-        {
-            aTechnician.removeAvailability(this);
-        }
-        if (appointment != null)
-        {
-            if (appointment.numberOfTimeslots() <= 1)
-            {
-                appointment.delete();
-            }
-            else
-            {
-                Appointment placeholderAppointment = appointment;
-                this.appointment = null;
-                placeholderAppointment.removeTimeslot(this);
-            }
-        }
         Workspace placeholderWorkspace = workspace;
         this.workspace = null;
         if (placeholderWorkspace != null)
@@ -383,8 +267,6 @@ public class Timeslot
                 + (getEndTime() != null
                 ? !getEndTime().equals(this.endTime) ? getEndTime().toString().replaceAll("  ", "    ") : "this"
                 : "null")
-                + System.getProperties().getProperty("line.separator") + "  " + "appointment = "
-                + (getAppointment() != null ? Integer.toHexString(System.identityHashCode(getAppointment())) : "null")
                 + System.getProperties().getProperty("line.separator") + "  " + "workspace = "
                 + (getWorkspace() != null ? Integer.toHexString(System.identityHashCode(getWorkspace())) : "null");
     }

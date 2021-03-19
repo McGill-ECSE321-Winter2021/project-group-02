@@ -1,20 +1,21 @@
 package ca.mcgill.ecse321.scrs.dao;
 
-import ca.mcgill.ecse321.scrs.model.Appointment;
 import ca.mcgill.ecse321.scrs.model.Technician;
 import ca.mcgill.ecse321.scrs.model.Timeslot;
 import ca.mcgill.ecse321.scrs.model.Workspace;
 import org.springframework.data.repository.CrudRepository;
 
+import java.sql.Date;
 import java.util.List;
 
-public interface TimeslotRepository extends CrudRepository<Timeslot, Integer>
+public interface
+TimeslotRepository extends CrudRepository<Timeslot, Integer>
 {
     Timeslot findByTimeSlotID(int id);
-
-    List<Timeslot> findByAppointment(Appointment appt);
 
     List<Timeslot> findByWorkspace(Workspace ws);
 
     List<Timeslot> findByTechnicians(Technician technicians);
+
+    List<Timeslot> findAllByStartDateGreaterThanEqualAndStartDateLessThanEqualOrderByStartDate(Date startDate, Date lastStartDate);
 }
