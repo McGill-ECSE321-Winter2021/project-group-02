@@ -75,8 +75,7 @@ public class TimeslotController
                 timeslotService.assignTechnicianToTimeslot(technician, timeslot);
                 return new ResponseEntity<>(convertToDto(timeslot), HttpStatus.OK);
             }
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -92,21 +91,31 @@ public class TimeslotController
         }
 
         Workspace workspace = workspaceService.getWorkspaceById(timeslotDto.getWorkspaceId());
-        Timeslot newTimeslot = timeslotService.createTimeslot(timeslotDto.getStartDate(),timeslotDto.getEndDate(),timeslotDto.getStartTime(),timeslotDto.getEndTime(),workspace);
-        return new ResponseEntity<>(convertToDto(newTimeslot),HttpStatus.OK);
+        Timeslot newTimeslot = timeslotService.createTimeslot(timeslotDto.getStartDate(), timeslotDto.getEndDate(), timeslotDto.getStartTime(), timeslotDto.getEndTime(), workspace);
+        if (newTimeslot == null) return new ResponseEntity<>(new TimeslotDto(), HttpStatus.EXPECTATION_FAILED);
+
+        try
+        {
+            return new ResponseEntity<>(convertToDto(newTimeslot), HttpStatus.OK);
+        } catch (Exception e)
+        {
+            return new ResponseEntity<>(new TimeslotDto(), HttpStatus.EXPECTATION_FAILED);
+        }
     }
 
-    @DeleteMapping(value = {"/delete/{id}","/delete/{id}/"})
+    @DeleteMapping(value = {"/delete/{id}", "/delete/{id}/"})
     public ResponseEntity<TimeslotDto> deleteTimeslot(@PathVariable("id") int timeslotID)
     {
-        try {
+        try
+        {
             Timeslot timeslot = timeslotService.getTimeslotById(timeslotID);
             if (timeslot == null)
             {
                 return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             return new ResponseEntity<>(convertToDto(timeslotService.deleteTimeslot(timeslot)), HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

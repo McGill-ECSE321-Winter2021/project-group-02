@@ -55,7 +55,7 @@ const testTimeslot = async () => {
         }
     } catch (error) {
         console.log("Failed to create timeslot in test 1");
-        console.log(error);
+        console.log(`${error}`);
     }
     //Create a timeslot with an incorrect workspaceId (Test 2)
     try {
@@ -75,20 +75,12 @@ const testTimeslot = async () => {
         timeslotIdToCheck = createTimeslotResponse.data.timeslotId;
         let statusCode = createTimeslotResponse.status;
 
-        if (createTimeslotResponse.status === 200 && createTimeslotResponse.data.workspaceId === workspaceIdToCheck) {
-            timeslotIdToCheck = createTimeslotResponse.data.timeslotId;
-        } else {
-            scoreCounter++;
-            console.log("Test 2 successful, Did not create timeslot:");
-            if (createTimeslotResponse.workspaceId !== createTimeslotData.workspaceId)
-                console.log(`returned data is erronous: ${createTimeslotResponse}`);
-            if (statusCode !== 200)
-                console.log(`status code not as expected: ${statusCode}`);
+        if(createTimeslotResponse.status===200){
+            console.log("Creating timeslot with invalid workspace should not work");
         }
+
     } catch (error) {
         scoreCounter++;
-        console.log("Failed to create timeslot in test 1");
-        console.log(error);
     }
 
     //Delete timeslots (Test 3)
