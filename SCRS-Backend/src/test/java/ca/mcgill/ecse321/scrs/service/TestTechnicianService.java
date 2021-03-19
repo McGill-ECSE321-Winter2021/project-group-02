@@ -345,7 +345,7 @@ public class TestTechnicianService
         try
         {
             before = service.createTechnician(wrongString, wrongString, wrongString, wrongString);
-            Technician dummy = new Technician(testString, testString, testString, testString, null);
+            Technician dummy = new Technician(testString, testString, "", testString, null);
             dummy.setScrsUserId(before.getScrsUserId());
             after = service.updateTechnicianInfo(dummy);
         } catch (IllegalArgumentException e)
