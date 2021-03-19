@@ -10,6 +10,7 @@ import ca.mcgill.ecse321.scrs.service.SCRSUserService;
 import ca.mcgill.ecse321.scrs.service.TechnicianService;
 import ca.mcgill.ecse321.scrs.service.TimeslotService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -119,24 +120,31 @@ public class TechnicianController
         return new ResponseEntity<>(convertToDto(technicianService.deleteTechnician(technician)), HttpStatus.OK);
     }
 
-    @GetMapping(path = {"/viewschedule", "/viewschedule/"})
-    public ResponseEntity<List<TimeslotDto>> getAllByDate(@RequestParam(value = "id") int technicianId, @RequestParam(value = "startDate") Date startDate, @RequestParam(value = "endDate") Date endDate, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    @GetMapping(path = {"/viewschedule/{id}/{startDate}/{endDate}"})
+    public ResponseEntity<List<TimeslotDto>> getAllByDate(@PathVariable("id") int technicianId, @PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate)//, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
-        int id = Integer.parseInt(ID);
-        if (id == -1)
-        {
-            throw new IllegalArgumentException("Please login to view the technician schedule.");
-        }
+
+        Date newStartDate=Date.valueOf(startDate);
+        Date newEndDate=Date.valueOf(endDate);
+
+//        int id = Integer.parseInt(ID);
+//        if (id == -1)
+//        {
+//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//
+//        if (!isAdmin(scrsUserService.getSCRSUserByID(id)) && id != technicianId) //does not have permission to view.
+//        {
+//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+
         Technician technician = technicianService.getTechnicianByID(technicianId);
         if (technician == null)
         {
-            throw new IllegalArgumentException("Invalid technician. Please submit a valid technician account to view the schedule.");
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        if (!isAdmin(scrsUserService.getSCRSUserByID(id)) && id != technicianId) //does not have permission to view.
-        {
-            throw new IllegalArgumentException("You cannot view a technician's schedule other than your own.");
-        }
-        List<Timeslot> timeslots = timeslotService.getTimeslotsByTechnicianBetweenDates(technician, startDate, endDate);
+
+        List<Timeslot> timeslots = timeslotService.getTimeslotsByTechnicianBetweenDates(technician, newStartDate, newEndDate);
         return new ResponseEntity<>(convertToDto(timeslots), HttpStatus.OK);
     }
 }

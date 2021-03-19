@@ -99,6 +99,7 @@ public class TimeslotService
         timeslot.setStartDate(startDate);
         timeslot.setEndDate(endDate);
         timeslot.setStartTime(startTime);
+        timeslot.setEndTime(endTime);
         timeslot.setWorkspace(workspace);
         timeslotRepository.save(timeslot);
         return timeslot;

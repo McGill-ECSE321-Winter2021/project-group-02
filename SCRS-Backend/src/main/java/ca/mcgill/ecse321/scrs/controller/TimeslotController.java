@@ -88,7 +88,7 @@ public class TimeslotController
     {
         if (timeslotDto == null)
         {
-            throw new IllegalArgumentException("Invalid timeslot.");
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         Workspace workspace = workspaceService.getWorkspaceById(timeslotDto.getWorkspaceId());
