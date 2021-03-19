@@ -61,6 +61,14 @@ public class Helper
         {
             throw new IllegalArgumentException("There is no such appointment!");
         }
+        if (appointment.getCustomer() == null)
+        {
+            throw new IllegalArgumentException("Appointment is ill-formed. Does not associate with valid customer!");
+        }
+        if (appointment.getAppointmentType() == null)
+        {
+            throw new IllegalArgumentException("Appointment is ill-formed. Invalid appointmentType");
+        }
         AppointmentDto appointmentDto = new AppointmentDto(appointment.getAppointmentID(), appointment.getAppointmentType().toString(), appointment.getService(), appointment.getNote(), appointment.getRating(), appointment.getFeedback(), appointment.getPaid(), appointment.getCustomer().getScrsUserId());
         appointmentDto.setTimeslots(appointment.getTimeslots());
         return appointmentDto;

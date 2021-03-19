@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.lenient;
+import static ca.mcgill.ecse321.scrs.controller.Helper.*;
 
 @ExtendWith(MockitoExtension.class)
 public class TestAppointmentService
@@ -476,7 +477,7 @@ public class TestAppointmentService
             dummy.setRating(9);
             dummy.setCustomer(before.getCustomer());
             dummy.setTimeslots(before.getTimeslots().toArray(new Timeslot[0]));
-            after = service.modifyAppointment(dummy);
+            after = service.modifyAppointment(convertToDto(dummy));
         } catch (IllegalArgumentException e)
         {
             fail();
@@ -534,7 +535,7 @@ public class TestAppointmentService
             dummy.setRating(9);
             dummy.setCustomer(before.getCustomer());
             dummy.setTimeslots(before.getTimeslots().toArray(new Timeslot[0]));
-            after = service.modifyAppointment(dummy);
+            after = service.modifyAppointment(convertToDto(dummy));
         } catch (IllegalArgumentException e)
         {
             error = e.getMessage();
@@ -545,7 +546,7 @@ public class TestAppointmentService
         assertNull(before.getService());
         assertNull(before.getNote());
         assertFalse(before.getPaid());
-        assertEquals("Invalid appointment type.", error);
+        assertEquals("Appointment is ill-formed. Invalid appointmentType", error);
     }
 
     @Test
@@ -564,7 +565,7 @@ public class TestAppointmentService
             dummy.setRating(999);
             dummy.setCustomer(before.getCustomer());
             dummy.setTimeslots(before.getTimeslots().toArray(new Timeslot[0]));
-            after = service.modifyAppointment(dummy);
+            after = service.modifyAppointment(convertToDto(dummy));
         } catch (IllegalArgumentException e)
         {
             error = e.getMessage();
@@ -593,7 +594,7 @@ public class TestAppointmentService
             dummy.setAppointmentType(wrongType);
             dummy.setRating(9);
             dummy.setTimeslots(before.getTimeslots().toArray(new Timeslot[0]));
-            after = service.modifyAppointment(dummy);
+            after = service.modifyAppointment(convertToDto(dummy));
         } catch (IllegalArgumentException e)
         {
             error = e.getMessage();
@@ -604,7 +605,7 @@ public class TestAppointmentService
         assertNull(before.getService());
         assertNull(before.getNote());
         assertFalse(before.getPaid());
-        assertEquals("Invalid customer.", error);
+        assertEquals("Appointment is ill-formed. Does not associate with valid customer!", error);
     }
 
     @Test
@@ -622,7 +623,7 @@ public class TestAppointmentService
             dummy.setAppointmentType(wrongType);
             dummy.setRating(9);
             dummy.setCustomer(before.getCustomer());
-            after = service.modifyAppointment(dummy);
+            after = service.modifyAppointment(convertToDto(dummy));
         } catch (IllegalArgumentException e)
         {
             error = e.getMessage();

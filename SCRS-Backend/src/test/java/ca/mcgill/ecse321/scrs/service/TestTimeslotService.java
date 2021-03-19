@@ -53,7 +53,7 @@ public class TestTimeslotService
     private static final Date laterDate = new Date(currentTimeMillis() + 100000000);
     private static final Date latestDate = new Date(currentTimeMillis() + 900000000);
     private static final Workspace testWorkspace = new Workspace();
-    private static final Technician testTechnician = new Technician();
+    private static Technician testTechnician = null;
     private static final Timeslot testTimeslot = new Timeslot();
 
     @BeforeAll
@@ -63,9 +63,7 @@ public class TestTimeslotService
         testWorkspace.setSpaceName("name");
         testWorkspace.setAvailabilities(new ArrayList<>());
 
-        testTechnician.setEmail("email");
-        testTechnician.setName("name");
-        testTechnician.setPhone("phone");
+        testTechnician = new Technician("name", "pass", "email", "phone", null);
         testTechnician.setScrsUserId(testID);
 
         testTimeslot.setWorkspace(testWorkspace);

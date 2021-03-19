@@ -38,11 +38,7 @@ public class TestTechnicianService
         lenient().when(technicianDao.findByScrsUserId(anyInt())).thenAnswer((InvocationOnMock invocation) -> {
             if (invocation.getArgument(0).equals(testID))
             {
-                Technician technician = new Technician();
-                technician.setPhone(testString);
-                technician.setPassword(testString);
-                technician.setName(testString);
-                technician.setEmail(testString);
+                Technician technician = new Technician(testString, testString, testString, testString, null);
                 technician.setScrsUserId(testID);
                 return technician;
             } else
@@ -53,11 +49,7 @@ public class TestTechnicianService
         lenient().when(technicianDao.findByName(anyString())).thenAnswer((InvocationOnMock invocation) -> {
             if (invocation.getArgument(0).equals(testString))
             {
-                Technician technician = new Technician();
-                technician.setPhone(testString);
-                technician.setPassword(testString);
-                technician.setName(testString);
-                technician.setEmail(testString);
+                Technician technician = new Technician(testString, testString, testString, testString, null);
                 technician.setScrsUserId(testID);
                 return technician;
             } else
@@ -68,11 +60,7 @@ public class TestTechnicianService
         lenient().when(technicianDao.findByEmail(anyString())).thenAnswer((InvocationOnMock invocation) -> {
             if (invocation.getArgument(0).equals(testString))
             {
-                Technician technician = new Technician();
-                technician.setPhone(testString);
-                technician.setPassword(testString);
-                technician.setName(testString);
-                technician.setEmail(testString);
+                Technician technician = new Technician(testString, testString, testString, testString, null);
                 technician.setScrsUserId(testID);
                 return technician;
             } else
@@ -83,11 +71,7 @@ public class TestTechnicianService
         lenient().when(technicianDao.findByPhone(anyString())).thenAnswer((InvocationOnMock invocation) -> {
             if (invocation.getArgument(0).equals(testString))
             {
-                Technician technician = new Technician();
-                technician.setPhone(testString);
-                technician.setPassword(testString);
-                technician.setName(testString);
-                technician.setEmail(testString);
+                Technician technician = new Technician(testString, testString, testString, testString, null);
                 technician.setScrsUserId(testID);
                 return technician;
             } else
@@ -96,11 +80,7 @@ public class TestTechnicianService
             }
         });
         lenient().when(technicianDao.findAll()).thenAnswer((InvocationOnMock invocation) -> {
-            Technician technician = new Technician();
-            technician.setPhone(testString);
-            technician.setPassword(testString);
-            technician.setName(testString);
-            technician.setEmail(testString);
+            Technician technician = new Technician(testString, testString, testString, testString, null);
             technician.setScrsUserId(testID);
             ArrayList<Technician> list = new ArrayList<>();
             list.add(technician);
@@ -321,11 +301,7 @@ public class TestTechnicianService
         try
         {
             before = service.createTechnician(wrongString, wrongString, wrongString, wrongString);
-            Technician dummy = new Technician();
-            dummy.setEmail(testString);
-            dummy.setName(testString);
-            dummy.setPassword(testString);
-            dummy.setPhone(testString);
+            Technician dummy = new Technician(testString, testString, testString, testString, null);
             dummy.setScrsUserId(before.getScrsUserId());
             after = service.updateTechnicianInfo(dummy);
         } catch (IllegalArgumentException e)
@@ -369,11 +345,7 @@ public class TestTechnicianService
         try
         {
             before = service.createTechnician(wrongString, wrongString, wrongString, wrongString);
-            Technician dummy = new Technician();
-            dummy.setEmail(null);
-            dummy.setName(testString);
-            dummy.setPassword(testString);
-            dummy.setPhone(testString);
+            Technician dummy = new Technician(testString, testString, testString, testString, null);
             dummy.setScrsUserId(before.getScrsUserId());
             after = service.updateTechnicianInfo(dummy);
         } catch (IllegalArgumentException e)
