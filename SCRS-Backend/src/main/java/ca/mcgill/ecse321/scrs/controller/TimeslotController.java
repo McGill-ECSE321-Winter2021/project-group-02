@@ -40,11 +40,18 @@ public class TimeslotController
         return new ResponseEntity<>(convertToDto(timeslots), HttpStatus.OK);
     }
 
-    @GetMapping(value = {"/getAvailableTimeslot", "/getAvailableTimeslot/"})
-    public ResponseEntity<List<TimeslotDto>> getAvailableTimeslot(@RequestParam(value = "startDate") Date startDate, @RequestParam(value = "endDate") Date endDate)
+    @GetMapping(value = {"/available/{startDate}/{endDate}", "/available/{startDate}/{endDate}/"})
+    public ResponseEntity<List<TimeslotDto>> getAvailableTimeslot(@PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate)
     {
-        List<Timeslot> availableTimeslots = timeslotService.getAvailableTimeslots(startDate, endDate);
-        return new ResponseEntity<>(convertToDto(availableTimeslots), HttpStatus.OK);
+        try {
+            Date start = Date.valueOf(startDate);
+            Date end = Date.valueOf(endDate);
+
+            List<Timeslot> availableTimeslots = timeslotService.getAvailableTimeslots(start, end);
+            return new ResponseEntity<>(convertToDto(availableTimeslots), HttpStatus.OK);
+        } catch (Exception e) {
+            return  new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PutMapping(value = {"/assignTech", "/assignTech/"})

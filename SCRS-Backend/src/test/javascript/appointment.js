@@ -45,11 +45,10 @@ const testAppointmentBookingAndPayment = async () => {
     };
     let createTimeslotPost = await axios.post(
       backend_address + "/api/timeslot/create",
-      createTimeslotData
-    );
+      createTimeslotData);
     timeslotIdToCheck = createTimeslotPost.data.timeslotId;
   } catch (error) {
-    console.log("Setup for testAppointment FAILED");
+    console.log("Setup for testAppointmentBookingAndPayment FAILED");
   }
 
   // ========== booking an appointment ==========

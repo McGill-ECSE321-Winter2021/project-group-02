@@ -120,4 +120,75 @@ const testTimeslot = async () => {
 
 };
 
-export default testTimeslot;
+const testGetAvailableTimeslots = async () => {
+    const backend_address = "http://localhost:8080";
+    let scoreCounter = 0;
+    const numberOfTests = 1;
+    let timeslotToCheck = null;
+
+    // ========== test setups ==========
+    try {
+        let wipeDatabaseResponse = await axios.delete(
+            backend_address + "/api/database/wipe");
+
+        // create workspace
+        let createWorkspaceData = "name=foo";
+        let createWorkspacePost = await axios.post(
+            backend_address + "/api/workspace/create",
+            createWorkspaceData);
+
+        // create timeslots
+        let createTimeslotData = {
+            startDate: Date.now(),
+            endDate: Date.now(),
+            startTime: +new Date(),
+            endTime: +new Date(),
+            workspaceId: createWorkspacePost.data.workspaceId,
+            techniciansId: []};
+        let createTimeslotResponse = await axios.post(
+            backend_address + "/api/timeslot/create",
+            createTimeslotData);
+        timeslotToCheck = createTimeslotResponse.data;
+    } catch (error) {
+        console.log("Setup for testAppointmentBookingAndPayment FAILED");
+        console.log(error);
+    }
+
+
+    // ========== get available timeslots ==========
+    try {
+        let startDate = timeslotToCheck.startDate;
+        let endDate = timeslotToCheck.startDate;
+
+        let availableTimeslotResponse = await axios.get(
+            backend_address + `/api/timeslot/available/${startDate}/${endDate}`);
+
+        if(availableTimeslotResponse.status === 200 && availableTimeslotResponse.data[0].timeslotId === timeslotToCheck.timeslotId) {
+            scoreCounter++;
+        } else {
+            console.log("Test get available timeslots unsuccessful:");
+            if (availableTimeslotResponse.status !== 200)
+            {
+                console.log("\tUnexpected status code returned");
+            }
+            else if (availableTimeslotResponse.data.timeslotId !== timeslotToCheck.timeslotId)
+            {
+                console.log(`\tUnexpected spaceName returned ${availableTimeslotResponse.data.timeslotId}`);
+            }
+        }
+    }catch (error) {
+        console.log("Test get available timeslots FAILED")
+        console.log(error);
+    }
+
+    // ========== compiling results ==========
+    if (scoreCounter === numberOfTests)
+        console.log("All the GetAvailableTimeslots tests were successful!");
+    else
+        console.log(
+            `${scoreCounter}/${numberOfTests} GetAvailableTimeslots tests were successful.`
+        );
+    console.log("");
+};
+
+export {testTimeslot, testGetAvailableTimeslots};
