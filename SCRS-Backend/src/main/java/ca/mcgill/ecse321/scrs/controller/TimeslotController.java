@@ -91,11 +91,11 @@ public class TimeslotController
         }
 
         Workspace workspace = workspaceService.getWorkspaceById(timeslotDto.getWorkspaceId());
-        Timeslot newTimeslot = timeslotService.createTimeslot(timeslotDto.getStartDate(), timeslotDto.getEndDate(), timeslotDto.getStartTime(), timeslotDto.getEndTime(), workspace);
-        if (newTimeslot == null) return new ResponseEntity<>(new TimeslotDto(), HttpStatus.EXPECTATION_FAILED);
 
         try
         {
+            Timeslot newTimeslot = timeslotService.createTimeslot(timeslotDto.getStartDate(), timeslotDto.getEndDate(), timeslotDto.getStartTime(), timeslotDto.getEndTime(), workspace);
+            if (newTimeslot == null) return new ResponseEntity<>(new TimeslotDto(), HttpStatus.EXPECTATION_FAILED);
             return new ResponseEntity<>(convertToDto(newTimeslot), HttpStatus.OK);
         } catch (Exception e)
         {

@@ -214,8 +214,6 @@ const testAssignTimeslotToTechnician = async () => {
     let technicianIdToCheck = -1; // will update this value with the created technician
     let timeslotIdToAssign = -1;
 
-    console.log("");
-
     let wipeDatabaseResponse = await axios.delete(
         backendAddress + "/api/database/wipe"
     );
@@ -236,8 +234,6 @@ const testAssignTimeslotToTechnician = async () => {
             throw "Error: Failed to create technician for test 'assignTechnicianToTimeslot'";
 
         technicianIdToCheck = createTechnicianResponse.data.technicianId;
-
-        console.log(`CreatedTechnician with id ${createTechnicianResponse.data.technicianId}`);  // todo
 
     } catch (e) {
         console.log("Error: Failed to create technician for test 'assignTechnicianToTimeslot'");
@@ -275,8 +271,6 @@ const testAssignTimeslotToTechnician = async () => {
 
 
         timeslotIdToAssign = createTimeslotResponse.data.timeslotId;
-
-        console.log(`Created Timeslot with id ${createTimeslotResponse.data.timeslotId}`); // todo
 
     } catch (e) {
         console.log("Error: Failed to create timeslot for test 'assignTechnicianToTimeslot'");
@@ -370,8 +364,6 @@ const testViewTechnicianSchedule = async () => {
     let timeslotStartDate = null;
     let timeslotEndDate = null;
 
-    console.log("");
-
     let wipeDatabaseResponse = await axios.delete(
         backendAddress + "/api/database/wipe"
     );
@@ -392,8 +384,6 @@ const testViewTechnicianSchedule = async () => {
             throw "Error: Failed to create technician for test 'assignTechnicianToTimeslot'";
 
         technicianIdToCheck = createTechnicianResponse.data.technicianId;
-
-        console.log(`CreatedTechnician with id ${createTechnicianResponse.data.technicianId}`);  // todo
 
     } catch (e) {
         console.log("Error: Failed to create technician for test 'assignTechnicianToTimeslot'");
@@ -434,8 +424,6 @@ const testViewTechnicianSchedule = async () => {
         timeslotStartDate = createTimeslotResponse.data.startDate;
         timeslotEndDate = createTimeslotResponse.data.endDate;
 
-
-        console.log(`Created Timeslot with id ${createTimeslotResponse.data.timeslotId}`); // todo
 
     } catch (e) {
         console.log("Error: Failed to create timeslot for test 'assignTechnicianToTimeslot'");

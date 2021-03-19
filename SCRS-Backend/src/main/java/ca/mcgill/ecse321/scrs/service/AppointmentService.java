@@ -25,12 +25,6 @@ public class AppointmentService {
     @Autowired
     TimeslotRepository timeslotRepository;
 
-    @Autowired
-    TimeslotRepository timeslotRepository;
-
-    @Autowired
-    CustomerRepository customerRepository;
-
     @Transactional
     public Appointment createAppointment(Appointment.AppointmentType appointmentType, String service, String note, boolean paid, Customer customer, Timeslot... timeslots) {
         if(appointmentType == null) throw new IllegalArgumentException("Please submit a valid appointment type.");
@@ -89,8 +83,8 @@ public class AppointmentService {
         if (appt == null) throw new IllegalArgumentException("Invalid appointment");
         if (appt == null) throw new IllegalArgumentException("Invalid appointment");
         if (appt.getAppointmentType() == null) throw new IllegalArgumentException("Invalid appointment type.");
-        if (appt.getCustomer() == null) throw new IllegalArgumentException("Invalid customer.");
-        if (appt.getTimeslots() == null || appt.getTimeslots().size() == 0) throw new IllegalArgumentException("No valid timeslots selected.");
+        if (appt.getCustomerId() == -1) throw new IllegalArgumentException("Invalid customer.");
+        if (appt.getTimeslotsId() == null || appt.getTimeslotsId().size() == 0) throw new IllegalArgumentException("No valid timeslots selected.");
         if (appt.getRating() > 10 || appt.getRating() < 0) throw new IllegalArgumentException("Invalid rating");
   
         Appointment apptToModify = appointmentRepository.findByAppointmentID(appt.getAppointmentId());
