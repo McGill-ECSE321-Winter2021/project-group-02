@@ -45,9 +45,12 @@ public class WorkspaceDto
     public void setTimeslotsId(List<Timeslot> availabilities)
     {
         this.timeslotsId = new ArrayList<Integer>();
-        for (Timeslot timeslot: availabilities)
+        if (availabilities != null)
         {
-            timeslotsId.add(timeslot.getTimeSlotID());
+            for (Timeslot timeslot: availabilities)
+            {
+                timeslotsId.add(timeslot.getTimeSlotID());
+            }
         }
     }
 }

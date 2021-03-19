@@ -47,64 +47,76 @@ public class TimeslotController
         return new ResponseEntity<>(convertToDto(availableTimeslots), HttpStatus.OK);
     }
 
-    @PostMapping(value = {"/assignTechTimeslot", "/assignTechTimeslot/"})
-    public ResponseEntity<TimeslotDto> assignTechnicianToTimeslot(@RequestBody TimeslotDto timeslotDto)
+    @PutMapping(value = {"/assignTech", "/assignTech/"})
+    public ResponseEntity<TimeslotDto> assignTechnicianToTimeslot(@RequestParam(name = "timeslotId") int timeslotId, @RequestParam(name = "technicianId") int technicianId)
     {
-        if (timeslotDto == null)
+        Timeslot timeslot = timeslotService.getTimeslotById(timeslotId);
+        if (timeslot == null)
         {
-            throw new IllegalArgumentException("Invalid timeslot");
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        Timeslot timeslot = timeslotService.getTimeslotById(timeslotDto.getTimeslotId());
-        if (timeslot.getTechnicians().contains(timeslot))
-        {
-            throw new IllegalArgumentException("Technician already assigned to timeslot");
-        }
-        for(int technicianId: timeslotDto.getTechniciansId())
+
+        try
         {
             Technician technician = technicianService.getTechnicianByID(technicianId);
-            timeslotService.assignTechnicianToTimeslot(technician, timeslot);
+            if (technician != null)
+            {
+                List<Technician> technicians = timeslot.getTechnicians();
+                if (technicians != null)
+                {
+                    if (technicians.stream()
+                            .anyMatch(alreadyAssignedTech -> alreadyAssignedTech.getScrsUserId() == technicianId))
+                    {
+                        // technician already assigned to timeslot
+                        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
+                }
+
+                timeslotService.assignTechnicianToTimeslot(technician, timeslot);
+                return new ResponseEntity<>(convertToDto(timeslot), HttpStatus.OK);
+            }
+        } catch (Exception e)
+        {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(convertToDto(timeslot), HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PostMapping(value = {"/create", "/create/"})
-    public ResponseEntity<TimeslotDto> createTimeslot(@RequestBody TimeslotDto timeslotDto, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    public ResponseEntity<TimeslotDto> createTimeslot(@RequestBody TimeslotDto timeslotDto)
     {
-        int id = Integer.parseInt(ID);
-        if (id == -1)
-        {
-            throw new IllegalArgumentException("Please login to create a timeslot.");
-        }
-        if (!isAdmin(scrsUserService.getSCRSUserByID(id))) //does not have permission to edit.
-        {
-            throw new IllegalArgumentException("You do not have permission to create a timeslot.");
-        }
         if (timeslotDto == null)
         {
-            throw new IllegalArgumentException("Invalid timeslot.");
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
         Workspace workspace = workspaceService.getWorkspaceById(timeslotDto.getWorkspaceId());
-        Timeslot newTimeslot = timeslotService.createTimeslot(timeslotDto.getStartDate(),timeslotDto.getEndDate(),timeslotDto.getStartTime(),timeslotDto.getEndTime(),workspace);
-        return new ResponseEntity<>(convertToDto(newTimeslot),HttpStatus.OK);
+        Timeslot newTimeslot = timeslotService.createTimeslot(timeslotDto.getStartDate(), timeslotDto.getEndDate(), timeslotDto.getStartTime(), timeslotDto.getEndTime(), workspace);
+        if (newTimeslot == null) return new ResponseEntity<>(new TimeslotDto(), HttpStatus.EXPECTATION_FAILED);
+
+        try
+        {
+            return new ResponseEntity<>(convertToDto(newTimeslot), HttpStatus.OK);
+        } catch (Exception e)
+        {
+            return new ResponseEntity<>(new TimeslotDto(), HttpStatus.EXPECTATION_FAILED);
+        }
     }
 
-    @DeleteMapping(value = {"/delete","/delete/"})
-    public ResponseEntity<TimeslotDto> deleteTimeslot(@RequestParam(value = "id") int timeslotID, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    @DeleteMapping(value = {"/delete/{id}", "/delete/{id}/"})
+    public ResponseEntity<TimeslotDto> deleteTimeslot(@PathVariable("id") int timeslotID)
     {
-        int id = Integer.parseInt(ID);
-        if (id == -1)
+        try
         {
-            throw new IllegalArgumentException("Please login to delete a timeslot.");
-        }
-        if (!isAdmin(scrsUserService.getSCRSUserByID(id)))
+            Timeslot timeslot = timeslotService.getTimeslotById(timeslotID);
+            if (timeslot == null)
+            {
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            return new ResponseEntity<>(convertToDto(timeslotService.deleteTimeslot(timeslot)), HttpStatus.OK);
+        } catch (Exception e)
         {
-            throw new IllegalArgumentException("You do not have permission to delete a timeslot.");
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        Timeslot timeslot = timeslotService.getTimeslotById(timeslotID);
-        if (timeslot == null)
-        {
-            throw new IllegalArgumentException("Invalid timeslot. Please submit a valid timeslot to be deleted.");
-        }
-        return new ResponseEntity<>(convertToDto(timeslotService.deleteTimeslot(timeslot)), HttpStatus.OK);
     }
 }
