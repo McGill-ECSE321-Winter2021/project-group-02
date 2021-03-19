@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static ca.mcgill.ecse321.scrs.service.ServiceHelpers.checkAccountInfoValidity;
 import static ca.mcgill.ecse321.scrs.service.ServiceHelpers.toList;
 
 @Service
@@ -19,6 +20,7 @@ public class AssistantService
     @Transactional
     public Assistant createAssistant(String email, String name, String password, String phone)
     {
+        checkAccountInfoValidity(email, name, password, phone);
         Assistant assistant = new Assistant();
         assistant.setEmail(email);
         assistant.setName(name);
@@ -61,12 +63,14 @@ public class AssistantService
     @Transactional
     public Assistant updateAssistantInfo(Assistant assistant)
     {
+        checkAccountInfoValidity(assistant);
         assistantRepository.save(assistant);
         return assistant;
     }
 
     @Transactional
-    public Assistant deleteAssistant(Assistant assistant) {
+    public Assistant deleteAssistant(Assistant assistant)
+    {
         assistantRepository.delete(assistant);
         return assistant;
     }

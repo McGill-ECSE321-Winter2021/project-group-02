@@ -20,6 +20,7 @@ public class WorkspaceService
     @Transactional
     public Workspace createWorkspace(String name)
     {
+        if (name == null || name.trim().length() == 0) throw new IllegalArgumentException("Invalid workspace name.");
         Workspace workspace = new Workspace();
         workspace.setSpaceName(name);
         workspaceRepository.save(workspace);
@@ -41,6 +42,7 @@ public class WorkspaceService
     @Transactional
     public Workspace getWorkspaceByName(String name)
     {
+        if (name == null || name.trim().length() == 0) throw new IllegalArgumentException("Invalid workspace name.");
         return workspaceRepository.findBySpaceName(name);
     }
 
