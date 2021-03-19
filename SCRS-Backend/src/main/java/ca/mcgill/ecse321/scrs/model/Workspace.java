@@ -16,17 +16,17 @@ public class Workspace
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
     private int workspaceID;
-    private String spaceType;
+    private String spaceName;
 
     // Workspace Associations
-    @OneToMany(mappedBy = "workspace")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "workspace")
     private List<Timeslot> availabilities;
     @ManyToOne
     private SCRS scrs;
 
-    public Workspace(String aSpaceType, SCRS aScrs)
+    public Workspace(String aSpaceName, SCRS aScrs)
     {
-        spaceType = aSpaceType;
+        spaceName = aSpaceName;
         availabilities = new ArrayList<Timeslot>();
         boolean didAddScrs = setScrs(aScrs);
         if (!didAddScrs)
@@ -36,11 +36,11 @@ public class Workspace
         }
     }
 
-    protected Workspace()
+    public Workspace()
     {
+        scrs = null;
+        availabilities = new ArrayList<>();
     }
-
-    ;
 
     public static int minimumNumberOfAvailabilities()
     {
@@ -53,9 +53,9 @@ public class Workspace
         return true;
     }
 
-    public boolean setSpaceType(String aSpaceType)
+    public boolean setSpaceName(String aSpaceType)
     {
-        spaceType = aSpaceType;
+        spaceName = aSpaceType;
         return true;
     }
 
@@ -64,9 +64,9 @@ public class Workspace
         return workspaceID;
     }
 
-    public String getSpaceType()
+    public String getSpaceName()
     {
-        return spaceType;
+        return spaceName;
     }
 
     public Timeslot getAvailability(int index)
@@ -227,7 +227,7 @@ public class Workspace
     public String toString()
     {
         return super.toString() + "[" + "workspaceID" + ":" + getWorkspaceID() + "," + "spaceType" + ":"
-                + getSpaceType() + "]" + System.getProperties().getProperty("line.separator") + "  " + "scrs = "
+                + getSpaceName() + "]" + System.getProperties().getProperty("line.separator") + "  " + "scrs = "
                 + (getScrs() != null ? Integer.toHexString(System.identityHashCode(getScrs())) : "null");
     }
 }

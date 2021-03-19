@@ -29,23 +29,16 @@ public abstract class SCRSUser
         email = aEmail;
         phone = aPhone;
         boolean didAddScrs = setScrs(aScrs);
-        if (!didAddScrs)
-        {
-            throw new RuntimeException(
-                    "Unable to create user due to scrs. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-        }
     }
 
     protected SCRSUser()
     {
-        name = "Invalid";
-        password = "Invalid";
-        email = "Invalid";
-        phone = "Invalid";
+        name = null;
+        password = null;
+        email = null;
+        phone = null;
         scrs = null;
     }
-
-    ;
 
     public int getScrsUserId()
     {

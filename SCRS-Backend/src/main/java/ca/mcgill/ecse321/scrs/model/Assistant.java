@@ -11,8 +11,9 @@ public class Assistant extends SCRSUser
         super(aName, aPassword, aEmail, aPhone, aScrs);
     }
 
-    protected Assistant()
+    public Assistant()
     {
+        super();
     }
 
     public String toString()
