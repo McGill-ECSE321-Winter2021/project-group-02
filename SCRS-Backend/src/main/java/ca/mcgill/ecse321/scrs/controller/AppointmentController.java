@@ -34,56 +34,66 @@ public class AppointmentController
     @Autowired
     TimeslotService timeslotService;
 
-    @GetMapping(path = {"/getall", "/getall/"})
-    public ResponseEntity<List<AppointmentDto>> getAllAppointments(@CookieValue(value = "id", defaultValue = "-1") String id) {
-        if(id == null || id.equals("-1"))return new ResponseEntity<>(null, HttpStatus.OK);
+
+    @GetMapping(path = {"/getall/{id}", "/getall/{id}/"})
+    public ResponseEntity<List<AppointmentDto>> getAllAppointments(@PathVariable String id) {
+        if(id == null)return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         int ID = Integer.parseInt(id);
 
-        List<Appointment> list = appointmentService.getAppointmentsByCustomer(customerService.getCustomerByID(ID));
+        Customer customer = customerService.getCustomerByID(ID);
+        if(customer == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+
+        List<Appointment> list = appointmentService.getAppointmentsByCustomer(customer);
         List<AppointmentDto> dtoList = new ArrayList<>();
 
-        for (Appointment appointment : list)
-        {
-            dtoList.add(convertToDto(appointment));
+        if(list != null){
+            for (Appointment appointment : list)
+            {
+                dtoList.add(convertToDto(appointment));
+            }
         }
-
         return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
 
-    @GetMapping(path = {"/notifications", "/notifications/"})
-    public ResponseEntity<List<AppointmentDto>> notifications(@CookieValue(value = "id", defaultValue = "-1") String id) {
-        if(id == null ||id.equals("-1"))return new ResponseEntity<>(null, HttpStatus.OK);
+    @GetMapping(path = {"/notifications/{id}", "/notifications/{id}/"})
+    public ResponseEntity<List<AppointmentDto>> notifications(@PathVariable String id) {
+        if(id == null)return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         int ID = Integer.parseInt(id);
 
-        List<Appointment> list = appointmentService.getAppointmentsByCustomer(customerService.getCustomerByID(ID));
+        Customer customer = customerService.getCustomerByID(ID);
+        if(customer == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
 
-        //finding the same date next week
-        Date now = new Date(LocalDate.now().toEpochDay());
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(now);
-        calendar.add(Calendar.DATE, 7);
-        Date nextWeek = new Date(calendar.getTimeInMillis());
+        List<Appointment> list = appointmentService.getAppointmentsByCustomer(customer);
 
-        List<AppointmentDto> notificationList = new ArrayList<>();
-        for (Appointment appointment : list)
-        {
-            List<Timeslot> timeslots = appointment.getTimeslots();
-            ArrayList<Integer> newTimeslots = new ArrayList<>();
-            for (Timeslot timeslot : timeslots)
+        if(list != null){
+            //finding the same date next week
+            Date now = new Date(LocalDate.now().toEpochDay());
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(now);
+            calendar.add(Calendar.DATE, 7);
+            Date nextWeek = new Date(calendar.getTimeInMillis());
+
+            List<AppointmentDto> notificationList = new ArrayList<>();
+            for (Appointment appointment : list)
             {
-                if (timeslot.getStartDate().compareTo(now) >= 0 && timeslot.getStartDate().compareTo(nextWeek) <= 0)
+                List<Timeslot> timeslots = appointment.getTimeslots();
+                ArrayList<Integer> newTimeslots = new ArrayList<>();
+                for (Timeslot timeslot : timeslots)
                 {
-                    newTimeslots.add(timeslot.getTimeSlotID());
+                    if (timeslot.getStartDate().compareTo(now) >= 0 && timeslot.getStartDate().compareTo(nextWeek) <= 0)
+                    {
+                        newTimeslots.add(timeslot.getTimeSlotID());
+                    }
+                }
+                if (!newTimeslots.isEmpty())
+                {
+                    AppointmentDto appointmentDto = new AppointmentDto(appointment.getAppointmentID(), appointment.getAppointmentType().toString(), appointment.getService(), appointment.getNote(), appointment.getRating(), appointment.getFeedback(), appointment.getPaid(), appointment.getCustomer().getScrsUserId(), newTimeslots);
+                    notificationList.add(appointmentDto);
                 }
             }
-            if (!newTimeslots.isEmpty())
-            {
-                AppointmentDto appointmentDto = new AppointmentDto(appointment.getAppointmentID(), appointment.getAppointmentType().toString(), appointment.getService(), appointment.getNote(), appointment.getRating(), appointment.getFeedback(), appointment.getPaid(), appointment.getCustomer().getScrsUserId(), newTimeslots);
-                notificationList.add(appointmentDto);
-            }
-        }
 
-        return new ResponseEntity<>(notificationList, HttpStatus.OK);
+            return new ResponseEntity<>(notificationList, HttpStatus.OK);
+        }else return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @PostMapping(value = {"/book", "/book/"})
@@ -91,27 +101,39 @@ public class AppointmentController
     {
         if (appointmentDto == null)
         {
-            throw new IllegalArgumentException("Invalid appointment. Please submit a valid appointment booking to be created.");
+            return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);
         }
-        List<Timeslot> timeslots = timeslotService.getTimeslotsById(appointmentDto.getTimeslotsId());
-        if (timeslots == null)
-        {
-            throw new IllegalArgumentException("Appointment does not have any time associated with it");
+        try {
+            List<Timeslot> timeslots = timeslotService.getTimeslotsById(appointmentDto.getTimeslotsId());
+            if (timeslots == null)
+            {
+                return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);
+            }
+            Customer customer = customerService.getCustomerByID(appointmentDto.getCustomerId());
+            Appointment appointment = appointmentService.createAppointment(appointmentDto.getAppointmentType(),
+                    appointmentDto.getService(), appointmentDto.getNote(), appointmentDto.getPaymentStatus(),
+                    customer, timeslots.toArray(new Timeslot[0]));
+            return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        Customer customer = customerService.getCustomerByID(appointmentDto.getCustomerId());
-        Appointment appointment = appointmentService.createAppointment(appointmentDto.getAppointmentType(),
-                appointmentDto.getService(), appointmentDto.getNote(), appointmentDto.getPaymentStatus(),
-               customer , timeslots.toArray(new Timeslot[0]));
-        return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
     }
 
     @PutMapping(value = {"/pay", "/pay/"})
     public ResponseEntity<AppointmentDto> payAppointment(@RequestParam(name = "appointmentId") int appointmentId)
     {
-        Appointment appointment = appointmentService.getAppointmentById(appointmentId);
-        appointment.setPaid(true);
-        return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
+        try
+        {
+            Appointment appointment = appointmentService.getAppointmentById(appointmentId);
+            if (appointment == null) {
+                return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);
+            }
+            appointment.setPaid(true);
+            appointment = appointmentService.modifyAppointment(convertToDto(appointment));
+            return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
+        } catch (Exception e) {
+            return  new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PutMapping(value = {"/rate", "/rate/"})

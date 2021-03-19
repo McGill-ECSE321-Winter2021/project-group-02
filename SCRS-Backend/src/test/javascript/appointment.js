@@ -1,125 +1,278 @@
 import axios from "axios";
 
-const testAppointment = async () => {
+const testAppointmentBookingAndPayment = async () => {
   const backend_address = "http://localhost:8080";
   let scoreCounter = 0;
-  const numberOfTests = 6;
+  const numberOfTests = 8;
+  let customerIdToCheck = -1;
+  let timeslotIdToCheck = -1;
+  let appointmentDataToCheck = null;
 
-  // getting all appointments test 1
+  // ========== test setups ==========
   try {
-    let getTest = await axios.get(
-        backend_address + "/api/appointment/getall"
+    let wipeDatabaseResponse = await axios.delete(
+      backend_address + "/api/database/wipe"
     );
 
-    let responseDataGet = getTest.data;
-    let statusCode = getTest.status;
-    // TODO test respnseData
-  } catch (error) {
-    console.log("/getall Test 1 unsuccessful:");
-    console.log(`${error}`);
-  }
+    // create customer
+    let createCustomerData = {
+      name: "Bababooey",
+      password: "got bababooied",
+      email: "babaooey@gmail.com",
+      phone: "111-111-1111",
+    };
+    let createCustomerPost = await axios.post(
+      backend_address + "/api/customer/create",
+      createCustomerData
+    );
+    customerIdToCheck = createCustomerPost.data.customerId;
 
-  // getting notifications test 1
-  try {
-    let getTest = await axios.get(
-        backend_address + "/api/appointment/notifications"
+    // create workspace
+    let createWorkspaceData = "name=foo";
+    let createWorkspacePost = await axios.post(
+      backend_address + "/api/workspace/create",
+      createWorkspaceData
     );
 
-    let responseDataGet = getTest.data;
-    let statusCode = getTest.status;
-    // TODO test respnseData
+    // create timeslot
+    let createTimeslotData = {
+      startDate: Date.now(),
+      endDate: Date.now(),
+      startTime: +new Date(),
+      endTime: +new Date(),
+      workspaceId: createWorkspacePost.data.workspaceId,
+      techniciansId: [],
+    };
+    let createTimeslotPost = await axios.post(
+      backend_address + "/api/timeslot/create",
+      createTimeslotData
+    );
+    timeslotIdToCheck = createTimeslotPost.data.timeslotId;
   } catch (error) {
-    console.log("/notifications Test 1 unsuccessful:");
-    console.log(`${error}`);
+    console.log("Setup for testAppointment FAILED");
   }
 
-  // booking an appointment Test 1
+  // ========== booking an appointment ==========
   try {
-    let sentData = {
-      // TODO write data to send
+    let bookAppointmentData = {
+      appointmentType: "CarWash",
+      service: "Car wash",
+      note: "Hello world",
+      customerId: customerIdToCheck,
+      timeslotsId: [timeslotIdToCheck],
     };
 
-    let postTest = await axios.post(
+    let bookAppointmentResponse = await axios.post(
       backend_address + "/api/appointment/book",
-      sentData
+      bookAppointmentData
     );
 
-    let responseDataPost = postTest.data;
-    let statusCode = postTest.status;
-    // TODO test respnseData
-    if (responseDataPost.customerName === sentData.name && statusCode === 200)
-      scoreCounter++;
-    else {
-      console.log("Test 1 unsuccessful:");
-      if (responseDataPost.name === sentData.name)
-        console.log(`returned data is erronous: ${responseDataPost}`);
-      if (statusCode !== 200)
-        console.log(`status code not as expected: ${statusCode}`);
+    if (bookAppointmentResponse.status === 200) {
+      appointmentDataToCheck = bookAppointmentResponse.data;
+      if (
+        appointmentDataToCheck.appointmentType ===
+          bookAppointmentData.appointmentType &&
+        appointmentDataToCheck.customerId === bookAppointmentData.customerId
+      ) {
+        scoreCounter++;
+      } else {
+        console.log("Test booking an appointment unsuccessful:");
+        console.log(`returned data is erronous: ${appointmentDataToCheck}`);
+      }
+    } else {
+      console.log("Test booking an appointment unsuccessful:");
+      console.log(
+        `status code not as expected: ${bookAppointmentResponse.status}`
+      );
     }
   } catch (error) {
-    console.log("/book Test 1 unsuccessful:");
-    console.log(`${error}`);
+    console.log("Test booking an appointment unsuccessful:");
+    console.log(error);
   }
 
-  // paying an appointment Test 1
-  try {
-    let sentData = "appointmentId=1" // TODO write data to send
+  // ========== getting all appointments ==========
 
-    let putTest = await axios.put(
-        backend_address + "/api/appointment/pay",
-        sentData
+  try {
+    let getAppointmentResponse = await axios.get(
+      backend_address + `/api/appointment/getall/${customerIdToCheck}`
     );
-
-    let responseDataPut = putTest.data;
-    let statusCode = putTest.status;
-    // TODO test respnseData
+    if (
+      getAppointmentResponse.data.length === 1 &&
+      getAppointmentResponse.status === 200
+    )
+      scoreCounter++;
+    else {
+      console.log("Test get all appointments unsuccessful:");
+      if (getAppointmentResponse.length !== 1)
+        console.log(
+          `The number of appointment is wrong: ${getAppointmentResponse.data.length}`
+        );
+      if (getAppointmentResponse.status !== 200)
+        console.log(
+          `status code not as expected: ${getAppointmentResponse.status}`
+        );
+    }
   } catch (error) {
-    console.log("/pay Test 1 unsuccessful:");
-    console.log(`${error}`);
+    console.log("Test get all appointments unsuccessful:");
+    console.log(error);
   }
 
-  // rating an appointment Test 1
-  try {
-    let sentData = "appointmentId=1&rating=10" // TODO write data to send
+  // ========== getting all appointments with an invalid id ==========
 
-    let putTest = await axios.put(
-        backend_address + "/api/appointment/rate-appointment",
-        sentData
+  try {
+    let getAppointmentResponse = await axios.get(
+      backend_address + `/api/appointment/getall/${-1}`
     );
-
-    let responseDataPut = putTest.data;
-    let statusCode = putTest.status;
-    // TODO test respnseData
   } catch (error) {
-    console.log("/rate-appointment Test 1 unsuccessful:");
-    console.log(`${error}`);
+    if (error.response.status === 406) scoreCounter++;
+    else {
+      console.log("Test get all appointments with invalid id unsuccessful:");
+      console.log(`${error}`);
+    }
   }
 
-  // modifying an appointment Test 1
+  // ========== getting appointments in the next week ==========
+
   try {
-    let sentData = {
-      // TODO write data to send
+    let getNotificationsResponse = await axios.get(
+      backend_address + `/api/appointment/notifications/${customerIdToCheck}`
+    );
+    if (
+      getNotificationsResponse.data.length === 0 &&
+      getNotificationsResponse.status === 200
+    )
+      scoreCounter++;
+    else {
+      console.log("Test get all appointments unsuccessful:");
+      if (getNotificationsResponse.length !== 0)
+        console.log(
+          `The number of appointment is wrong: ${getNotificationsResponse.data.length}`
+        );
+      if (getNotificationsResponse.status !== 200)
+        console.log(
+          `status code not as expected: ${getNotificationsResponse.status}`
+        );
+    }
+  } catch (error) {
+    console.log("Test get all appointments unsuccessful:");
+    console.log(error);
+  }
+
+  // ========== getting all notifications with an invalid id ==========
+
+  try {
+    let getAppointmentResponse = await axios.get(
+      backend_address + `/api/appointment/notifications/${-1}`
+    );
+  } catch (error) {
+    if (error.response.status === 406) scoreCounter++;
+    else {
+      console.log("Test get all notifications with invalid id unsuccessful:");
+      console.log(`${error}`);
+    }
+  }
+
+  // ========== booking an appointment with invalid timeslot  ==========
+  try {
+    let bookAppointmentData = {
+      appointmentType: "CarWash",
+      service: "Car wash",
+      note: "Hello world",
+      customerId: customerIdToCheck,
+      timeslotsId: [-1],
     };
 
-    let putTest = await axios.put(
-        backend_address + "/api/appointment/modifyAppointment",
-        sentData
+    let bookAppointmentResponse = await axios.post(
+      backend_address + "/api/appointment/book",
+      bookAppointmentData
     );
-
-    let responseDataPut = putTest.data;
-    let statusCode = putTest.status;
-    // TODO test respnseData
-  } catch (error) {
-    console.log("/modifyAppointment Test 1 unsuccessful:");
-    console.log(`${error}`);
+    if (bookAppointmentResponse.status === 200) {
+      console.log(
+        "Error: booking an appointment with an invalid timeslot should be impossible"
+      );
+    }
+  } catch (e) {
+    scoreCounter++;
   }
 
-  //compiling results
+  // ========== booking an appointment with invalid customer  ==========
+  try {
+    // create timeslot
+    let createTimeslotData = {
+      startDate: Date.now(),
+      endDate: Date.now(),
+      startTime: +new Date(),
+      endTime: +new Date(),
+      workspaceId: createWorkspacePost.data.workspaceId,
+      techniciansId: [],
+    };
+
+    let createTimeslotPost = await axios.post(
+      backend_address + "/api/timeslot/create",
+      createTimeslotData
+    );
+
+    let bookAppointmentData = {
+      appointmentType: "CarWash",
+      service: "Car wash",
+      note: "Hello world",
+      customerId: -1,
+      timeslotsId: [createTimeslotPost.data.timeslotId],
+    };
+
+    let bookAppointmentResponse = await axios.post(
+      backend_address + "/api/appointment/book",
+      bookAppointmentData
+    );
+    if (bookAppointmentResponse.status === 200) {
+      console.log(
+        "Error: booking an appointment with an invalid timeslot should be impossible"
+      );
+    }
+  } catch (e) {
+    scoreCounter++;
+  }
+
+  // ========== paying an appointment ==========
+  try {
+    if (appointmentDataToCheck.paymentStatus) {
+      console.log("Test paying an appointment unsuccessful:");
+      console.log("Appointment is already payed");
+    } else {
+      let paymentData = `appointmentId=${appointmentDataToCheck.appointmentId}`;
+
+      let paymentResponse = await axios.put(
+        backend_address + "/api/appointment/pay",
+        paymentData
+      );
+
+      if (
+        paymentResponse.status === 200 &&
+        paymentResponse.data.paymentStatus
+      ) {
+        scoreCounter++;
+      } else {
+        console.log("Test paying an appointment FAILED: ");
+        if (paymentResponse.status !== 200) {
+          console.log("\tUnexpected status code returned");
+        } else if (!paymentResponse.data.paymentStatus) {
+          console.log(
+            `\tAppointment was not payed returned ${paymentResponse}`
+          );
+        }
+      }
+    }
+  } catch (error) {
+    console.log("Test paying an appointment unsuccessful:");
+    console.log(error);
+  }
+
+  // ========== compiling results ==========
   if (scoreCounter === numberOfTests)
-    console.log("All the login tests were successful!");
+    console.log("All the booking tests were successful!");
   else
     console.log(
-      `${scoreCounter}/${numberOfTests} login tests were successful.`
+      `${scoreCounter}/${numberOfTests} booking tests were successful.`
     );
   console.log("");
 };
@@ -132,7 +285,7 @@ const testRateAppointment = async () => {
   let appointmentIDToCheck = -1;
 
   let wipeDatabaseResponse = await axios.delete(
-      backend_address + "/api/database/wipe"
+    backend_address + "/api/database/wipe"
   );
 
   // ------------ Begin setting up state for test ---------------
@@ -146,19 +299,15 @@ const testRateAppointment = async () => {
     };
 
     let createCustomerPost = await axios.post(
-        backend_address + "/api/customer/create",
-        createCustomerData
+      backend_address + "/api/customer/create",
+      createCustomerData
     );
 
-    if (createCustomerPost.status !== 200)
-    {
+    if (createCustomerPost.status !== 200) {
       throw "Error: Failed to create customer";
-    }
-    else
-    {
+    } else {
       customerIdToCheck = createCustomerPost.data.customerId;
     }
-
   } catch (error) {
     console.log(error);
   }
@@ -169,8 +318,9 @@ const testRateAppointment = async () => {
     let createWorkspaceData = "name=foo";
 
     let createWorkspacePost = await axios.post(
-        backend_address + "/api/workspace/create",
-        createWorkspaceData);
+      backend_address + "/api/workspace/create",
+      createWorkspaceData
+    );
 
     if (createWorkspacePost.status !== 200) {
       throw "Error: Failed to create workspace";
@@ -182,15 +332,15 @@ const testRateAppointment = async () => {
       startTime: +new Date(),
       endTime: +new Date(),
       workspaceId: createWorkspacePost.data.workspaceId,
-      techniciansId: [ ]
+      techniciansId: [],
     };
 
     let createTimeslotPost = await axios.post(
-        backend_address + "/api/timeslot/create",
-        createTimeslotData);
+      backend_address + "/api/timeslot/create",
+      createTimeslotData
+    );
 
-    if (createTimeslotPost.status !== 200)
-    {
+    if (createTimeslotPost.status !== 200) {
       throw "Error: Failed to create timeslot";
     }
 
@@ -200,19 +350,17 @@ const testRateAppointment = async () => {
       note: "beep",
       paid: "false",
       customerId: customerIdToCheck,
-      timeslotsId: [
-        createTimeslotPost.data.timeslotId
-      ],
+      timeslotsId: [createTimeslotPost.data.timeslotId],
     };
 
     let createAppointmentPost = await axios.post(
-        backend_address + "/api/appointment/book",
-        createAppointmentData
+      backend_address + "/api/appointment/book",
+      createAppointmentData
     );
 
-    if (createAppointmentPost.status !== 200) throw "Booking appointment failed";
+    if (createAppointmentPost.status !== 200)
+      throw "Booking appointment failed";
     appointmentIDToCheck = createAppointmentPost.data.appointmentId;
-
   } catch (error) {
     console.log(error);
   }
@@ -225,22 +373,23 @@ const testRateAppointment = async () => {
     let rateAppointmentData = `appointmentId=${appointmentIDToCheck}&rating=10`;
 
     let rateAppointmentResponse = await axios.put(
-        backend_address + "/api/appointment/rate",
-        rateAppointmentData
+      backend_address + "/api/appointment/rate",
+      rateAppointmentData
     );
 
-    if (rateAppointmentResponse.status === 200 && rateAppointmentResponse.data.rating === 10){
+    if (
+      rateAppointmentResponse.status === 200 &&
+      rateAppointmentResponse.data.rating === 10
+    ) {
       scoreCounter++;
-    }
-    else {
+    } else {
       console.log("Test FAILED: ");
-      if (rateAppointmentResponse.status !== 200)
-      {
+      if (rateAppointmentResponse.status !== 200) {
         console.log("\tUnexpected status code returned");
-      }
-      else if (rateAppointmentResponse.data.rating !== 10)
-      {
-        console.log(`\tUnexpected rating returned ${rateAppointmentResponse.data.rating}`);
+      } else if (rateAppointmentResponse.data.rating !== 10) {
+        console.log(
+          `\tUnexpected rating returned ${rateAppointmentResponse.data.rating}`
+        );
       }
     }
   } catch (error) {
@@ -255,18 +404,18 @@ const testRateAppointment = async () => {
     let rateAppointmentData = `appointmentId=${appointmentIDToCheck}&rating=-1`;
 
     let rateAppointmentResponse = await axios.put(
-        backend_address + "/api/appointment/rate",
-        rateAppointmentData
+      backend_address + "/api/appointment/rate",
+      rateAppointmentData
     );
 
-    if (rateAppointmentResponse.status === 200)
-    {
+    if (rateAppointmentResponse.status === 200) {
       scoreCounter++;
       console.log("Passed -1 rating test");
-    }
-    else {
+    } else {
       console.log("Test FAILED:");
-      console.log(`\tRating an appointment with invalid rating should not return 200 : ${rateAppointmentResponse.data}`);
+      console.log(
+        `\tRating an appointment with invalid rating should not return 200 : ${rateAppointmentResponse.data}`
+      );
     }
   } catch (error) {
     scoreCounter++;
@@ -277,18 +426,17 @@ const testRateAppointment = async () => {
     let rateAppointmentData = `appointmentId=${appointmentIDToCheck}&rating=100`;
 
     let rateAppointmentResponse = await axios.put(
-        backend_address + "/api/appointment/rate",
-        rateAppointmentData
+      backend_address + "/api/appointment/rate",
+      rateAppointmentData
     );
 
-    if (rateAppointmentResponse.status === 200)
-    {
+    if (rateAppointmentResponse.status === 200) {
       console.log("Test FAILED:");
-      console.log(`\tRating an appointment with invalid rating should not return 200 : ${rateAppointmentResponse.data}`);
+      console.log(
+        `\tRating an appointment with invalid rating should not return 200 : ${rateAppointmentResponse.data}`
+      );
     }
-
-  } catch (e)
-  {
+  } catch (e) {
     scoreCounter++;
   }
 
@@ -298,30 +446,29 @@ const testRateAppointment = async () => {
     let rateAppointmentData = `appointmentId=-1&rating=10`;
 
     let rateAppointmentResponse = await axios.put(
-        backend_address + "/api/appointment/rate",
-        rateAppointmentData
+      backend_address + "/api/appointment/rate",
+      rateAppointmentData
     );
 
-    if (rateAppointmentResponse.status === 200)
-    {
+    if (rateAppointmentResponse.status === 200) {
       console.log("Test FAILED:");
-      console.log(`\tRating an invalid appointment should not return 200: ${rateAppointmentResponse.data}`);
+      console.log(
+        `\tRating an invalid appointment should not return 200: ${rateAppointmentResponse.data}`
+      );
     }
-
   } catch (error) {
     scoreCounter++;
   }
-
 
   //compiling results
   if (scoreCounter === numberOfTests)
     console.log("All the rate appointment tests were successful!");
   else
     console.log(
-        `${scoreCounter}/${numberOfTests} rate appointment tests were successful.`
+      `${scoreCounter}/${numberOfTests} rate appointment tests were successful.`
     );
   console.log("");
-}
+};
 
 const testModifyAppointment = async () => {
   const backend_address = "http://localhost:8080";
@@ -331,7 +478,7 @@ const testModifyAppointment = async () => {
   let appointmentToModify = {};
 
   let wipeDatabaseResponse = await axios.delete(
-      backend_address + "/api/database/wipe"
+    backend_address + "/api/database/wipe"
   );
 
   // ------------ Begin setting up state for test ---------------
@@ -345,19 +492,15 @@ const testModifyAppointment = async () => {
     };
 
     let createCustomerPost = await axios.post(
-        backend_address + "/api/customer/create",
-        createCustomerData
+      backend_address + "/api/customer/create",
+      createCustomerData
     );
 
-    if (createCustomerPost.status !== 200)
-    {
+    if (createCustomerPost.status !== 200) {
       throw "Error: Failed to create customer";
-    }
-    else
-    {
+    } else {
       customerIdToCheck = createCustomerPost.data.customerId;
     }
-
   } catch (error) {
     console.log(error);
   }
@@ -368,8 +511,9 @@ const testModifyAppointment = async () => {
     let createWorkspaceData = "name=foo";
 
     let createWorkspacePost = await axios.post(
-        backend_address + "/api/workspace/create",
-        createWorkspaceData);
+      backend_address + "/api/workspace/create",
+      createWorkspaceData
+    );
 
     if (createWorkspacePost.status !== 200) {
       throw "Error: Failed to create workspace";
@@ -381,15 +525,15 @@ const testModifyAppointment = async () => {
       startTime: +new Date(),
       endTime: +new Date(),
       workspaceId: createWorkspacePost.data.workspaceId,
-      techniciansId: [ ]
+      techniciansId: [],
     };
 
     let createTimeslotPost = await axios.post(
-        backend_address + "/api/timeslot/create",
-        createTimeslotData);
+      backend_address + "/api/timeslot/create",
+      createTimeslotData
+    );
 
-    if (createTimeslotPost.status !== 200)
-    {
+    if (createTimeslotPost.status !== 200) {
       throw "Error: Failed to create timeslot";
     }
 
@@ -399,19 +543,17 @@ const testModifyAppointment = async () => {
       note: "beep",
       paid: "false",
       customerId: customerIdToCheck,
-      timeslotsId: [
-        createTimeslotPost.data.timeslotId
-      ],
+      timeslotsId: [createTimeslotPost.data.timeslotId],
     };
 
     let createAppointmentPost = await axios.post(
-        backend_address + "/api/appointment/book",
-        createAppointmentData
+      backend_address + "/api/appointment/book",
+      createAppointmentData
     );
 
-    if (createAppointmentPost.status !== 200) throw "Booking appointment failed";
+    if (createAppointmentPost.status !== 200)
+      throw "Booking appointment failed";
     appointmentToModify = createAppointmentPost.data;
-
   } catch (error) {
     console.log(error);
   }
@@ -425,20 +567,23 @@ const testModifyAppointment = async () => {
     modifyAppointmentData.note = "Modified appointment note";
 
     let modifyAppointmentResponse = await axios.put(
-        backend_address + "/api/appointment/modifyAppointment",
-        modifyAppointmentData
+      backend_address + "/api/appointment/modifyAppointment",
+      modifyAppointmentData
     );
 
-    if (modifyAppointmentResponse.status === 200 && modifyAppointmentResponse.data.note === "Modified appointment note"){
+    if (
+      modifyAppointmentResponse.status === 200 &&
+      modifyAppointmentResponse.data.note === "Modified appointment note"
+    ) {
       scoreCounter++;
-    }
-    else {
+    } else {
       console.log("Test FAILED: ");
-      if (modifyAppointmentResponse.status !== 200)
-      {
+      if (modifyAppointmentResponse.status !== 200) {
         console.log("\tUnexpected status code returned");
       }
-        console.log(`\tUnexpected note returned ${modifyAppointmentResponse.data.note}`);
+      console.log(
+        `\tUnexpected note returned ${modifyAppointmentResponse.data.note}`
+      );
     }
   } catch (error) {
     console.log(error);
@@ -450,8 +595,8 @@ const testModifyAppointment = async () => {
     modifyAppointmentData.appointmentId = -1;
 
     let modifyAppointmentResponse = await axios.put(
-        backend_address + "/api/appointment/modifyAppointment",
-        modifyAppointmentData
+      backend_address + "/api/appointment/modifyAppointment",
+      modifyAppointmentData
     );
 
     if (modifyAppointmentResponse.status === 200)
@@ -465,9 +610,13 @@ const testModifyAppointment = async () => {
     console.log("All the modify appointment tests were successful!");
   else
     console.log(
-        `${scoreCounter}/${numberOfTests} modify appointment tests were successful.`
+      `${scoreCounter}/${numberOfTests} modify appointment tests were successful.`
     );
   console.log("");
-}
+};
 
-export { testAppointment, testRateAppointment, testModifyAppointment };
+export {
+  testAppointmentBookingAndPayment,
+  testRateAppointment,
+  testModifyAppointment,
+};

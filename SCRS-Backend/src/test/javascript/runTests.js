@@ -1,8 +1,8 @@
 import testLogin from "./login.js";
 import testCustomer from "./customer.js";
 import testAssistant from "./assistant.js";
-import {testTechnician, testAssignTimeslotToTechnician, testViewTechnicianSchedule} from "./technician.js";
-import {testAppointment, testRateAppointment} from "./appointment.js";
+import {testTechnician, testAssignTimeslotToTechnician,testViewTechnicianSchedule} from "./technician.js";
+import {testAppointmentBookingAndPayment, testRateAppointment, testModifyAppointment } from  "./appointment.js";
 import testWorkspace from "./workspace.js";
 import testTimeslot from "./timeslot.js";
 
@@ -18,7 +18,10 @@ testLogin().then(() => {
                         testTimeslot().then(() => {
                             testAssignTimeslotToTechnician().then(() => {
                                 testViewTechnicianSchedule().then(() => {
-                                    testAppointment();
+                                      testModifyAppointment().then(() => {
+                                        testAppointmentBookingAndPayment();
+                                      })
+
                                 });
                             });
                         });
@@ -28,4 +31,5 @@ testLogin().then(() => {
         });
     });
 });
+
 

@@ -22,7 +22,7 @@ const testWorkspace = async () => {
             scoreCounter++;
             workspaceIdToCheck = createWorkspaceResponse.data.workspaceId;
         } else {
-            console.log("Test 1 FAILED: ")
+            console.log("Test Create a workspace FAILED: ")
             if (createWorkspaceResponse.status !== 200)
             {
                 console.log("\tUnexpected status code returned");
@@ -33,7 +33,7 @@ const testWorkspace = async () => {
             }
         }
     } catch (error) {
-        console.log("Test 1 FAILED")
+        console.log("Test Create a workspace FAILED")
         console.log(error);
     }
 
@@ -45,7 +45,7 @@ const testWorkspace = async () => {
             backend_address + "/api/workspace/create",
             createWorkspaceData);
 
-        console.log("Test 2 FAILED: ")
+        console.log("Test Creating a workspace with an invalid name FAILED: ")
         console.log(`\tUnexpected status code returned ${createWorkspaceResponse.status}`);
         console.log(`\tWorkspace returned ${createWorkspaceResponse.data.workspaceId}`);
     } catch (error) {
@@ -72,7 +72,7 @@ const testWorkspace = async () => {
 
         timeslotIdToCheck = createTimeslotResponse.data.timeslotId;
     } catch (error) {
-        console.log("Faild to create timeslot");
+        console.log("Faild to create timeslot in workspace tests");
     }
 
     // ========== Get workspace available timeslot (Test 3) ==========
@@ -83,7 +83,7 @@ const testWorkspace = async () => {
         if (getWorkspaceTimeslotResponse.status === 200 && getWorkspaceTimeslotResponse.data[0].timeslotId === timeslotIdToCheck) {
             scoreCounter++;
         } else {
-            console.log("Test 3 FAILED: ")
+            console.log("Test Get workspace available timeslot FAILED: ")
             if (getWorkspaceTimeslotResponse.status !== 200)
             {
                 console.log("\tUnexpected status code returned");
@@ -94,7 +94,7 @@ const testWorkspace = async () => {
             }
         }
     } catch (error) {
-        console.log("Test 3 FAILED")
+        console.log("Test Get workspace available timeslot FAILED")
         console.log(error);
     }
 
@@ -103,7 +103,7 @@ const testWorkspace = async () => {
         let deleteWorkspaceResponse = await axios.get(
             backend_address + "/api/workspace/availabilities/-1");
 
-        console.log("Test 4 FAILED: ")
+        console.log("Test Get available timeslot of invalid workspace FAILED: ")
         console.log(`\tUnexpected status code returned ${deleteWorkspaceResponse.status}`);
         console.log(`\tWorkspace returned ${deleteWorkspaceResponse.data.workspaceId}`);
     } catch (error) {
@@ -115,7 +115,7 @@ const testWorkspace = async () => {
         let deleteWorkspaceResponse = await axios.delete(
             backend_address + `/api/workspace/delete/${workspaceIdToCheck}`);
 
-        console.log("Test 5 FAILED: ")
+        console.log("Test Deleting an workspace with timeslot association FAILED: ")
         console.log(`\tUnexpected status code returned ${deleteWorkspaceResponse.status}`);
         console.log(`\tWorkspace returned ${deleteWorkspaceResponse.data.workspaceId}`);
     } catch (error) {
@@ -128,7 +128,7 @@ const testWorkspace = async () => {
         let deleteTimeslotResponse = await axios.delete(
             backend_address + `/api/timeslot/delete/${timeslotIdToCheck}`);
     } catch (error) {
-        console.log("Faild to delete timeslot");
+        console.log("Faild to delete timeslot in workspace test");
     }
 
     // ========== Deleting a workspace (Test 6) ==========
@@ -139,7 +139,7 @@ const testWorkspace = async () => {
         if (deleteWorkspaceResponse.status === 200 && deleteWorkspaceResponse.data.workspaceId === workspaceIdToCheck) {
             scoreCounter++;
         } else {
-            console.log("Test 6 FAILED: ")
+            console.log("Test Deleting a workspace FAILED: ")
             if (deleteWorkspaceResponse.status !== 200)
             {
                 console.log("\tUnexpected status code returned");
@@ -150,7 +150,7 @@ const testWorkspace = async () => {
             }
         }
     } catch (error) {
-        console.log("Test 6 FAILED")
+        console.log("Test Deleting a workspace FAILED")
         console.log(error);
     }
 
@@ -159,7 +159,7 @@ const testWorkspace = async () => {
         let deleteWorkspaceResponse = await axios.delete(
             backend_address + "/api/workspace/delete/-1");
 
-        console.log("Test 7 FAILED: ")
+        console.log("Test Deleting an invalid workspace FAILED: ")
         console.log(`\tUnexpected status code returned ${deleteWorkspaceResponse.status}`);
         console.log(`\tWorkspace returned ${deleteWorkspaceResponse.data.workspaceId}`);
     } catch (error) {
