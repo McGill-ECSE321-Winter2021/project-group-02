@@ -22,6 +22,7 @@ public class CustomerController
     SCRSUserService scrsUserService;
 
     @PostMapping(value = {"/create", "/create/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<CustomerDto> createCustomer(@RequestBody Customer customer)
     {
         if (customer == null)

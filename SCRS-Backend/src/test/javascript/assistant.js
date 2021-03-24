@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const testAssistant = async () => {
-  const backend_address = "http://localhost:8080";
+  const backend_address = "http://localhost:8000";
   let scoreCounter = 0;
   const numberOfTests = 9;
   let id = 0;

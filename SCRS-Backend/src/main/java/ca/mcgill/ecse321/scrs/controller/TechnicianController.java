@@ -35,6 +35,7 @@ public class TechnicianController
     TimeslotService timeslotService;
 
     @PostMapping(value = {"/create", "/create/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<TechnicianDto> createTechnician(@RequestBody Technician technician, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
         int id = Integer.parseInt(ID);

@@ -28,6 +28,7 @@ public class LoginController
     private TechnicianService technicianService;
 
     @PostMapping (value = {"/customer", "/customer/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<Boolean> loginCustomer(@RequestParam("email") String email, @RequestParam("password") String password, HttpServletResponse response) {
 
         String hashedPassword = Helper.hash(password);
@@ -47,6 +48,7 @@ public class LoginController
     }
 
     @PostMapping (value = {"/assistant", "/assistant/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<Boolean> loginAssistant(@RequestParam("email") String email, @RequestParam("password") String password, HttpServletResponse response) {
 
         String hashedPassword = Helper.hash(password);
@@ -66,6 +68,7 @@ public class LoginController
     }
 
     @PostMapping (value = {"/technician", "/technician/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<Boolean> loginTechnician(@RequestParam("email") String email, @RequestParam("password") String password, HttpServletResponse response) {
 
         String hashedPassword = Helper.hash(password);
@@ -85,6 +88,7 @@ public class LoginController
     }
 
     @GetMapping(value = {"/logout", "/logout/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<Boolean> logout(HttpServletResponse response) {
 
         Cookie cookie = new Cookie("id", null);

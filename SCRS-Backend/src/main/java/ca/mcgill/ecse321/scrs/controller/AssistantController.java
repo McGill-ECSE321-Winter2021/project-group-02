@@ -22,6 +22,7 @@ public class AssistantController
     SCRSUserService scrsUserService;
 
     @PostMapping(value = {"/create", "/create/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<AssistantDto> createAssistant(@RequestBody Assistant assistant)
     {
         if (assistant == null)

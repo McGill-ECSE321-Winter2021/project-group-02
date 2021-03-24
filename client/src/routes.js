@@ -1,11 +1,22 @@
-import VueRouter from "vue-router";
+import Vue from "vue";
+import Router from "vue-router";
 import Mainpage from "./pages/Mainpage.vue";
+import Dashboard from "./pages/Dashboard.vue";
 
-const routes = [{ path: "/", name: "Mainpage", component: Mainpage }];
+Vue.use(Router);
 
-const router = new VueRouter({
+export default new Router({
   mode: "history",
-  routes,
+  routes: [
+    {
+      path: "/",
+      name: "Mainpage",
+      component: Mainpage,
+    },
+    {
+      path: "/dashboard",
+      name: "Dashboard",
+      component: Dashboard,
+    },
+  ],
 });
-
-export default router;
