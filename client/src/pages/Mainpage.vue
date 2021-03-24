@@ -16,20 +16,18 @@
         <button class="mainpage-button" @click="backUserSelect()">Back</button>
       </div>
       <div id="mainpage-login">
-        <form class="mainpage-form" onsubmit="return false" @change="change()">
+        <form class="mainpage-form" submit="return false" @change="change()">
           <input
             class="mainpage-input"
             id="mainpage-login-email"
             type="email"
             placeholder="email"
-            required
           />
           <input
             class="mainpage-input"
             id="mainpage-login-password"
             type="password"
             placeholder="password"
-            required
           />
           <p id="mainpage-login-error">Wrong username or password</p>
           <div class="mainpage-button-container">
@@ -55,35 +53,30 @@
             id="mainpage-signup-name"
             type="text"
             placeholder="name"
-            required
           />
           <input
             class="mainpage-input"
             id="mainpage-signup-email"
             type="email"
             placeholder="email"
-            required
           />
           <input
             class="mainpage-input"
             id="mainpage-signup-phone"
             type="tel"
             placeholder="phone number (format: 000-000-0000)"
-            required
           />
           <input
             class="mainpage-input"
             id="mainpage-signup-password"
             type="password"
             placeholder="password"
-            required
           />
           <input
             class="mainpage-input"
             id="mainpage-signup-repeat-password"
             type="password"
             placeholder="repeat password"
-            required
           />
           <p id="mainpage-signup-error">Wrong username or password</p>
           <div class="mainpage-button-container">
@@ -224,6 +217,18 @@ export default {
           email: document.getElementById("mainpage-signup-email").value,
           phone: document.getElementById("mainpage-signup-phone").value,
         };
+
+        if (
+          sentData.name == "" ||
+          sentData.password == "" ||
+          sentData.email == "" ||
+          sentData.phone == ""
+        ) {
+          document.getElementById("mainpage-signup-error").innerHTML =
+            "Missing Value(s)";
+          document.getElementById("mainpage-signup-error").style.opacity = 1;
+          return;
+        }
 
         if (
           sentData.password !==
