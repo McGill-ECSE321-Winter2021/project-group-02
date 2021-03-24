@@ -375,11 +375,13 @@ export default {
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
   font-weight: 600;
   color: rgb(75, 75, 75);
+  border: 0.5vh solid rgb(235, 164, 89);
 }
 
 .mainpage-button:hover {
   background-color: rgb(175, 122, 65);
-  color: rgb(230, 230, 230);
+  color: whitesmoke;
+  border-color: rgb(75, 75, 75);
 }
 
 .mainpage-input {
