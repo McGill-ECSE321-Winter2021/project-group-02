@@ -2,6 +2,7 @@
   <div class="mainpage">
     <div id="mainpage-container">
       <div id="mainpage-select-user">
+        <p class="mainpage-title">Who are you?</p>
         <button class="mainpage-button" @click="customer()">Customer</button>
         <button class="mainpage-button" @click="technician()">
           Technician
@@ -9,6 +10,7 @@
         <button class="mainpage-button" @click="assistant()">Assistant</button>
       </div>
       <div id="mainpage-login-signup">
+        <p class="mainpage-title">What would you like to do?</p>
         <button class="mainpage-button" @click="login()">Login</button>
         <button class="mainpage-button" @click="signup()">
           Sign Up
@@ -16,28 +18,36 @@
         <button class="mainpage-button" @click="backUserSelect()">Back</button>
       </div>
       <div id="mainpage-login">
-        <form class="mainpage-form" submit="return false" @change="change()">
+        <form
+          class="mainpage-form"
+          onsubmit="return false"
+          v-on:submit.prevent="submitLogin()"
+          @change="change()"
+        >
           <input
             class="mainpage-input"
             id="mainpage-login-email"
+            v-model="emailLogin"
             type="email"
             placeholder="email"
           />
           <input
             class="mainpage-input"
             id="mainpage-login-password"
+            v-model="passwordLogin"
             type="password"
             placeholder="password"
           />
           <p id="mainpage-login-error">Wrong username or password</p>
           <div class="mainpage-button-container">
-            <button class="mainpage-button" @click="backLoginSignup()">
-              Back
-            </button>
+            <input
+              class="mainpage-button"
+              type="button"
+              value="Back"
+              v-on:click="backLoginSignup()"
+            />
             <div class="mainpage-spacer"></div>
-            <button class="mainpage-button" @click="submitLogin()">
-              Submit
-            </button>
+            <input class="mainpage-button" type="submit" value="Submit" />
           </div>
         </form>
       </div>
@@ -47,46 +57,53 @@
           id="mainpage-signup-form"
           onsubmit="return false"
           @change="change()"
+          v-on:submit.prevent="submitSignup()"
         >
           <input
             class="mainpage-input"
             id="mainpage-signup-name"
+            v-model="nameSignup"
             type="text"
             placeholder="name"
           />
           <input
             class="mainpage-input"
             id="mainpage-signup-email"
+            v-model="emailSignup"
             type="email"
             placeholder="email"
           />
           <input
             class="mainpage-input"
             id="mainpage-signup-phone"
+            v-model="phoneSignup"
             type="tel"
             placeholder="phone number (format: 000-000-0000)"
           />
           <input
             class="mainpage-input"
             id="mainpage-signup-password"
+            v-model="passwordSignup"
             type="password"
             placeholder="password"
           />
           <input
             class="mainpage-input"
             id="mainpage-signup-repeat-password"
+            v-model="repeatPasswordSignup"
             type="password"
             placeholder="repeat password"
           />
           <p id="mainpage-signup-error">Wrong username or password</p>
           <div class="mainpage-button-container">
-            <button class="mainpage-button" @click="backLoginSignup()">
-              Back
-            </button>
+            <input
+              class="mainpage-button"
+              type="button"
+              value="Back"
+              v-on:click="backLoginSignup()"
+            />
             <div class="mainpage-spacer"></div>
-            <button class="mainpage-button" @click="submitSignup()">
-              Submit
-            </button>
+            <input type="submit" class="mainpage-button" value="Submit" />
           </div>
         </form>
       </div>
@@ -106,6 +123,13 @@ export default {
   data() {
     return {
       userType: "",
+      emailLogin: "",
+      passwordLogin: "",
+      nameSignup: "",
+      emailSignup: "",
+      phoneSignup: "",
+      passwordSignup: "",
+      repeatPasswordSignup: "",
     };
   },
   methods: {
@@ -179,8 +203,8 @@ export default {
       document.getElementById("mainpage-signup-error").style.opacity = 0;
     },
     submitLogin: async function() {
-      let email = document.getElementById("mainpage-login-email").value;
-      let password = document.getElementById("mainpage-login-password").value;
+      let email = this.emailLogin;
+      let password = this.passwordLogin;
 
       try {
         let sentData = `email=${email}&password=${password}`;
@@ -212,10 +236,10 @@ export default {
     submitSignup: async function() {
       try {
         let sentData = {
-          name: document.getElementById("mainpage-signup-name").value,
-          password: document.getElementById("mainpage-signup-password").value,
-          email: document.getElementById("mainpage-signup-email").value,
-          phone: document.getElementById("mainpage-signup-phone").value,
+          name: this.nameSignup,
+          password: this.passwordSignup,
+          email: this.emailSignup,
+          phone: this.phoneSignup,
         };
 
         if (
@@ -230,10 +254,7 @@ export default {
           return;
         }
 
-        if (
-          sentData.password !==
-          document.getElementById("mainpage-signup-repeat-password").value
-        ) {
+        if (sentData.password !== this.repeatPasswordSignup) {
           document.getElementById("mainpage-signup-error").innerHTML =
             "Passwords do not match";
           document.getElementById("mainpage-signup-error").style.opacity = 1;
@@ -266,6 +287,16 @@ export default {
         console.log(`${error}`);
       }
     },
+  },
+  mounted() {
+    if (
+      document.cookie !== undefined &&
+      document.cookie !== -1 &&
+      document.cookie !== ""
+    ) {
+      console.log(document.cookie);
+      this.$router.push("/dashboard");
+    }
   },
 };
 </script>
@@ -394,5 +425,13 @@ export default {
   color: rgb(59, 58, 58);
   transition: 0.3s;
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+}
+
+.mainpage-title {
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  font-size: 3vh;
+  font-weight: 600;
+  color: rgb(59, 58, 58);
+  padding-bottom: 3vh;
 }
 </style>

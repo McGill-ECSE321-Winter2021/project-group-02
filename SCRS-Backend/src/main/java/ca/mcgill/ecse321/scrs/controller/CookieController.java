@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CookieController
 {
-
     @GetMapping("/")
+    @CrossOrigin(origins = "*")
     public String readCookie(@CookieValue(value = "id", defaultValue = "-1") String id){
         return id;
     }
