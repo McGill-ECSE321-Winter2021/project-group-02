@@ -114,6 +114,7 @@
 <script>
 import axios from "axios";
 import proxy from "../constants.js";
+import { mapActions } from "vuex";
 
 export default {
   name: "Mainpage",
@@ -133,6 +134,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions(["setUser"]),
     customer: function() {
       this.userType = "customer";
       document.getElementById("mainpage-select-user").style.opacity = 0;
@@ -147,8 +149,8 @@ export default {
       document.getElementById("mainpage-select-user").style.opacity = 0;
       setTimeout(function() {
         document.getElementById("mainpage-select-user").style.zIndex = -1;
-        document.getElementById("mainpage-login-signup").style.zIndex = 5;
-        document.getElementById("mainpage-login-signup").style.opacity = 1;
+        document.getElementById("mainpage-login").style.zIndex = 5;
+        document.getElementById("mainpage-login").style.opacity = 1;
       }, 300);
     },
     assistant: function() {
@@ -156,8 +158,8 @@ export default {
       document.getElementById("mainpage-select-user").style.opacity = 0;
       setTimeout(function() {
         document.getElementById("mainpage-select-user").style.zIndex = -1;
-        document.getElementById("mainpage-login-signup").style.zIndex = 5;
-        document.getElementById("mainpage-login-signup").style.opacity = 1;
+        document.getElementById("mainpage-login").style.zIndex = 5;
+        document.getElementById("mainpage-login").style.opacity = 1;
       }, 300);
     },
     backUserSelect: function() {
@@ -187,16 +189,32 @@ export default {
       }, 300);
     },
     backLoginSignup: function() {
-      document.getElementById("mainpage-signup").style.opacity = 0;
-      document.getElementById("mainpage-login").style.opacity = 0;
-      document.getElementById("mainpage-container").style.height = "50vh";
-      document.getElementById("mainpage-login-error").style.opacity = 0;
-      setTimeout(function() {
-        document.getElementById("mainpage-login-signup").style.zIndex = 5;
-        document.getElementById("mainpage-signup").style.zIndex = -1;
-        document.getElementById("mainpage-login").style.zIndex = -1;
-        document.getElementById("mainpage-login-signup").style.opacity = 1;
-      }, 300);
+      if (this.userType == "customer") {
+        document.getElementById("mainpage-signup").style.opacity = 0;
+        document.getElementById("mainpage-login").style.opacity = 0;
+        document.getElementById("mainpage-container").style.height = "50vh";
+        document.getElementById("mainpage-login-error").style.opacity = 0;
+        setTimeout(function() {
+          document.getElementById("mainpage-signup").style.zIndex = -1;
+          document.getElementById("mainpage-login").style.zIndex = -1;
+          document.getElementById("mainpage-login-signup").style.zIndex = 5;
+          document.getElementById("mainpage-login-signup").style.opacity = 1;
+        }, 300);
+      } else if (
+        this.userType == "technician" ||
+        this.userType == "assistant"
+      ) {
+        document.getElementById("mainpage-signup").style.opacity = 0;
+        document.getElementById("mainpage-login").style.opacity = 0;
+        document.getElementById("mainpage-container").style.height = "50vh";
+        document.getElementById("mainpage-login-error").style.opacity = 0;
+        setTimeout(function() {
+          document.getElementById("mainpage-signup").style.zIndex = -1;
+          document.getElementById("mainpage-login").style.zIndex = -1;
+          document.getElementById("mainpage-select-user").style.zIndex = 5;
+          document.getElementById("mainpage-select-user").style.opacity = 1;
+        }, 300);
+      }
     },
     change: function() {
       document.getElementById("mainpage-login-error").style.opacity = 0;
@@ -216,8 +234,8 @@ export default {
 
         let responseDataPost = postTest.data; //do something with this for tests
         let statusCode = postTest.status;
-        console.log(responseDataPost);
-        if (responseDataPost === true && statusCode === 200) {
+        if (responseDataPost !== -1 && statusCode === 200) {
+          this.setUser({ user: responseDataPost, userType: this.userType }); //setting the user in vuex
           document.getElementById("mainpage-container").style.height = "80vh";
           document.getElementById("mainpage-container").style.width = "80vw";
           document.getElementById("mainpage-login").style.opacity = 0;
@@ -234,6 +252,7 @@ export default {
       }
     },
     submitSignup: async function() {
+      if (this.userType !== "customer") return;
       try {
         let sentData = {
           name: this.nameSignup,
@@ -288,14 +307,25 @@ export default {
       }
     },
   },
-  mounted() {
+  async mounted() {
     if (
       document.cookie !== undefined &&
       document.cookie !== -1 &&
       document.cookie !== ""
     ) {
-      console.log(document.cookie);
-      this.$router.push("/dashboard");
+      try {
+        let response = await axios.get(
+          proxy.proxy + `/api/login/type/${document.cookie}`
+        );
+        if (response.data == null || response.status !== 200) return;
+        this.setUser({
+          user: parseInt(document.cookie),
+          userType: response.data,
+        });
+        this.$router.push("/dashboard");
+      } catch (error) {
+        console.log(`${error}`);
+      }
     }
   },
 };
@@ -347,8 +377,18 @@ export default {
 }
 
 #mainpage-select-user {
-  opacity: 1;
   z-index: 5;
+  animation: changeOpacity 0.3s;
+}
+
+@keyframes changeOpacity {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 #mainpage-login-signup,
@@ -379,7 +419,7 @@ export default {
 }
 
 .mainpage-button:hover {
-  background-color: rgb(175, 122, 65);
+  background-color: rgb(136, 93, 48);
   color: whitesmoke;
   border-color: rgb(75, 75, 75);
 }

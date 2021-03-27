@@ -31,10 +31,10 @@ const testLogin = async () => {
 
     let responseDataPost = postTest.data; //do something with this for tests
     let statusCode = postTest.status;
-    if (responseDataPost === false && statusCode === 200) scoreCounter++;
+    if (responseDataPost === -1 && statusCode === 200) scoreCounter++;
     else {
       console.log("Test 2 unsuccessful:");
-      if (responseDataPost !== false)
+      if (responseDataPost !== -1)
         console.log(`returned data is erronous: ${responseDataPost}`);
       if (statusCode !== 200)
         console.log(`status code not as expected: ${statusCode}`);
@@ -115,10 +115,10 @@ const testLogin = async () => {
 
     let responseDataPost = postTest.data; //do something with this for tests
     let statusCode = postTest.status;
-    if (responseDataPost === true && statusCode === 200) scoreCounter++;
+    if (responseDataPost !== -1 && statusCode === 200) scoreCounter++;
     else {
       console.log("Test 5 unsuccessful:");
-      if (responseDataPost !== true)
+      if (responseDataPost === -1)
         console.log(`returned data is erronous: ${responseDataPost}`);
       if (statusCode !== 200)
         console.log(`status code not as expected: ${statusCode}`);
@@ -169,10 +169,10 @@ const testLogin = async () => {
 
     let responseDataPost = postTest.data; //do something with this for tests
     let statusCode = postTest.status;
-    if (responseDataPost === true && statusCode === 200) scoreCounter++;
+    if (responseDataPost !== -1 && statusCode === 200) scoreCounter++;
     else {
       console.log("Test 7 unsuccessful:");
-      if (responseDataPost !== true)
+      if (responseDataPost === -1)
         console.log(`returned data is erronous: ${responseDataPost}`);
       if (statusCode !== 200)
         console.log(`status code not as expected: ${statusCode}`);
@@ -193,10 +193,10 @@ const testLogin = async () => {
 
     let responseDataPost = postTest.data; //do something with this for tests
     let statusCode = postTest.status;
-    if (responseDataPost === true && statusCode === 200) scoreCounter++;
+    if (responseDataPost !== -1 && statusCode === 200) scoreCounter++;
     else {
       console.log("Test 8 unsuccessful:");
-      if (responseDataPost !== true)
+      if (responseDataPost === -1)
         console.log(`returned data is erronous: ${responseDataPost}`);
       if (statusCode !== 200)
         console.log(`status code not as expected: ${statusCode}`);
@@ -217,10 +217,10 @@ const testLogin = async () => {
 
     let responseDataPost = postTest.data; //do something with this for tests
     let statusCode = postTest.status;
-    if (responseDataPost === false && statusCode === 200) scoreCounter++;
+    if (responseDataPost === -1 && statusCode === 200) scoreCounter++;
     else {
       console.log("Test 9 unsuccessful:");
-      if (responseDataPost !== false)
+      if (responseDataPost !== -1)
         console.log(`returned data is erronous: ${responseDataPost}`);
       if (statusCode !== 200)
         console.log(`status code not as expected: ${statusCode}`);
@@ -230,7 +230,7 @@ const testLogin = async () => {
     console.log(`${error}`);
   }
 
-  //testing customer login with wrong password
+  //testing logout
   try {
     let postTest = await axios.get(backend_address + "/api/login/logout");
 

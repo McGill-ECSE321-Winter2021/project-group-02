@@ -2,6 +2,7 @@ package ca.mcgill.ecse321.scrs.controller;
 
 import ca.mcgill.ecse321.scrs.model.Assistant;
 import ca.mcgill.ecse321.scrs.model.Customer;
+import ca.mcgill.ecse321.scrs.model.SCRSUser;
 import ca.mcgill.ecse321.scrs.model.Technician;
 import ca.mcgill.ecse321.scrs.service.AssistantService;
 import ca.mcgill.ecse321.scrs.service.CustomerService;
@@ -29,7 +30,7 @@ public class LoginController
 
     @PostMapping (value = {"/customer", "/customer/"})
     @CrossOrigin(origins = "*")
-    public ResponseEntity<Boolean> loginCustomer(@RequestParam("email") String email, @RequestParam("password") String password, HttpServletResponse response) {
+    public ResponseEntity<Integer> loginCustomer(@RequestParam("email") String email, @RequestParam("password") String password, HttpServletResponse response) {
 
         String hashedPassword = Helper.hash(password);
 
@@ -37,19 +38,19 @@ public class LoginController
 
         if(customer == null || !customer.getPassword().equals(hashedPassword))
         {
-            return new ResponseEntity<>(false, HttpStatus.OK);
+            return new ResponseEntity<>(-1, HttpStatus.OK);
         }
 
         String id = ((Integer)customer.getScrsUserId()).toString();
         Cookie cookie = new Cookie("id", id);
         response.addCookie(cookie);
 
-        return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(customer.getScrsUserId(), HttpStatus.OK);
     }
 
     @PostMapping (value = {"/assistant", "/assistant/"})
     @CrossOrigin(origins = "*")
-    public ResponseEntity<Boolean> loginAssistant(@RequestParam("email") String email, @RequestParam("password") String password, HttpServletResponse response) {
+    public ResponseEntity<Integer> loginAssistant(@RequestParam("email") String email, @RequestParam("password") String password, HttpServletResponse response) {
 
         String hashedPassword = Helper.hash(password);
 
@@ -57,19 +58,19 @@ public class LoginController
 
         if(assistant == null || !assistant.getPassword().equals(hashedPassword))
         {
-            return new ResponseEntity<>(false, HttpStatus.OK);
+            return new ResponseEntity<>(-1, HttpStatus.OK);
         }
 
         String id = ((Integer)assistant.getScrsUserId()).toString();
         Cookie cookie = new Cookie("id", id);
         response.addCookie(cookie);
 
-        return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(assistant.getScrsUserId(), HttpStatus.OK);
     }
 
     @PostMapping (value = {"/technician", "/technician/"})
     @CrossOrigin(origins = "*")
-    public ResponseEntity<Boolean> loginTechnician(@RequestParam("email") String email, @RequestParam("password") String password, HttpServletResponse response) {
+    public ResponseEntity<Integer> loginTechnician(@RequestParam("email") String email, @RequestParam("password") String password, HttpServletResponse response) {
 
         String hashedPassword = Helper.hash(password);
 
@@ -77,14 +78,14 @@ public class LoginController
 
         if(technician == null || !technician.getPassword().equals(hashedPassword))
         {
-            return new ResponseEntity<>(false, HttpStatus.OK);
+            return new ResponseEntity<>(-1, HttpStatus.OK);
         }
 
         String id = ((Integer)technician.getScrsUserId()).toString();
         Cookie cookie = new Cookie("id", id);
         response.addCookie(cookie);
 
-        return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(technician.getScrsUserId(), HttpStatus.OK);
     }
 
     @GetMapping(value = {"/logout", "/logout/"})
@@ -96,5 +97,20 @@ public class LoginController
         response.addCookie(cookie);
 
         return new ResponseEntity<>(true, HttpStatus.OK);
+    }
+
+    @GetMapping(value = {"/type/{id}", "/type/{id}/"})
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<String> getType(@PathVariable String id) {
+        if(id == null)return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        int ID = Integer.parseInt(id);
+        Customer customer = customerService.getCustomerByID(ID);
+        Technician technician = technicianService.getTechnicianByID(ID);
+        Assistant assistant = assistantService.getAssistantByID(ID);
+        if(assistant != null) return new ResponseEntity<>("assistant", HttpStatus.OK);
+        else if(technician != null) return new ResponseEntity<>("technician", HttpStatus.OK);
+        else if(customer != null) return new ResponseEntity<>("customer", HttpStatus.OK);
+
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 }
