@@ -1,24 +1,18 @@
 package ca.mcgill.ecse321.scrs.controller;
 
-import ca.mcgill.ecse321.scrs.dto.CustomerDto;
 import ca.mcgill.ecse321.scrs.dto.TechnicianDto;
 import ca.mcgill.ecse321.scrs.dto.TimeslotDto;
-import ca.mcgill.ecse321.scrs.model.Customer;
 import ca.mcgill.ecse321.scrs.model.Technician;
 import ca.mcgill.ecse321.scrs.model.Timeslot;
 import ca.mcgill.ecse321.scrs.service.SCRSUserService;
 import ca.mcgill.ecse321.scrs.service.TechnicianService;
 import ca.mcgill.ecse321.scrs.service.TimeslotService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 import static ca.mcgill.ecse321.scrs.controller.Helper.*;
@@ -125,8 +119,8 @@ public class TechnicianController
     public ResponseEntity<List<TimeslotDto>> getAllByDate(@PathVariable("id") int technicianId, @PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate)//, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
 
-        Date newStartDate=Date.valueOf(startDate);
-        Date newEndDate=Date.valueOf(endDate);
+        Date newStartDate = Date.valueOf(startDate);
+        Date newEndDate = Date.valueOf(endDate);
 
 //        int id = Integer.parseInt(ID);
 //        if (id == -1)
@@ -147,5 +141,30 @@ public class TechnicianController
 
         List<Timeslot> timeslots = timeslotService.getTimeslotsByTechnicianBetweenDates(technician, newStartDate, newEndDate);
         return new ResponseEntity<>(convertToDto(timeslots), HttpStatus.OK);
+    }
+
+    @GetMapping(value = {"/getByID/{id}", "/getByID/{id}/"})
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<TechnicianDto> getByID(@PathVariable String id)
+    {
+        if (id == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        int ID = Integer.parseInt(id);
+        Technician technician = technicianService.getTechnicianByID(ID);
+
+        if (technician == null) return new ResponseEntity<>(null, HttpStatus.OK);
+
+        return new ResponseEntity<>(convertToDto(technician), HttpStatus.OK);
+    }
+
+    @GetMapping(value = {"/getByEmail/{email}", "/getByEmail/{email}/"})
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<TechnicianDto> getByEmail(@PathVariable String email)
+    {
+        if (email == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        Technician technician = technicianService.getTechnicianByEmail(email);
+
+        if (technician == null) return new ResponseEntity<>(null, HttpStatus.OK);
+
+        return new ResponseEntity<>(convertToDto(technician), HttpStatus.OK);
     }
 }
