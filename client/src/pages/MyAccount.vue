@@ -13,6 +13,15 @@
 					v-on:submit.prevent="submitEdit()"
 				>
 					<input
+						v-if="this.$store.state.userType === 'assistant'"
+						class="myaccount-input"
+						id="myaccount-edit-id"
+						v-model="idEdit"
+						type="number"
+						min="0"
+						placeholder="User ID to edit"
+					/>
+					<input
 						class="myaccount-input"
 						id="myaccount-edit-name"
 						v-model="nameEdit"
@@ -47,13 +56,24 @@
 						type="password"
 						placeholder="repeat password"
 					/>
-					<p id="myaccount-edit-error">Wrong username or password</p>
+					<p id="myaccount-edit-error">Invalid information</p>
 					<div class="myaccount-button-container">
 						<input
 							class="myaccount-button"
 							type="button"
 							value="Back"
 							v-on:click="backViewDash()"
+						/>
+						<div
+							class="myaccount-spacer"
+							v-if="this.$store.state.userType === 'assistant'"
+						></div>
+						<input
+							class="myaccount-button"
+							type="button"
+							value="Fetch User Data"
+							v-on:click="fetchUserData()"
+							v-if="this.$store.state.userType === 'assistant'"
 						/>
 						<div class="myaccount-spacer"></div>
 						<input type="submit" class="myaccount-button" value="Submit" />
@@ -154,7 +174,22 @@
 			},
 		},
 		mounted() {
-			//TODO use vuex to get the current user id and data to populate the form above
+			let user = this.$store.state.user;
+			//if (user === -1) this.$router.push("/"); TODO enable once login is working.
+			console.log(user);
+			/*
+			try {
+	       		let response = await axios.get(proxy.proxy + `/api/`);
+	       	if (response.data == null || response.status !== 200) return;
+	       		this.setUser({
+	         	user: parseInt(document.cookie),
+	         	userType: response.data,
+	       		});
+	       this.$router.push("/dashboard");
+	     } catch (error) {
+	       console.log(`${error}`);
+	     }
+			*/
 		},
 	};
 </script>
