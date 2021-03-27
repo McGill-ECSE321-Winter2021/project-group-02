@@ -4,9 +4,7 @@ import ca.mcgill.ecse321.scrs.model.Assistant;
 import ca.mcgill.ecse321.scrs.model.Customer;
 import ca.mcgill.ecse321.scrs.model.SCRSUser;
 import ca.mcgill.ecse321.scrs.model.Technician;
-import ca.mcgill.ecse321.scrs.service.AssistantService;
-import ca.mcgill.ecse321.scrs.service.CustomerService;
-import ca.mcgill.ecse321.scrs.service.TechnicianService;
+import ca.mcgill.ecse321.scrs.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,6 +25,8 @@ public class LoginController
     private AssistantService assistantService;
     @Autowired
     private TechnicianService technicianService;
+    @Autowired
+    private SCRSUserService scrsUserService;
 
     @PostMapping (value = {"/customer", "/customer/"})
     @CrossOrigin(origins = "*")
@@ -104,13 +104,25 @@ public class LoginController
     public ResponseEntity<String> getType(@PathVariable String id) {
         if(id == null)return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         int ID = Integer.parseInt(id);
-        Customer customer = customerService.getCustomerByID(ID);
-        Technician technician = technicianService.getTechnicianByID(ID);
-        Assistant assistant = assistantService.getAssistantByID(ID);
-        if(assistant != null) return new ResponseEntity<>("assistant", HttpStatus.OK);
-        else if(technician != null) return new ResponseEntity<>("technician", HttpStatus.OK);
-        else if(customer != null) return new ResponseEntity<>("customer", HttpStatus.OK);
+        SCRSUser user = scrsUserService.getSCRSUserByID(ID);
 
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        if (user == null) return new ResponseEntity<>(null, HttpStatus.OK);
+
+        if(user instanceof Assistant) return new ResponseEntity<>("assistant", HttpStatus.OK);
+        else if(user instanceof Technician) return new ResponseEntity<>("technician", HttpStatus.OK);
+        else return new ResponseEntity<>("customer", HttpStatus.OK);
+    }
+
+    @GetMapping(value = {"/type/{email}", "/type/{email}/"})
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<String> getTypeByEmail(@PathVariable String email) {
+        if(email == null)return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        SCRSUser user = scrsUserService.getSCRSUserByEmail(email);
+
+        if (user == null) return new ResponseEntity<>(null, HttpStatus.OK);
+
+        if(user instanceof Assistant) return new ResponseEntity<>("assistant", HttpStatus.OK);
+        else if(user instanceof Technician) return new ResponseEntity<>("technician", HttpStatus.OK);
+        else return new ResponseEntity<>("customer", HttpStatus.OK);
     }
 }

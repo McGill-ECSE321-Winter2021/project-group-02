@@ -31,19 +31,19 @@ public class SCRSUserService
     }
 
     @Transactional
-    public Customer getSCRSUserByEmail(String email)
+    public SCRSUser getSCRSUserByEmail(String email)
     {
         return scrsUserRepository.findByEmail(email);
     }
 
     @Transactional
-    public Customer getSCRSUserByName(String name)
+    public SCRSUser getSCRSUserByName(String name)
     {
         return scrsUserRepository.findByName(name);
     }
 
     @Transactional
-    public Customer getSCRSUserByPhone(String phone)
+    public SCRSUser getSCRSUserByPhone(String phone)
     {
         return scrsUserRepository.findByPhone(phone);
     }
