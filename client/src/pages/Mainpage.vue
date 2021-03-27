@@ -235,7 +235,7 @@ export default {
         let responseDataPost = postTest.data; //do something with this for tests
         let statusCode = postTest.status;
         if (responseDataPost !== -1 && statusCode === 200) {
-          this.setUser(responseDataPost); //setting the user in vuex
+          this.setUser({ user: responseDataPost, userType: this.userType }); //setting the user in vuex
           document.getElementById("mainpage-container").style.height = "80vh";
           document.getElementById("mainpage-container").style.width = "80vw";
           document.getElementById("mainpage-login").style.opacity = 0;
@@ -307,14 +307,25 @@ export default {
       }
     },
   },
-  mounted() {
+  async mounted() {
     if (
       document.cookie !== undefined &&
       document.cookie !== -1 &&
       document.cookie !== ""
     ) {
-      console.log(document.cookie);
-      this.$router.push("/dashboard");
+      try {
+        let response = await axios.get(
+          proxy.proxy + `/api/login/type/${document.cookie}`
+        );
+        if (response.data == null || response.status !== 200) return;
+        this.setUser({
+          user: parseInt(document.cookie),
+          userType: response.data,
+        });
+        this.$router.push("/dashboard");
+      } catch (error) {
+        console.log(`${error}`);
+      }
     }
   },
 };
@@ -366,8 +377,18 @@ export default {
 }
 
 #mainpage-select-user {
-  opacity: 1;
   z-index: 5;
+  animation: changeOpacity 0.3s;
+}
+
+@keyframes changeOpacity {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 #mainpage-login-signup,
@@ -398,7 +419,7 @@ export default {
 }
 
 .mainpage-button:hover {
-  background-color: rgb(175, 122, 65);
+  background-color: rgb(136, 93, 48);
   color: whitesmoke;
   border-color: rgb(75, 75, 75);
 }

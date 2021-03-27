@@ -1,20 +1,28 @@
 const state = {
   user: -1,
+  userType: "",
+  technicianSchedule: [],
 };
 
 const getters = {
-  getUser: (state) => state.user,
+  getUser: (state) => {
+    return {
+      user: state.user,
+      userType: state.userType,
+    };
+  },
 };
 
 const actions = {
-  setUser({ commit }, user) {
-    commit("setUser", user);
+  setUser({ commit }, { user, userType }) {
+    commit("setUser", { user, userType });
   },
 };
 
 const mutations = {
-  setUser: (state, user) => {
+  setUser: (state, { user, userType }) => {
     state.user = user;
+    state.userType = userType;
   },
 };
 
