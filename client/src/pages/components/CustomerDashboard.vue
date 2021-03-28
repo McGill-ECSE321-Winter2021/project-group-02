@@ -1,5 +1,5 @@
 <template>
-  <div class="customer-dashboard">
+  <div class="customer-dashboard" id="customer-dashboard">
     <div class="customer-dashboard-container" id="a">
       <p class="dashboard-title">Appointments</p>
       <div class="customer-dashboard-inside-container">
@@ -25,7 +25,9 @@
     </div>
     <div class="customer-dashboard-container" id="b">
       <p class="dashboard-title">Accounts</p>
-      <button class="dashboard-button">Modify Account</button>
+      <button class="dashboard-button" @click="modifyAccount()">
+        Modify Account
+      </button>
     </div>
   </div>
 </template>
@@ -35,6 +37,15 @@ export default {
   name: "CustomerDashboard",
   props: {
     msg: String,
+  },
+  methods: {
+    modifyAccount: function() {
+      document.getElementById("customer-dashboard").style.opacity = 0;
+      let vm = this;
+      setTimeout(function() {
+        vm.$router.push("/myaccount");
+      }, 300);
+    },
   },
 };
 </script>

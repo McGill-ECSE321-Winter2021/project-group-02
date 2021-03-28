@@ -10,9 +10,10 @@
     <div class="technician-dashboard-container" id="b">
       <p class="dashboard-title">Accounts</p>
       <button class="dashboard-button">Create Account</button>
-      <button class="dashboard-button">Modify Account</button>
+      <button class="dashboard-button" @click="modifyAccount()">
+        Modify Account
+      </button>
     </div>
-    <div class="technician-dashboard-container" id="d"></div>
   </div>
 </template>
 
@@ -28,6 +29,13 @@ export default {
       let vm = this;
       setTimeout(function() {
         vm.$router.push("/viewtechnicianschedule");
+      }, 300);
+    },
+    modifyAccount: function() {
+      document.getElementById("technician-dashboard").style.opacity = 0;
+      let vm = this;
+      setTimeout(function() {
+        vm.$router.push("/myaccount");
       }, 300);
     },
   },
