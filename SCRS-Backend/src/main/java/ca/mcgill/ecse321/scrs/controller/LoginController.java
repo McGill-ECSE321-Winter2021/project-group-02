@@ -113,12 +113,7 @@ public class LoginController
         if (id == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         int ID = Integer.parseInt(id);
         SCRSUser user = scrsUserService.getSCRSUserByID(ID);
-
-        if (user == null) return new ResponseEntity<>(null, HttpStatus.OK);
-
-        if (user instanceof Assistant) return new ResponseEntity<>("assistant", HttpStatus.OK);
-        else if (user instanceof Technician) return new ResponseEntity<>("technician", HttpStatus.OK);
-        else return new ResponseEntity<>("customer", HttpStatus.OK);
+        return userType(user);
     }
 
     @GetMapping(value = {"/type/{email}", "/type/{email}/"})
@@ -127,7 +122,16 @@ public class LoginController
     {
         if (email == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         SCRSUser user = scrsUserService.getSCRSUserByEmail(email);
+        return userType(user);
+    }
 
+    /**
+     * Helper for the 2 methods above. Allows to parse a user to its correct type and return the right response.
+     * @param user SCRSUser object.
+     * @return The appropriate response (String for the user type and status)
+     */
+    private ResponseEntity<String> userType(SCRSUser user)
+    {
         if (user == null) return new ResponseEntity<>(null, HttpStatus.OK);
 
         if (user instanceof Assistant) return new ResponseEntity<>("assistant", HttpStatus.OK);
