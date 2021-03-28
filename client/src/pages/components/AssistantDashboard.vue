@@ -1,5 +1,5 @@
 <template>
-  <div class="assistant-dashboard">
+  <div class="assistant-dashboard" id="assistant-dashboard">
     <div class="assistant-dashboard-container" id="a">
       <p class="dashboard-title">Appointments</p>
       <div class="assistant-dashboard-inside-container">
@@ -18,7 +18,9 @@
     <div class="assistant-dashboard-container" id="b">
       <p class="dashboard-title">Accounts</p>
       <button class="dashboard-button">Create Account</button>
-      <button class="dashboard-button">Modify Account</button>
+      <button class="dashboard-button" @click="modifyAccount()">
+        Modify Account
+      </button>
     </div>
     <div class="assistant-dashboard-container" id="c">
       <p class="dashboard-title">Technician</p>
@@ -43,6 +45,16 @@ export default {
     return {
       userType: "",
     };
+  },
+  methods: {
+    modifyAccount: function() {
+      document.getElementById("assistant-dashboard").style.opacity = 0;
+      document.getElementById("logout-button").style.opacity = 0;
+      let vm = this;
+      setTimeout(function() {
+        vm.$router.push("/myaccount");
+      }, 300);
+    },
   },
 };
 </script>
