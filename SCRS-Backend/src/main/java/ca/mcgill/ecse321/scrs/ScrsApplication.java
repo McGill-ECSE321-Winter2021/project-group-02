@@ -17,10 +17,4 @@ public class ScrsApplication
         SpringApplication.run(ScrsApplication.class, args);
     }
 
-    @RequestMapping("/")
-    public String greeting()
-    {
-        return "Hello world!";
-    }
-
 }

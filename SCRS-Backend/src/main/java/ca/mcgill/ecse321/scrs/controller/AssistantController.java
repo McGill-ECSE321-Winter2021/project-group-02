@@ -1,7 +1,6 @@
 package ca.mcgill.ecse321.scrs.controller;
 
 import ca.mcgill.ecse321.scrs.dto.AssistantDto;
-import ca.mcgill.ecse321.scrs.dto.CustomerDto;
 import ca.mcgill.ecse321.scrs.model.Assistant;
 import ca.mcgill.ecse321.scrs.service.AssistantService;
 import ca.mcgill.ecse321.scrs.service.SCRSUserService;
@@ -22,6 +21,7 @@ public class AssistantController
     SCRSUserService scrsUserService;
 
     @PostMapping(value = {"/create", "/create/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<AssistantDto> createAssistant(@RequestBody Assistant assistant)
     {
         if (assistant == null)
@@ -92,5 +92,30 @@ public class AssistantController
             // You do not have permission to edit this account.
         }
         return new ResponseEntity<>(convertToDto(assistantService.deleteAssistant(assistant)), HttpStatus.OK);
+    }
+
+    @GetMapping(value = {"/getByID/{id}", "/getByID/{id}/"})
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<AssistantDto> getByID(@PathVariable String id)
+    {
+        if (id == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        int ID = Integer.parseInt(id);
+        Assistant assistant = assistantService.getAssistantByID(ID);
+
+        if (assistant == null) return new ResponseEntity<>(null, HttpStatus.OK);
+
+        return new ResponseEntity<>(convertToDto(assistant), HttpStatus.OK);
+    }
+
+    @GetMapping(value = {"/getByEmail/{email}", "/getByEmail/{email}/"})
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<AssistantDto> getByEmail(@PathVariable String email)
+    {
+        if (email == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        Assistant assistant = assistantService.getAssistantByEmail(email);
+
+        if (assistant == null) return new ResponseEntity<>(null, HttpStatus.OK);
+
+        return new ResponseEntity<>(convertToDto(assistant), HttpStatus.OK);
     }
 }

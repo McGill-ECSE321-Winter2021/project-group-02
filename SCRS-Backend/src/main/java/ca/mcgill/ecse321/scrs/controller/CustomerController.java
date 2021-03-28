@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import static ca.mcgill.ecse321.scrs.controller.Helper.*;
 
 @RestController
-@RequestMapping(path = "/api/customer",produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/api/customer", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CustomerController
 {
     @Autowired
@@ -22,6 +22,7 @@ public class CustomerController
     SCRSUserService scrsUserService;
 
     @PostMapping(value = {"/create", "/create/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<CustomerDto> createCustomer(@RequestBody Customer customer)
     {
         if (customer == null)
@@ -92,5 +93,30 @@ public class CustomerController
             // You cannot delete a customer account other than your own.
         }
         return new ResponseEntity<>(convertToDto(customerService.deleteCustomer(customer)), HttpStatus.OK);
+    }
+
+    @GetMapping(value = {"/getByID/{id}", "/getByID/{id}/"})
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<CustomerDto> getByID(@PathVariable String id)
+    {
+        if (id == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        int ID = Integer.parseInt(id);
+        Customer customer = customerService.getCustomerByID(ID);
+
+        if (customer == null) return new ResponseEntity<>(null, HttpStatus.OK);
+
+        return new ResponseEntity<>(convertToDto(customer), HttpStatus.OK);
+    }
+
+    @GetMapping(value = {"/getByEmail/{email}", "/getByEmail/{email}/"})
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<CustomerDto> getByEmail(@PathVariable String email)
+    {
+        if (email == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        Customer customer = customerService.getCustomerByEmail(email);
+
+        if (customer == null) return new ResponseEntity<>(null, HttpStatus.OK);
+
+        return new ResponseEntity<>(convertToDto(customer), HttpStatus.OK);
     }
 }

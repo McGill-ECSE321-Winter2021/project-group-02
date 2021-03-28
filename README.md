@@ -27,13 +27,30 @@ If you haven't realized yet, there are only second year computer engineering stu
 * [Domain Model](https://github.com/McGill-ECSE321-Winter2021/project-group-02/wiki/Domain-Model)   
 
 ## Effort Table (D1)
-| Team Member | Time Spent | Responsibilities | 
+| Team Member | Time Spent (h) | Responsibilities | 
 | --- | --- | --- |
 | Adel | ~15 | Documentation, Requirements, Persistence, Testing |
 | Alex | ~15| Domain Model, Code Gen, Requirements, Persistence, Testing |
 | Alix | ~15 | Heroku Setup, Gradle Setup, Requirements, Persistence, Testing |
-| Roey | ~15 | Github Repo Management, Issue Tracking, Requirements, Persistence, Testing |
-| Simon | ~15 | PR Reviews, Requirements, Persistence, Testing |
+| Roey | ~15 | GitHub Repo Management, Issue Tracking, Requirements, Persistence, Testing |
+| Simon | ~15 | PR Reviews, Requirements, Persistence, Testing |   
+   
+***
+# Deliverable 2
+## Links
+* [Wiki Home Page](https://github.com/McGill-ECSE321-Winter2021/project-group-02/wiki)  
+* [Project Report](https://github.com/McGill-ECSE321-Winter2021/project-group-02/wiki/Deliverable-2-Project-Report)
+* [RESTful Service Endpoints](https://github.com/McGill-ECSE321-Winter2021/project-group-02/wiki/RESTful-Service-Endpoints)
+* [Quality Assurance Plan](https://github.com/McGill-ECSE321-Winter2021/project-group-02/wiki/Software-Quality-Assurance-Plan)
+* [Updated Domain Model](https://github.com/McGill-ECSE321-Winter2021/project-group-02/wiki/Updated-Domain-Model-(Deliverable-2))
 
-
+## Effort Table (D2)
+| Team Member | Time Spent (h) | Responsibilities | 
+| --- | --- | --- |
+| Adel | ~25 | Service Creation and Error Handling, Route Creation and Cleanup, Mockito Testing, Documentation, Code Validation |
+| Alex | ~17 | Service Creation, Route Creation, Integration testing, Code Validation |
+| Alix | ~25 | Service Creation, Route Creation, Integration testing Lead, Code Validation |
+| Roey | ~17 | Service Creation, Route Creation, Integration testing, Code Validation, Insulting JavaScript Nonstop |
+| Simon | ~25 | Service Creation, Route Creation, Integration testing, Documentation, Code Validation |
+> Note: The team feels this division of work was very fair and equitable. Everyone is familiar with all facets of the deliverable, including those they have not worked on and a lot of the work was done in call together, which will probably not be reflected in the commit history.  
 ***
