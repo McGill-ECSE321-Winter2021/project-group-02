@@ -116,7 +116,7 @@ public class LoginController
         return userType(user);
     }
 
-    @GetMapping(value = {"/type/{email}", "/type/{email}/"})
+    @GetMapping(value = {"/typeByEmail/{email}", "/typeByEmail/{email}/"})
     @CrossOrigin(origins = "*")
     public ResponseEntity<String> getTypeByEmail(@PathVariable String email)
     {
