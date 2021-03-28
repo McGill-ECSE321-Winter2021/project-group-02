@@ -39,6 +39,7 @@ public class AssistantController
     }
 
     @PutMapping(value = {"/update", "/update/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<AssistantDto> updateAssistant(@RequestBody Assistant assistant, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
         int id = Integer.parseInt(ID);
@@ -69,6 +70,7 @@ public class AssistantController
     }
 
     @DeleteMapping(value = {"/delete/{id}", "/delete/{id}/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<AssistantDto> deleteAssistant(@PathVariable String id, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
         int assistantID = Integer.parseInt(id);

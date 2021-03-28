@@ -60,6 +60,7 @@ public class TechnicianController
     }
 
     @PutMapping(value = {"/update", "/update/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<TechnicianDto> updateAssistant(@RequestBody Technician technician, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
         int id = Integer.parseInt(ID);
@@ -90,6 +91,7 @@ public class TechnicianController
     }
 
     @DeleteMapping(value = {"/delete/{id}", "/delete/{id}/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<TechnicianDto> deleteTechnician(@PathVariable String id, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
         int technicianID = Integer.parseInt(id);
@@ -116,6 +118,7 @@ public class TechnicianController
     }
 
     @GetMapping(path = {"/viewschedule/{id}/{startDate}/{endDate}"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<List<TimeslotDto>> getAllByDate(@PathVariable("id") int technicianId, @PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate)//, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
 

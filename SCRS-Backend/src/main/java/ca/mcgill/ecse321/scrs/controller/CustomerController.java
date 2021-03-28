@@ -40,6 +40,7 @@ public class CustomerController
     }
 
     @PutMapping(value = {"/update", "/update/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<CustomerDto> updateCustomer(@RequestBody Customer customer, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
         int id = Integer.parseInt(ID);
@@ -70,6 +71,7 @@ public class CustomerController
     }
 
     @DeleteMapping(value = {"/delete/{id}", "/delete/{id}/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<CustomerDto> deleteCustomer(@PathVariable String id, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
         int customerID = Integer.parseInt(id);

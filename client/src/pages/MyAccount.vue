@@ -118,7 +118,6 @@
 
 					if (
 						sentData.name == "" ||
-						sentData.password == "" ||
 						sentData.email == "" ||
 						sentData.phone == ""
 					) {
