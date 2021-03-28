@@ -50,7 +50,7 @@ public class TechnicianController
             //return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.UNAUTHORIZED);
             // You do not have permission to create a technician account.
         }
-        if (technicianService.getTechnicianByEmail(technician.getEmail()) != null)
+        if (scrsUserService.getSCRSUserByEmail(technician.getEmail()) != null)
         {
             return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.ALREADY_REPORTED);
             // Email already in use, please try a different email address.

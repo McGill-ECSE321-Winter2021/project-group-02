@@ -29,7 +29,7 @@ public class AssistantController
             return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.EXPECTATION_FAILED);
             // Invalid assistant. Please submit a valid assistant account to be created.
         }
-        if (assistantService.getAssistantByEmail(assistant.getEmail()) != null)
+        if (scrsUserService.getSCRSUserByEmail(assistant.getEmail()) != null)
         {
             return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.ALREADY_REPORTED);
             // Email already in use, please try a different email address.

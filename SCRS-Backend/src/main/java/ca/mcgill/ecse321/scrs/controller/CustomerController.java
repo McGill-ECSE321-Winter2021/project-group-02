@@ -30,7 +30,7 @@ public class CustomerController
             return new ResponseEntity<CustomerDto>(new CustomerDto(), HttpStatus.EXPECTATION_FAILED);
             // Invalid customer. Please submit a valid customer account to be created.
         }
-        if (customerService.getCustomerByEmail(customer.getEmail()) != null)
+        if (scrsUserService.getSCRSUserByEmail(customer.getEmail()) != null)
         {
             return new ResponseEntity<CustomerDto>(new CustomerDto(), HttpStatus.ALREADY_REPORTED);
             // Email already in use, please try a different email address.
