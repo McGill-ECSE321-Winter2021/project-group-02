@@ -18,7 +18,7 @@
 						id="myaccount-edit-email"
 						v-model="emailEdit"
 						type="email"
-						value="{this.email}"
+						placeholder="email"
 						@change="fetchUserByEmail()"
 					/>
 					<input
@@ -27,21 +27,21 @@
 						id="myaccount-edit-email"
 						v-model="emailEdit"
 						type="email"
-						value="{this.email}"
+						placeholder="email"
 					/>
 					<input
 						class="myaccount-input"
 						id="myaccount-edit-name"
 						v-model="nameEdit"
 						type="text"
-						value="{this.name}"
+						placeholder="name"
 					/>
 					<input
 						class="myaccount-input"
 						id="myaccount-edit-phone"
 						v-model="phoneEdit"
 						type="tel"
-						value="{this.phone}"
+						placeholder="phone"
 					/>
 					<input
 						class="myaccount-input"
@@ -144,9 +144,6 @@
 						document.getElementById("myaccount-edit-error").innerHTML =
 							"Successfully updated account info";
 						document.getElementById("myaccount-edit-error").style.opacity = 1;
-						setTimeout(function() {
-							document.getElementById("myaccount-edit-form").reset();
-						}, 300);
 						setTimeout(function() {
 							document.getElementById("myaccount-edit-error").style.opacity = 0;
 						}, 3000);
