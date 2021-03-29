@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 import static ca.mcgill.ecse321.scrs.controller.Helper.*;
@@ -174,5 +175,13 @@ public class TechnicianController
         if (technician == null) return new ResponseEntity<>(null, HttpStatus.OK);
 
         return new ResponseEntity<>(convertToDto(technician), HttpStatus.OK);
+    }
+
+    @GetMapping(value = {"/getAll", "/getAll/"})
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<List<TechnicianDto>> getAll()
+    {
+        ArrayList<Technician> technicians = new ArrayList<>(technicianService.getAllTechnicians());
+        return new ResponseEntity<>(convertToDtoList(technicians), HttpStatus.OK);
     }
 }
