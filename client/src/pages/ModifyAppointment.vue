@@ -5,7 +5,6 @@
           class="modify-appointment-form"
           id="modify-appointment-form"
           onsubmit="return false"
-          @change="change()"
           v-on:submit.prevent="submitEdit()"
       >
         <h1 id="modify-appointment-title">Modify Appointment</h1>
@@ -73,7 +72,7 @@
               v-on:click="backViewDash()"
           />
           <div class="modify-appointment-spacer"></div>
-          <input type="submit" class="modify-appointment-button" value="Submit" />
+          <input type="submit" class="modify-appointment-button" value="Submit"/>
         </div>
       </form>
     </div>
@@ -81,8 +80,9 @@
 </template>
 
 <script>
-//import axios from "axios";
-//import proxy from "../constants.js";
+import axios from "axios";
+import proxy from "../constants.js";
+import {mapActions} from "vuex";
 
 export default {
   name: "ModifyAppointment",
@@ -93,13 +93,58 @@ export default {
     return {};
   },
   methods: {
+    ...mapActions(["setApptIdToModify"]),
     backViewDash: function () {
       let t = this;
       setTimeout(function () {
         t.$router.push("/dashboard");
       }, 300);
     },
-  }
+    fetchApptById: async function() {
+      try {
+        // fetch data of appt with given ID
+        let response = await axios.get(
+              proxy.proxy + `/api/appointment/getById/${this.apptIdToModify}`
+          );
+
+          this.apptData = response.data;
+
+        } catch (error) {
+          console.error(`${error}`);
+          document.getElementById("modify-account-error").innerHTML =
+              "Unknown error, please try again later";
+          document.getElementById("modify-account-error").style.opacity = 1;
+      }
+    },
+    submitEdit: async function() {
+      try {
+        let postData = this.apptData;
+
+        let response = await axios.post(
+            proxy.proxy + `/api/appointment/modifyAppointment`,
+            postData
+        );
+
+        if (response.status === 200)
+        {
+          document.getElementById("modify-appointment-status").innerHTML =
+              "Successfully modified appointment!";
+          document.getElementById("modify-appointment-status").style.opacity = 1;
+        }
+      } catch (error) {
+        console.error(`${error}`);
+        document.getElementById("modify-appointment-status").innerHTML =
+            "Unknown error, please try again later";
+        document.getElementById("modify-appointment-status").style.opacity = 1;
+      }
+    }
+  },
+  mounted() {
+    this.apptIdToModify = this.$store.state.apptIdToModify;
+    this.setApptIdToModify(-1);
+
+    this.fetchApptById();
+  },
 }
 
 </script>
