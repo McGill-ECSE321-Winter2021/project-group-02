@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import users from "./modules/user.js";
+import store from "./modules/store.js";
 
 Vue.use(Vuex);
 
-export default new Vuex.Store(users);
+export default new Vuex.Store(store);

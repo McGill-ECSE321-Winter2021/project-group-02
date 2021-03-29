@@ -55,6 +55,21 @@ public class AppointmentController
         return new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
 
+    @GetMapping(path = {"/getById/{id}", "/getById/{id}/"})
+    public ResponseEntity<AppointmentDto> getAppointmentById(@PathVariable String id)
+    {
+        if(id == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+
+        Appointment appointment = appointmentService.getAppointmentById(Integer.parseInt(id));
+
+        if (appointment == null)
+        {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
+    }
+
     @GetMapping(path = {"/notifications/{id}", "/notifications/{id}/"})
     public ResponseEntity<List<AppointmentDto>> notifications(@PathVariable String id) {
         if(id == null)return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
