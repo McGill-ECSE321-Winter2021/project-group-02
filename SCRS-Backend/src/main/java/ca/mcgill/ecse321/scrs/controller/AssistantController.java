@@ -65,6 +65,11 @@ public class AssistantController
             return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.NOT_ACCEPTABLE);
             // No such assistant found.
         }
+        if (scrsUserService.getSCRSUserByEmail(assistant.getEmail()) != null)
+        {
+            return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.ALREADY_REPORTED);
+            // Email already in use, please try a different email address.
+        }
         Assistant updatedAssistant = assistantService.updateAssistantInfo(assistant);
         return new ResponseEntity<>(convertToDto(updatedAssistant), HttpStatus.OK);
     }

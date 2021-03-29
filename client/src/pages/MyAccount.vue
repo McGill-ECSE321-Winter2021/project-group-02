@@ -146,7 +146,7 @@
 						document.getElementById("myaccount-edit-error").style.opacity = 1;
 						setTimeout(function() {
 							document.getElementById("myaccount-edit-error").style.opacity = 0;
-						}, 3000);
+						}, 1500);
 					} else {
 						document.getElementById("myaccount-edit-error").innerHTML =
 							"An error occured. Please try again later";
@@ -161,19 +161,9 @@
 			},
 			fetchUserByID: async function() {
 				try {
-					// find type of user with given ID
-					let response = await axios.get(
-						proxy.proxy + `/api/login/type/${this.idEdit}`
-					);
-					if (response.data == null || response.status !== 200) {
-						document.getElementById("myaccount-edit-error").innerHTML =
-							"No such user exists";
-						document.getElementById("myaccount-edit-error").style.opacity = 1;
-						return;
-					}
-					this.userType = response.data;
 					// fetch data of user with given ID
-					switch (response.data) {
+					let response = null;
+					switch (this.$store.state.userType) {
 						case "customer":
 							response = await axios.get(
 								proxy.proxy + `/api/customer/getByID/${this.idEdit}`
@@ -230,6 +220,7 @@
 							response = await axios.get(
 								proxy.proxy + `/api/customer/getByEmail/${this.emailEdit}`
 							);
+							this.idEdit = response.data.customerId;
 							this.nameEdit = response.data.customerName;
 							this.emailEdit = response.data.customerEmail;
 							this.phoneEdit = response.data.customerPhone;
@@ -238,6 +229,7 @@
 							response = await axios.get(
 								proxy.proxy + `/api/technician/getByEmail/${this.emailEdit}`
 							);
+							this.idEdit = response.data.customerId;
 							this.nameEdit = response.data.technicianName;
 							this.emailEdit = response.data.technicianEmail;
 							this.phoneEdit = response.data.technicianPhone;
@@ -246,6 +238,7 @@
 							response = await axios.get(
 								proxy.proxy + `/api/assistant/getByEmail/${this.emailEdit}`
 							);
+							this.idEdit = response.data.customerId;
 							this.nameEdit = response.data.assistantName;
 							this.emailEdit = response.data.assistantEmail;
 							this.phoneEdit = response.data.assistantPhone;
@@ -268,6 +261,7 @@
 			let user = this.$store.state.user;
 			if (user === -1) this.$router.push("/");
 			this.idEdit = this.$store.state.user;
+			this.userType = this.$store.state.userType;
 			this.fetchUserByID();
 		},
 	};

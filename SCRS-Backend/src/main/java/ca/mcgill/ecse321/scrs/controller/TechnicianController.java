@@ -86,6 +86,11 @@ public class TechnicianController
             return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.NOT_ACCEPTABLE);
             // No such technician found.
         }
+        if (scrsUserService.getSCRSUserByEmail(technician.getEmail()) != null)
+        {
+            return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.ALREADY_REPORTED);
+            // Email already in use, please try a different email address.
+        }
         Technician updatedTechnician = technicianService.updateTechnicianInfo(technician);
         return new ResponseEntity<>(convertToDto(updatedTechnician), HttpStatus.OK);
     }
