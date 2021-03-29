@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard.vue";
 import MyAccount from "./pages/MyAccount.vue";
 import ViewTechnicianSchedule from "./pages/ViewTechnicianSchedule.vue";
 import ModifyAppointment from "./pages/ModifyAppointment.vue";
+import AssignTechnicianSchedule from "./pages/AssignTechnicianSchedule.vue";
 
 Vue.use(Router);
 
@@ -36,6 +37,11 @@ export default new Router({
       path: "/modifyappointment",
       name: "modifyAppointment",
       component: ModifyAppointment,
+    },
+    {
+      path: "/assigntechnicianschedule",
+      name: "AssignTechnicianSchedule",
+      component: AssignTechnicianSchedule,
     },
   ],
 });

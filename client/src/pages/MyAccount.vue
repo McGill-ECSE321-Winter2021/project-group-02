@@ -288,7 +288,7 @@
 						setTimeout(function() {
 							if (temp.$store.state.userType !== "assistant")
 								temp.$router.push("/");
-						}, 2000);
+						}, 300);
 					} else {
 						document.getElementById("myaccount-edit-error").innerHTML =
 							"An error occured. Please try again later";
