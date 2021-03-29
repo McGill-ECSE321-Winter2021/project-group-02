@@ -122,6 +122,13 @@ public class LoginController
     {
         if (email == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         SCRSUser user = scrsUserService.getSCRSUserByEmail(email);
+        //THE FOLLOWING CODE IS AN ABOMINATION, BUT FOR SOME REASON THE METHOD ABOVE WILL FAIL TO FIND THE MAIN ADMIN (and possibly others), so this was added as a *just in case*, to make sure that no functionality is impaired.
+        if (user != null) return userType(user);
+        user = assistantService.getAssistantByEmail(email);
+        if (user != null) return userType(user);
+        user = technicianService.getTechnicianByEmail(email);
+        if (user != null) return userType(user);
+        user = customerService.getCustomerByEmail(email);
         return userType(user);
     }
 
