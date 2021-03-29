@@ -1,18 +1,21 @@
 <template>
 	<div class="assignSchedule">
-		<div id="assignSchedule-container">
-			<H1 id="myaccount-generic-title" class="myaccount-title"
+		<div id="assignSchedule-container" class="assignSchedule-container">
+			<H1 id="assignSchedule-generic-title" class="assignSchedule-title"
 				>Select a Technician</H1
 			>
-			<div id="selectTech-assignSchedule">
-				<select name="technicians" id="technicians">
+			<div id="assignSchedule-selectTech" class="assignSchedule-select">
+				<select name="technicians" id="assignSchedule-technician-select">
 					<option disabled selected>Select a Technician</option>
 					<option v-for="(tech, index) in technicians" :key="index">{{
 						tech.technicianName
 					}}</option>
 				</select>
 			</div>
-			<div class="assignSchedule-button-container">
+			<div
+				id="assignSchedule-button-container"
+				class="assignSchedule-button-container"
+			>
 				<input
 					class="assignSchedule-button"
 					type="button"
@@ -45,6 +48,13 @@
 		methods: {
 			backViewDash: function() {
 				let t = this;
+				document.getElementById(
+					"assignSchedule-generic-title"
+				).style.opacity = 0;
+				document.getElementById("assignSchedule-selectTech").style.opacity = 0;
+				document.getElementById(
+					"assignSchedule-button-container"
+				).style.opacity = 0;
 				setTimeout(function() {
 					t.$router.push("/dashboard");
 				}, 300);
@@ -84,7 +94,7 @@
 	}
 
 	.assignSchedule,
-	#assignSchedule-container,
+	.assignSchedule-container,
 	.assignSchedule-button-container {
 		display: flex;
 		align-items: center;
@@ -119,30 +129,12 @@
 		border-color: rgb(75, 75, 75);
 	}
 
-	.assignSchedule-input:focus {
-		background-color: rgb(175, 175, 175);
-	}
-
-	.assignSchedule-button-container {
+	#assignSchedule-button-container {
 		flex-direction: row;
 	}
 
 	.assignSchedule-spacer {
 		width: 3vw;
-	}
-
-	#assignSchedule-edit-error {
-		opacity: 0;
-		font-size: 3vh;
-		font-weight: 600;
-		color: rgb(59, 58, 58);
-		transition: 0.3s;
-		font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
-	}
-
-	#assignSchedule-edit {
-		animation: changeOpacity 0.3s;
-		transition: 0.3s;
 	}
 
 	.assignSchedule-title {
