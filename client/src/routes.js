@@ -4,6 +4,7 @@ import Mainpage from "./pages/Mainpage.vue";
 import Dashboard from "./pages/Dashboard.vue";
 import MyAccount from "./pages/MyAccount.vue";
 import ViewTechnicianSchedule from "./pages/ViewTechnicianSchedule.vue";
+import ModifyAppointment from "./pages/ModifyAppointment.vue";
 
 Vue.use(Router);
 
@@ -30,6 +31,11 @@ export default new Router({
       path: "/viewtechnicianschedule",
       name: "ViewTechnicianSchedule",
       component: ViewTechnicianSchedule,
+    },
+    {
+      path: "/modifyappointment",
+      name: "modifyAppointment",
+      component: ModifyAppointment,
     },
   ],
 });
