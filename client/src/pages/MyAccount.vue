@@ -66,6 +66,13 @@
 							v-on:click="backViewDash()"
 						/>
 						<div class="myaccount-spacer"></div>
+						<input
+							class="myaccount-button"
+							type="button"
+							value="Delete Account"
+							v-on:click="deleteCurAccount()"
+						/>
+						<div class="myaccount-spacer"></div>
 						<input type="submit" class="myaccount-button" value="Submit" />
 					</div>
 				</form>
@@ -138,7 +145,6 @@
 						proxy.proxy + `/api/${this.userType}/update`,
 						sentData
 					);
-
 					if (putResult.status === 200) {
 						//success message
 						document.getElementById("myaccount-edit-error").innerHTML =
@@ -151,6 +157,7 @@
 						document.getElementById("myaccount-edit-error").innerHTML =
 							"An error occured. Please try again later";
 						document.getElementById("myaccount-edit-error").style.opacity = 1;
+						console.log(putResult.status);
 					}
 				} catch (error) {
 					document.getElementById("myaccount-edit-error").innerHTML =
@@ -192,6 +199,10 @@
 							document.getElementById("myaccount-edit-error").innerHTML =
 								"User not identified, please try again";
 							document.getElementById("myaccount-edit-error").style.opacity = 1;
+							document.getElementById("myaccount-edit-form").reset();
+							this.nameEdit = "";
+							this.emailEdit = "";
+							this.phoneEdit = "";
 							return;
 					}
 				} catch (error) {
@@ -247,6 +258,10 @@
 							document.getElementById("myaccount-edit-error").innerHTML =
 								"User not identified, please try again";
 							document.getElementById("myaccount-edit-error").style.opacity = 1;
+							document.getElementById("myaccount-edit-form").reset();
+							this.nameEdit = "";
+							this.emailEdit = "";
+							this.phoneEdit = "";
 							return;
 					}
 				} catch (error) {
@@ -256,11 +271,42 @@
 					document.getElementById("myaccount-edit-error").style.opacity = 1;
 				}
 			},
+			deleteCurAccount: async function() {
+				try {
+					let deleteResult = await axios.delete(
+						proxy.proxy + `/api/${this.userType}/delete/${this.idEdit}`
+					);
+					if (deleteResult.status === 200) {
+						//success message
+						document.getElementById("myaccount-edit-error").innerHTML =
+							"Successfully deleted account";
+						document.getElementById("myaccount-edit-error").style.opacity = 1;
+						setTimeout(function() {
+							document.getElementById("myaccount-edit-error").style.opacity = 0;
+						}, 1500);
+						let temp = this;
+						setTimeout(function() {
+							if (temp.$store.state.userType !== "assistant")
+								temp.$router.push("/");
+						}, 2000);
+					} else {
+						document.getElementById("myaccount-edit-error").innerHTML =
+							"An error occured. Please try again later";
+						document.getElementById("myaccount-edit-error").style.opacity = 1;
+						console.log(deleteResult.status);
+					}
+				} catch (error) {
+					document.getElementById("myaccount-edit-error").innerHTML =
+						"An error occured. Please try again later";
+					document.getElementById("myaccount-edit-error").style.opacity = 1;
+					console.log(`${error}`);
+				}
+			},
 		},
 		mounted() {
 			let user = this.$store.state.user;
 			if (user === -1) this.$router.push("/");
-			this.idEdit = this.$store.state.user;
+			this.idEdit = user;
 			this.userType = this.$store.state.userType;
 			this.fetchUserByID();
 		},

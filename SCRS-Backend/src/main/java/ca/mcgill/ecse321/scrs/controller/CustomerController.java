@@ -66,7 +66,7 @@ public class CustomerController
             return new ResponseEntity<CustomerDto>(new CustomerDto(), HttpStatus.NOT_ACCEPTABLE);
             // No such customer found.
         }
-        if (scrsUserService.getSCRSUserByEmail(customer.getEmail()) != null)
+        if (scrsUserService.getSCRSUserByEmail(customer.getEmail()) != null && scrsUserService.getSCRSUserByEmail(customer.getEmail()).getScrsUserId() != customer.getScrsUserId())
         {
             return new ResponseEntity<CustomerDto>(new CustomerDto(), HttpStatus.ALREADY_REPORTED);
             // Email already in use, please try a different email address.
