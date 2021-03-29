@@ -35,6 +35,7 @@ public class ScrsApplication
             String hashedDefaultAdminPass = Helper.hash("password");
             Assistant assistant = new Assistant("admin", hashedDefaultAdminPass, "admin@scrs.ca", "111111111", null);
             staticAssistantRepository.save(assistant);
+            System.out.println("Admin account not found. Creating default admin.");
         }
     }
 
