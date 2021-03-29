@@ -31,7 +31,6 @@ public class ServiceHelpers
         if (user == null) throw new IllegalArgumentException("Please submit a valid user object.");
         if(user.getEmail() == null || user.getEmail().trim().length() == 0) throw new IllegalArgumentException("Please submit a valid email.");
         if(user.getName() == null || user.getName().trim().length() == 0) throw new IllegalArgumentException("Please submit a valid name.");
-        if(user.getPassword() == null || user.getPassword().trim().length() == 0) throw new IllegalArgumentException("Please submit a valid password.");
         if(user.getPhone() == null || user.getPhone().trim().length() == 0) throw new IllegalArgumentException("Please submit a valid phone.");
     }
 

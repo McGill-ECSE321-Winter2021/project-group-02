@@ -18,7 +18,7 @@
 						id="myaccount-edit-email"
 						v-model="emailEdit"
 						type="email"
-						value="{this.email}"
+						placeholder="email"
 						@change="fetchUserByEmail()"
 					/>
 					<input
@@ -27,21 +27,21 @@
 						id="myaccount-edit-email"
 						v-model="emailEdit"
 						type="email"
-						value="{this.email}"
+						placeholder="email"
 					/>
 					<input
 						class="myaccount-input"
 						id="myaccount-edit-name"
 						v-model="nameEdit"
 						type="text"
-						value="{this.name}"
+						placeholder="name"
 					/>
 					<input
 						class="myaccount-input"
 						id="myaccount-edit-phone"
 						v-model="phoneEdit"
 						type="tel"
-						value="{this.phone}"
+						placeholder="phone"
 					/>
 					<input
 						class="myaccount-input"
@@ -64,6 +64,13 @@
 							type="button"
 							value="Back"
 							v-on:click="backViewDash()"
+						/>
+						<div class="myaccount-spacer"></div>
+						<input
+							class="myaccount-button"
+							type="button"
+							value="Delete Account"
+							v-on:click="deleteCurAccount()"
 						/>
 						<div class="myaccount-spacer"></div>
 						<input type="submit" class="myaccount-button" value="Submit" />
@@ -118,7 +125,6 @@
 
 					if (
 						sentData.name == "" ||
-						sentData.password == "" ||
 						sentData.email == "" ||
 						sentData.phone == ""
 					) {
@@ -139,22 +145,19 @@
 						proxy.proxy + `/api/${this.userType}/update`,
 						sentData
 					);
-
 					if (putResult.status === 200) {
 						//success message
 						document.getElementById("myaccount-edit-error").innerHTML =
 							"Successfully updated account info";
 						document.getElementById("myaccount-edit-error").style.opacity = 1;
 						setTimeout(function() {
-							document.getElementById("myaccount-edit-form").reset();
-						}, 300);
-						setTimeout(function() {
 							document.getElementById("myaccount-edit-error").style.opacity = 0;
-						}, 3000);
+						}, 1500);
 					} else {
 						document.getElementById("myaccount-edit-error").innerHTML =
 							"An error occured. Please try again later";
 						document.getElementById("myaccount-edit-error").style.opacity = 1;
+						console.log(putResult.status);
 					}
 				} catch (error) {
 					document.getElementById("myaccount-edit-error").innerHTML =
@@ -165,19 +168,9 @@
 			},
 			fetchUserByID: async function() {
 				try {
-					// find type of user with given ID
-					let response = await axios.get(
-						proxy.proxy + `/api/login/type/${this.idEdit}`
-					);
-					if (response.data == null || response.status !== 200) {
-						document.getElementById("myaccount-edit-error").innerHTML =
-							"No such user exists";
-						document.getElementById("myaccount-edit-error").style.opacity = 1;
-						return;
-					}
-					this.userType = response.data;
 					// fetch data of user with given ID
-					switch (response.data) {
+					let response = null;
+					switch (this.$store.state.userType) {
 						case "customer":
 							response = await axios.get(
 								proxy.proxy + `/api/customer/getByID/${this.idEdit}`
@@ -206,6 +199,10 @@
 							document.getElementById("myaccount-edit-error").innerHTML =
 								"User not identified, please try again";
 							document.getElementById("myaccount-edit-error").style.opacity = 1;
+							document.getElementById("myaccount-edit-form").reset();
+							this.nameEdit = "";
+							this.emailEdit = "";
+							this.phoneEdit = "";
 							return;
 					}
 				} catch (error) {
@@ -234,6 +231,7 @@
 							response = await axios.get(
 								proxy.proxy + `/api/customer/getByEmail/${this.emailEdit}`
 							);
+							this.idEdit = response.data.customerId;
 							this.nameEdit = response.data.customerName;
 							this.emailEdit = response.data.customerEmail;
 							this.phoneEdit = response.data.customerPhone;
@@ -242,6 +240,7 @@
 							response = await axios.get(
 								proxy.proxy + `/api/technician/getByEmail/${this.emailEdit}`
 							);
+							this.idEdit = response.data.customerId;
 							this.nameEdit = response.data.technicianName;
 							this.emailEdit = response.data.technicianEmail;
 							this.phoneEdit = response.data.technicianPhone;
@@ -250,6 +249,7 @@
 							response = await axios.get(
 								proxy.proxy + `/api/assistant/getByEmail/${this.emailEdit}`
 							);
+							this.idEdit = response.data.customerId;
 							this.nameEdit = response.data.assistantName;
 							this.emailEdit = response.data.assistantEmail;
 							this.phoneEdit = response.data.assistantPhone;
@@ -258,6 +258,10 @@
 							document.getElementById("myaccount-edit-error").innerHTML =
 								"User not identified, please try again";
 							document.getElementById("myaccount-edit-error").style.opacity = 1;
+							document.getElementById("myaccount-edit-form").reset();
+							this.nameEdit = "";
+							this.emailEdit = "";
+							this.phoneEdit = "";
 							return;
 					}
 				} catch (error) {
@@ -267,11 +271,43 @@
 					document.getElementById("myaccount-edit-error").style.opacity = 1;
 				}
 			},
+			deleteCurAccount: async function() {
+				try {
+					let deleteResult = await axios.delete(
+						proxy.proxy + `/api/${this.userType}/delete/${this.idEdit}`
+					);
+					if (deleteResult.status === 200) {
+						//success message
+						document.getElementById("myaccount-edit-error").innerHTML =
+							"Successfully deleted account";
+						document.getElementById("myaccount-edit-error").style.opacity = 1;
+						setTimeout(function() {
+							document.getElementById("myaccount-edit-error").style.opacity = 0;
+						}, 1500);
+						let temp = this;
+						setTimeout(function() {
+							if (temp.$store.state.userType !== "assistant")
+								temp.$router.push("/");
+						}, 2000);
+					} else {
+						document.getElementById("myaccount-edit-error").innerHTML =
+							"An error occured. Please try again later";
+						document.getElementById("myaccount-edit-error").style.opacity = 1;
+						console.log(deleteResult.status);
+					}
+				} catch (error) {
+					document.getElementById("myaccount-edit-error").innerHTML =
+						"An error occured. Please try again later";
+					document.getElementById("myaccount-edit-error").style.opacity = 1;
+					console.log(`${error}`);
+				}
+			},
 		},
 		mounted() {
 			let user = this.$store.state.user;
 			if (user === -1) this.$router.push("/");
-			this.idEdit = this.$store.state.user;
+			this.idEdit = user;
+			this.userType = this.$store.state.userType;
 			this.fetchUserByID();
 		},
 	};

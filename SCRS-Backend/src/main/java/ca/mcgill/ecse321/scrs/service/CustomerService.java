@@ -65,6 +65,10 @@ public class CustomerService
     public Customer updateCustomerInfo(Customer customer)
     {
         checkAccountInfoValidity(customer);
+        if(customer.getPassword() == null || customer.getPassword().trim().length() == 0)
+        {
+            customer.setPassword(getCustomerByID(customer.getScrsUserId()).getPassword());
+        }
         customerRepository.save(customer);
         return customer;
     }

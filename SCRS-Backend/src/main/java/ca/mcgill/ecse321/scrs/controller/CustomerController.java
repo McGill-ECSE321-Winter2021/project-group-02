@@ -30,7 +30,7 @@ public class CustomerController
             return new ResponseEntity<CustomerDto>(new CustomerDto(), HttpStatus.EXPECTATION_FAILED);
             // Invalid customer. Please submit a valid customer account to be created.
         }
-        if (customerService.getCustomerByEmail(customer.getEmail()) != null)
+        if (scrsUserService.getSCRSUserByEmail(customer.getEmail()) != null)
         {
             return new ResponseEntity<CustomerDto>(new CustomerDto(), HttpStatus.ALREADY_REPORTED);
             // Email already in use, please try a different email address.
@@ -40,6 +40,7 @@ public class CustomerController
     }
 
     @PutMapping(value = {"/update", "/update/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<CustomerDto> updateCustomer(@RequestBody Customer customer, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
         int id = Integer.parseInt(ID);
@@ -65,11 +66,17 @@ public class CustomerController
             return new ResponseEntity<CustomerDto>(new CustomerDto(), HttpStatus.NOT_ACCEPTABLE);
             // No such customer found.
         }
+        if (scrsUserService.getSCRSUserByEmail(customer.getEmail()) != null && scrsUserService.getSCRSUserByEmail(customer.getEmail()).getScrsUserId() != customer.getScrsUserId())
+        {
+            return new ResponseEntity<CustomerDto>(new CustomerDto(), HttpStatus.ALREADY_REPORTED);
+            // Email already in use, please try a different email address.
+        }
         Customer updatedCustomer = customerService.updateCustomerInfo(customer);
         return new ResponseEntity<>(convertToDto(updatedCustomer), HttpStatus.OK);
     }
 
     @DeleteMapping(value = {"/delete/{id}", "/delete/{id}/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<CustomerDto> deleteCustomer(@PathVariable String id, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
         int customerID = Integer.parseInt(id);

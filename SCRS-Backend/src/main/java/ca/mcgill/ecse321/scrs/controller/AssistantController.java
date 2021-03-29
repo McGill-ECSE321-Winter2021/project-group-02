@@ -29,7 +29,7 @@ public class AssistantController
             return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.EXPECTATION_FAILED);
             // Invalid assistant. Please submit a valid assistant account to be created.
         }
-        if (assistantService.getAssistantByEmail(assistant.getEmail()) != null)
+        if (scrsUserService.getSCRSUserByEmail(assistant.getEmail()) != null)
         {
             return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.ALREADY_REPORTED);
             // Email already in use, please try a different email address.
@@ -39,6 +39,7 @@ public class AssistantController
     }
 
     @PutMapping(value = {"/update", "/update/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<AssistantDto> updateAssistant(@RequestBody Assistant assistant, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
         int id = Integer.parseInt(ID);
@@ -64,11 +65,17 @@ public class AssistantController
             return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.NOT_ACCEPTABLE);
             // No such assistant found.
         }
+        if (scrsUserService.getSCRSUserByEmail(assistant.getEmail()) != null && scrsUserService.getSCRSUserByEmail(assistant.getEmail()).getScrsUserId() != assistant.getScrsUserId())
+        {
+            return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.ALREADY_REPORTED);
+            // Email already in use, please try a different email address.
+        }
         Assistant updatedAssistant = assistantService.updateAssistantInfo(assistant);
         return new ResponseEntity<>(convertToDto(updatedAssistant), HttpStatus.OK);
     }
 
     @DeleteMapping(value = {"/delete/{id}", "/delete/{id}/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<AssistantDto> deleteAssistant(@PathVariable String id, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
         int assistantID = Integer.parseInt(id);
