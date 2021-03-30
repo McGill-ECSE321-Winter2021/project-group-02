@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const templates = async () => {
-  const backend_address = "http://localhost:8080";
+  const backend_address = "http://localhost:8000";
   let counter = 0;
 
   //example of a get request from front-end

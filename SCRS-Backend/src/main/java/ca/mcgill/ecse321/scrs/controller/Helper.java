@@ -101,6 +101,20 @@ public class Helper
         return new TechnicianDto(technician.getScrsUserId(), technician.getName(), technician.getEmail(), technician.getPhone());
     }
 
+    public static List<TechnicianDto> convertToDtoList(List<Technician> technicians)
+    {
+        if (technicians == null)
+        {
+            throw new IllegalArgumentException("There is no such timeslot list!");
+        }
+        ArrayList<TechnicianDto> technicianDtos = new ArrayList<>();
+        for (Technician t: technicians)
+        {
+            technicianDtos.add(convertToDto(t));
+        }
+        return technicianDtos;
+    }
+
     public static TimeslotDto convertToDto(Timeslot timeslot)
     {
         if (timeslot == null)

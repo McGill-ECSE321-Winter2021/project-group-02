@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Time;
 import java.util.List;
 
 import static ca.mcgill.ecse321.scrs.service.ServiceHelpers.checkAccountInfoValidity;
@@ -63,6 +62,10 @@ public class TechnicianService
     public Technician updateTechnicianInfo(Technician technician)
     {
         checkAccountInfoValidity(technician);
+        if(technician.getPassword() == null || technician.getPassword().trim().length() == 0)
+        {
+            technician.setPassword(getTechnicianByID(technician.getScrsUserId()).getPassword());
+        }
         technicianRepository.save(technician);
         return technician;
     }

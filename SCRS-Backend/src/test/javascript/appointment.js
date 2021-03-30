@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const testAppointmentBookingAndPayment = async () => {
-  const backend_address = "http://localhost:8080";
+  const backend_address = "http://localhost:8000";
   let scoreCounter = 0;
   const numberOfTests = 8;
   let customerIdToCheck = -1;
@@ -45,7 +45,8 @@ const testAppointmentBookingAndPayment = async () => {
     };
     let createTimeslotPost = await axios.post(
       backend_address + "/api/timeslot/create",
-      createTimeslotData);
+      createTimeslotData
+    );
     timeslotIdToCheck = createTimeslotPost.data.timeslotId;
   } catch (error) {
     console.log("Setup for testAppointmentBookingAndPayment FAILED");
@@ -277,7 +278,7 @@ const testAppointmentBookingAndPayment = async () => {
 };
 
 const testRateAppointment = async () => {
-  const backend_address = "http://localhost:8080";
+  const backend_address = "http://localhost:8000";
   let scoreCounter = 0;
   const numberOfTests = 4;
   let customerIdToCheck = -1;
@@ -470,7 +471,7 @@ const testRateAppointment = async () => {
 };
 
 const testModifyAppointment = async () => {
-  const backend_address = "http://localhost:8080";
+  const backend_address = "http://localhost:8000";
   let scoreCounter = 0;
   const numberOfTests = 2;
   let customerIdToCheck = -1;
