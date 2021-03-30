@@ -9,28 +9,41 @@
 				class="assignSchedule-select-container"
 			>
 				<select
-					name="technicians"
 					id="assignSchedule-technician-select"
 					class="assignSchedule-select"
 					v-model="curTechnician"
+					@change="dropdown()"
 				>
 					<option disabled selected>Select a Technician</option>
-					<option v-for="(tech, index) in technicians" :key="index">{{
-						tech.technicianName
-					}}</option>
+					<option
+						v-for="(technician, index) in technicians"
+						:key="index"
+						:value="technician"
+						>{{ technician.technicianName }}</option
+					>
 				</select>
 				<div class="assignSchedule-spacer"></div>
 				<select
-					name="workspace"
 					id="assignSchedule-workspace-select"
 					class="assignSchedule-select"
 					v-model="curWorkspace"
+					@change="dropdown()"
 				>
 					<option disabled selected>Select a Workspace</option>
-					<option v-for="(ws, index) in workspaces" :key="index">{{
-						ws.workspaceName
-					}}</option>
+					<option
+						v-for="(workspace, index) in workspaces"
+						:key="index"
+						:value="workspace"
+						>{{ workspace.workspaceName }}</option
+					>
 				</select>
+			</div>
+			<div
+				id="assignSchedule-timeslot-container"
+				class="assignSchedule-timeslot-container"
+				v-if="sel"
+			>
+				<!-- TODO add timeslot viewing portion inside here with a v-if="sel" and with a v-for that reads the timeslots[] var below-->
 			</div>
 			<div
 				id="assignSchedule-button-container"
@@ -42,6 +55,14 @@
 					value="Back"
 					v-on:click="backViewDash()"
 				/>
+				<div class="assignSchedule-spacer" v-if="sel"></div>
+				<button
+					class="assignSchedule-button"
+					v-if="sel"
+					v-on:click="assignTimeslots()"
+				>
+					Submit
+				</button>
 			</div>
 		</div>
 	</div>
@@ -62,6 +83,9 @@
 				workspaces: [],
 				curTechnician: "Select a Technician",
 				curWorkspace: "Select a Workspace",
+				sel: false,
+				timeslots: [],
+				selectedTimeslots: [],
 			};
 		},
 		methods: {
@@ -80,10 +104,35 @@
 					t.$router.push("/dashboard");
 				}, 300);
 			},
+			fetchTimeslots: async function() {
+				try {
+					let response = await axios.get(
+						proxy.proxy +
+							`/api/workspace/availabilities/${this.curWorkspace.workspaceId}`
+					);
+					this.timeslots = response.data;
+				} catch (error) {
+					console.error(error);
+				}
+			},
+			dropdown: function() {
+				if (
+					this.curTechnician === "Select a Technician" ||
+					this.curWorkspace === "Select a Workspace"
+				) {
+					this.sel = false;
+					return;
+				}
+				this.fetchTimeslots();
+				this.sel = true;
+			},
+			assignTimeslots: async function() {
+				//TODO handle requests for submitting changes
+			},
 		},
 		async mounted() {
-			//TODO UNCOMMENT
-			//if (this.$store.state.user !== "assistant") this.$router.push("/");
+			//TODO UNCOMMENT ONCE BACKEND WORKS
+			/*if (this.$store.state.user !== "assistant") this.$router.push("/");
 
 			try {
 				let response = await axios.get(proxy.proxy + "/api/technician/getAll");
@@ -92,9 +141,9 @@
 				this.workspaces = response.data;
 			} catch (error) {
 				console.error(error);
-			}
+			}*/
 
-			//TODO COMMENT OUT BELOW
+			//TODO REMOVE DUMMY CODE BELOW ONCE BACKEND CONTAINS VALUES
 			this.technicians = [
 				{ technicianName: "bob", technicianId: 3 },
 				{ technicianName: "john", technicianId: 4 },
@@ -202,6 +251,12 @@
 		flex-direction: row;
 	}
 
+	.assignSchedule-timeslot-container {
+		height: 55vh;
+		animation: changeheight 0.3s;
+		transition: 0.3s;
+	}
+
 	@keyframes changeOpacity {
 		from {
 			opacity: 0;
@@ -209,6 +264,16 @@
 
 		to {
 			opacity: 1;
+		}
+	}
+
+	@keyframes changeheight {
+		from {
+			height: 0vh;
+		}
+
+		to {
+			height: 55vh;
 		}
 	}
 </style>
