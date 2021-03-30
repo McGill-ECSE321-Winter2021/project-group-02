@@ -75,7 +75,7 @@ public class TimeslotController
                             .anyMatch(alreadyAssignedTech -> alreadyAssignedTech.getScrsUserId() == technicianId))
                     {
                         // technician already assigned to timeslot
-                        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+                        return new ResponseEntity<>(null, HttpStatus.ALREADY_REPORTED);
                     }
                 }
 
