@@ -2,13 +2,33 @@
 	<div class="assignSchedule">
 		<div id="assignSchedule-container" class="assignSchedule-container">
 			<H1 id="assignSchedule-generic-title" class="assignSchedule-title"
-				>Select a Technician</H1
+				>Set Technician Schedule</H1
 			>
-			<div id="assignSchedule-selectTech" class="assignSchedule-select">
-				<select name="technicians" id="assignSchedule-technician-select">
+			<div
+				id="assignSchedule-select-container"
+				class="assignSchedule-select-container"
+			>
+				<select
+					name="technicians"
+					id="assignSchedule-technician-select"
+					class="assignSchedule-select"
+					v-model="curTechnician"
+				>
 					<option disabled selected>Select a Technician</option>
 					<option v-for="(tech, index) in technicians" :key="index">{{
 						tech.technicianName
+					}}</option>
+				</select>
+				<div class="assignSchedule-spacer"></div>
+				<select
+					name="workspace"
+					id="assignSchedule-workspace-select"
+					class="assignSchedule-select"
+					v-model="curWorkspace"
+				>
+					<option disabled selected>Select a Workspace</option>
+					<option v-for="(ws, index) in workspaces" :key="index">{{
+						ws.workspaceName
 					}}</option>
 				</select>
 			</div>
@@ -38,11 +58,10 @@
 		components: {},
 		data() {
 			return {
-				technicians: [
-					{ name: "robert", id: 4 },
-					{ name: "john", id: 3 },
-					{ name: "Alix", id: 6969 },
-				],
+				technicians: [],
+				workspaces: [],
+				curTechnician: "Select a Technician",
+				curWorkspace: "Select a Workspace",
 			};
 		},
 		methods: {
@@ -51,7 +70,9 @@
 				document.getElementById(
 					"assignSchedule-generic-title"
 				).style.opacity = 0;
-				document.getElementById("assignSchedule-selectTech").style.opacity = 0;
+				document.getElementById(
+					"assignSchedule-select-container"
+				).style.opacity = 0;
 				document.getElementById(
 					"assignSchedule-button-container"
 				).style.opacity = 0;
@@ -61,15 +82,28 @@
 			},
 		},
 		async mounted() {
-			//if (this.$store.state.user === -1) this.$router.push("/"); TODO UNCOMMENT
-			//fetch technicians
-			let response = await axios.get(proxy.proxy + "/api/technician/getAll");
-			console.log(response.data);
-			this.technicians = response.data;
+			//TODO UNCOMMENT
+			//if (this.$store.state.user !== "assistant") this.$router.push("/");
+
+			try {
+				let response = await axios.get(proxy.proxy + "/api/technician/getAll");
+				this.technicians = response.data;
+				response = await axios.get(proxy.proxy + "/api/workspace/getAll");
+				this.workspaces = response.data;
+			} catch (error) {
+				console.error(error);
+			}
+
+			//TODO COMMENT OUT BELOW
 			this.technicians = [
 				{ technicianName: "bob", technicianId: 3 },
 				{ technicianName: "john", technicianId: 4 },
 				{ technicianName: "alix", technicianId: 6969 },
+			];
+			this.workspaces = [
+				{ workspaceName: "ws1", workspaceId: 4 },
+				{ workspaceName: "ws2", workspaceId: 3 },
+				{ workspaceName: "wsAlix", workspaceId: 6969 },
 			];
 		},
 	};
@@ -86,7 +120,7 @@
 		background-color: rgb(238, 207, 173);
 	}
 
-	#assignSchedule-container {
+	.assignSchedule-container {
 		height: 80vh;
 		width: 80vw;
 		border-radius: 5vh;
@@ -145,6 +179,27 @@
 		padding-bottom: 3vh;
 		animation: changeOpacity 0.3s;
 		transition: 0.3s;
+	}
+
+	.assignSchedule-select {
+		all: unset;
+		background-color: rgb(212, 211, 211);
+		font-size: 2.5vh;
+		margin-top: 0.5vh;
+		margin-bottom: 0.5vh;
+		padding: 0.5vh;
+		padding-left: 4vw;
+		padding-right: 4vw;
+		border-radius: 2vh;
+		font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+		font-weight: 600;
+		color: rgb(59, 58, 58);
+		transition: 0.3s;
+	}
+
+	.assignSchedule-select-container {
+		display: flex;
+		flex-direction: row;
 	}
 
 	@keyframes changeOpacity {
