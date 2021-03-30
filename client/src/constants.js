@@ -1,3 +1,3 @@
-const proxy = "http://localhost:8000";
+const proxy = "https://scrs-backend-1.herokuapp.com/";
 
 export default { proxy };
