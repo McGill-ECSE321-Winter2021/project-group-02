@@ -1,1 +1,0 @@
-web: java -jar SCRS-Backend/build/libs/SCRS-Backend-0.0.1-SNAPSHOT.jar
