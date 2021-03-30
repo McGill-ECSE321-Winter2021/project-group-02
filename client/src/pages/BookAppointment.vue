@@ -25,16 +25,20 @@
             </select>
           </div>
           <input id="form-service"
-                   v-if="this.apptType === 'other'"
-                   type="text"
-                   placeholder="service"
-            >
+                 v-if="this.apptType === 'other'"
+                 type="text"
+                 placeholder="service"
+                 v-model="apptService"
+          >
 
           <div id="timeslot-container">
           </div>
 
           <label class="form-label">Appointment message:</label>
-          <textarea id="form-note" placeholder="Write notes to the mechanic..."></textarea>
+          <textarea id="form-note"
+                    placeholder="Write notes to the mechanic..."
+                    v-model="apptNote"
+          />
         </div>
 
         <div id="button-container">
@@ -67,8 +71,8 @@
     methods: {
       backViewDash: function() {
         let t = this;
-        document.getElementById("myaccount-edit").style.opacity = 0;
-        document.getElementById("myaccount-generic-title").style.opacity = 0;
+        document.getElementById("book-appointment-title").style.opacity = 0;
+        document.getElementById("appointment-form").style.opacity = 0;
         setTimeout(function() {
           t.$router.push("/dashboard");
         }, 300);
