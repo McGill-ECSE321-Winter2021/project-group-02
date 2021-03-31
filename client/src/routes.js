@@ -10,6 +10,8 @@ import CreateAccount from "./pages/CreateAccount.vue";
 import BookAppointment from "./pages/BookAppointment";
 import PayForAppointment from "./pages/PayForAppointment.vue";
 import WorkspacePage from "./pages/WorkspacePage";
+import ViewNotifications from "./pages/ViewNotifications.vue";
+import ViewBookedAppointments from "./pages/ViewBookedAppointments.vue";
 
 Vue.use(Router);
 
@@ -67,5 +69,18 @@ export default new Router({
       name: "WorkspacePage",
       component: WorkspacePage,
     },
+
+    {
+      path: "/viewnotifications",
+      name: "ViewNotifications",
+      component: ViewNotifications,
+    },
+
+    {
+      path: "/viewbookedappointments",
+      name: "ViewBookedAppointments",
+      component: ViewBookedAppointments,
+    },
+
   ],
 });
