@@ -49,12 +49,9 @@
 				id="assignSchedule-button-container"
 				class="assignSchedule-button-container"
 			>
-				<input
-					class="assignSchedule-button"
-					type="button"
-					value="Back"
-					v-on:click="backViewDash()"
-				/>
+				<button class="assignSchedule-button" v-on:click="backViewDash()">
+					Back
+				</button>
 				<div class="assignSchedule-spacer" v-if="sel"></div>
 				<button
 					class="assignSchedule-button"
@@ -132,7 +129,7 @@
 		},
 		async mounted() {
 			//TODO UNCOMMENT ONCE BACKEND WORKS
-			/*if (this.$store.state.user !== "assistant") this.$router.push("/");
+			/*if (this.$store.state.user !== "assistant") this.$router.push("/dashboard");
 
 			try {
 				let response = await axios.get(proxy.proxy + "/api/technician/getAll");
