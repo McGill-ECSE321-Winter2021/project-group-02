@@ -17,7 +17,9 @@
 		</div>
 		<div class="assistant-dashboard-container" id="b">
 			<p class="dashboard-title">Accounts</p>
-			<button class="dashboard-button">Create Account</button>
+			<button class="dashboard-button" @click="createAccount()">
+				Create Account
+			</button>
 			<button class="dashboard-button" @click="modifyAccount()">
 				Modify Account
 			</button>
@@ -63,6 +65,14 @@
 				let vm = this;
 				setTimeout(function() {
 					vm.$router.push("/assigntechnicianschedule");
+				}, 300);
+			},
+			createAccount: function() {
+				document.getElementById("assistant-dashboard").style.opacity = 0;
+				document.getElementById("logout-button").style.opacity = 0;
+				let vm = this;
+				setTimeout(function() {
+					vm.$router.push("/admincreateaccount");
 				}, 300);
 			},
 		},

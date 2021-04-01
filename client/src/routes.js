@@ -6,6 +6,7 @@ import MyAccount from "./pages/MyAccount.vue";
 import ViewTechnicianSchedule from "./pages/ViewTechnicianSchedule.vue";
 import ModifyAppointment from "./pages/ModifyAppointment.vue";
 import AssignTechnicianSchedule from "./pages/AssignTechnicianSchedule.vue";
+import AdminTechSignup from "./pages/AdminTechSignup.vue";
 
 Vue.use(Router);
 
@@ -42,6 +43,11 @@ export default new Router({
       path: "/assigntechnicianschedule",
       name: "AssignTechnicianSchedule",
       component: AssignTechnicianSchedule,
+    },
+    {
+      path: "/admincreateaccount",
+      name: "AdminTechSignup",
+      component: AdminTechSignup,
     },
   ],
 });
