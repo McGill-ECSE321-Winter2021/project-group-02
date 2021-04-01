@@ -2,14 +2,12 @@
   <div class="technician-dashboard" id="technician-dashboard">
     <div class="technician-dashboard-container" id="a">
       <p class="dashboard-title">Appointments</p>
-      <button class="dashboard-button">View Appointments</button>
       <button class="dashboard-button" @click="viewSchedule()">
         View Technician Schedule
       </button>
     </div>
     <div class="technician-dashboard-container" id="b">
       <p class="dashboard-title">Accounts</p>
-      <button class="dashboard-button">Create Account</button>
       <button class="dashboard-button" @click="modifyAccount()">
         Modify Account
       </button>
@@ -46,6 +44,8 @@ export default {
 <style scoped>
 .technician-dashboard {
   display: grid;
+  align-items: center;
+  justify-content: center;
   grid-template-columns: 40vw 40vw;
   height: 80vh;
   width: 80vw;
