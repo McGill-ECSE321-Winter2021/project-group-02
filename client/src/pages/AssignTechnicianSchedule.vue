@@ -34,7 +34,7 @@
 						v-for="(workspace, index) in workspaces"
 						:key="index"
 						:value="workspace"
-						>{{ workspace.workspaceName }}</option
+						>{{ workspace.spaceName }}</option
 					>
 				</select>
 			</div>
@@ -43,7 +43,20 @@
 				class="assignSchedule-timeslot-container"
 				v-if="sel"
 			>
-				<!-- TODO add timeslot viewing portion inside here with a v-if="sel" and with a v-for that reads the timeslots[] var below-->
+        <select
+            id="assignSchedule-timeslot-select"
+            class="assignSchedule-select"
+            v-model="curTimeslot"
+            @change="dropdown()"
+        >
+          <option disabled selected>Select a Timeslot</option>
+          <option
+              v-for="(timeslot, index) in timeslots"
+              :key="index"
+              :value="timeslot"
+          >{{ timeslot.startDate }}</option
+          >
+        </select>
 			</div>
 			<div
 				id="assignSchedule-button-container"
@@ -55,7 +68,7 @@
 				<div class="assignSchedule-spacer" v-if="sel"></div>
 				<button
 					class="assignSchedule-button"
-					v-if="sel"
+					v-if="sel && curTimeslot != null"
 					v-on:click="assignTimeslots()"
 				>
 					Submit
@@ -80,6 +93,7 @@
 				workspaces: [],
 				curTechnician: "Select a Technician",
 				curWorkspace: "Select a Workspace",
+        curTimeslot: null,
 				sel: false,
 				timeslots: [],
 				selectedTimeslots: [],
@@ -111,6 +125,7 @@
 				} catch (error) {
 					console.error(error);
 				}
+        console.log(this.timeslots);
 			},
 			dropdown: function() {
 				if (
@@ -124,33 +139,30 @@
 				this.sel = true;
 			},
 			assignTimeslots: async function() {
-				//TODO handle requests for submitting changes
+        let assignTimeslotData = `timeslotId=${this.curTimeslot.timeslotId}&technicianId=${this.curTechnician.technicianId}`;
+
+        try {
+          await axios.put(
+              proxy.proxy + "/api/timeslot/assignTech",
+              assignTimeslotData
+          );
+        } catch (error) {
+          console.log(error);
+        }
 			},
 		},
 		async mounted() {
-			//TODO UNCOMMENT ONCE BACKEND WORKS
-			/*if (this.$store.state.user !== "assistant") this.$router.push("/dashboard");
+			if (this.$store.state.userType !== "assistant") this.$router.push("/dashboard");
 
 			try {
 				let response = await axios.get(proxy.proxy + "/api/technician/getAll");
 				this.technicians = response.data;
+
 				response = await axios.get(proxy.proxy + "/api/workspace/getAll");
 				this.workspaces = response.data;
 			} catch (error) {
 				console.error(error);
-			}*/
-
-			//TODO REMOVE DUMMY CODE BELOW ONCE BACKEND CONTAINS VALUES
-			this.technicians = [
-				{ technicianName: "bob", technicianId: 3 },
-				{ technicianName: "john", technicianId: 4 },
-				{ technicianName: "alix", technicianId: 6969 },
-			];
-			this.workspaces = [
-				{ workspaceName: "ws1", workspaceId: 4 },
-				{ workspaceName: "ws2", workspaceId: 3 },
-				{ workspaceName: "wsAlix", workspaceId: 6969 },
-			];
+			}
 		},
 	};
 </script>
