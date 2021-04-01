@@ -1,51 +1,74 @@
 <template>
   <div id="book-appointment">
     <div id="book-appointment-container">
+
       <H1 id="book-appointment-title">Create Appointment</H1>
 
       <form id="appointment-form"
             @submit.prevent="bookAppointment()"
       >
-        <div class="form-container">
-          <div id="service-container">
-            <label class="form-label">Select a service:</label>
-            <select id="appointment-type"
-                    v-model="apptType"
+        <div id="form-splitter">
+          <div class="form-container">
+            <div id="form-appointment-type">
+              <label class="form-text">Select a service:</label>
+              <select id="appointment-type" class="form-text"
+                      v-model="selectAppointmentType"
+              >
+                <option value="" selected disabled>Choose service</option>
+                <option value="carWash">Car Wash</option>
+                <option value="maintenance">Maintenance</option>
+                <option value="oilChange">Oil Change</option>
+                <option value="tireChange">Tire Change</option>
+                <option value="towing">Towing</option>
+                <option value="inspection">Inspection</option>
+                <option value="roadsideAssistance">Roadside Assistance</option>
+                <option value="checkup">Checkup</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <input id="form-service" class="form-text"
+                   v-if="this.selectAppointmentType === 'other'"
+                   type="text"
+                   placeholder="service"
+                   v-model="inputService"
             >
-              <option value="" selected disabled>Choose service</option>
-              <option value="carWash">Car Wash</option>
-              <option value="maintenance">Maintenance</option>
-              <option value="oilChange">Oil Change</option>
-              <option value="tireChange">Tire Change</option>
-              <option value="towing">Towing</option>
-              <option value="inspection">Inspection</option>
-              <option value="roadsideAssistance">Roadside Assistance</option>
-              <option value="checkup">Checkup</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-          <input id="form-service"
-                 v-if="this.apptType === 'other'"
-                 type="text"
-                 placeholder="service"
-                 v-model="apptService"
-          >
 
-          <div id="timeslot-container">
+            <div id="form-customer"
+                 v-if="assistantBooking === true"
+            >
+              <label class="form-text">Customer e-mail:</label>
+              <input id="customer-email" class="form-text"
+                     type="text"
+                     placeholder="customer@mail.com"
+                     v-model="inputEmail"
+                     @focusout="getCustomer()"
+              >
+            </div>
+
+            <label class="form-text">Appointment message:</label>
+            <textarea id="form-note" class="form-text"
+                      placeholder="Write notes to the mechanic..."
+                      v-model="inputNote"
+            />
           </div>
 
-          <label class="form-label">Appointment message:</label>
-          <textarea id="form-note"
-                    placeholder="Write notes to the mechanic..."
-                    v-model="apptNote"
-          />
+          <div class="form-container">
+            <label class="form-text">Timeslot:</label>
+            <div id="timeslot-container"/>
+          </div>
         </div>
 
-        <div id="button-container">
-          <input type="button" class="form-button" value="Cancel" @click="backViewDash()">
+        <label id="form-error" class="form-text"
+               v-if="errorMsg !== ''"
+        >{{this.errorMsg}}</label>
+
+        <div id="form-buttons">
+          <button class="form-button" @click="backViewDash()">Cancel</button>
           <input type="submit" class="form-button" value="Book">
         </div>
       </form>
+
     </div>
   </div>
 </template>
@@ -59,17 +82,21 @@
     props: {
       msg: String,
     },
-    data() {
-      return {
-        apptType:"",
-        apptService:"",
-        apptNote:"",
-        custId:this.$store.state.user,
-        timeId:-1
-      };
-    },
+
+    data() { return {
+      selectAppointmentType: "",
+      inputService: undefined,
+      inputNote: undefined,
+      assistantBooking: false,
+      inputEmail: undefined,
+      customerId: this.$store.state.user,
+      timeslots: [],
+      selectTimeslotId: [],
+      errorMsg: undefined
+    };},
+
     methods: {
-      backViewDash: function() {
+      backViewDash() {
         let t = this;
         document.getElementById("book-appointment-title").style.opacity = 0;
         document.getElementById("appointment-form").style.opacity = 0;
@@ -78,14 +105,50 @@
         }, 300);
       },
 
-      bookAppointment: async function() {
+      async getCustomer() {
+        if (this.inputEmail === undefined || this.inputEmail === "") {
+          this.customerId = -1;
+          this.errorMsg = "Customer e-mail is not filled";
+          return;
+        }
+        try {
+          let customerResponse = await axios.get(proxy.proxy + `/api/customer/getByEmail/${this.inputEmail}`)
+
+          if (customerResponse.status === 200) {
+            this.customerId = customerResponse.data.customerId;
+            this.errorMsg = "";
+          }
+        } catch (error) {
+          console.error(error);
+          this.customerId = -1;
+          this.errorMsg = "Customer account with this e-mail could not be found";
+        }
+      },
+
+      async bookAppointment() {
+        if (this.selectAppointmentType === "") {
+          this.errorMsg = "Appointment service is not selected"
+          return;
+        }
+        if (this.selectAppointmentType === "other" && (this.inputService === undefined || this.inputService === "")) {
+          this.errorMsg = "Please specify a service"
+          return;
+        }
+        if (this.customerId === -1) {
+          this.errorMsg = "Invalid customer for the appointment"
+          return;
+        }
+        if (this.selectTimeslotId.length === 0) {
+          this.errorMsg = "Select at least one availability for the appointment"
+          return;
+        }
         try {
           let bookAppointmentData = {
-            appointmentType: this.apptType,
-            service: this.apptService,
-            note: this.apptNote,
-            customerId: this.custId,
-            timeslotsId: this.timeId,
+            appointmentType: this.selectAppointmentType,
+            service: this.inputService,
+            note: this.inputNote,
+            customerId: this.customerId,
+            timeslotsId: this.selectTimeslotId,
           };
 
           let bookingResult = await axios.post(
@@ -93,11 +156,32 @@
               bookAppointmentData
           );
 
-          console.log(bookingResult.data)
+          if(bookingResult.status === 200) {
+            this.backViewDash();
+          }
         } catch (error) {
-          console.log(`${error}`)
+          console.error(`${error}`)
+          this.errorMsg = "Something went wrong during the booking process. Please try again later"
         }
       }
+    },
+
+    async mounted() {
+      /*if (this.$store.state.user !== "assistant" && this.$store.state.user !== "customer") this.$router.push("/dashboard");
+
+      if (this.$store.state.user === "assistant") {
+        this.customerId = -1;
+        this.assistantBooking = true;
+      }
+
+      try {
+
+        let response = await axios.get(proxy.proxy + `/api/timeslot/available/`);
+        this.timeslots = response.data;
+      } catch (error) {
+        console.error(error);
+      }
+      */
     }
   }
 </script>
@@ -105,8 +189,7 @@
 <style scoped>
   #book-appointment,
   #book-appointment-container,
-  #timeslot-container,
-  #appointment-form{
+  #appointment-form {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -138,9 +221,19 @@
     color: rgb(59, 58, 58);
     padding-bottom: 3vh;
     animation: changeOpacity 0.3s;
+    transition: 0.3s;
   }
 
-  .form-container {
+  #form-splitter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    transition: 0.3s;
+  }
+
+  .form-container,
+  #form-customer {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -148,71 +241,68 @@
     transition: 0.3s;
   }
 
-  .form-label {
+  .form-text {
+    all: unset;
+    margin-right: 1vw;
     font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
     font-size: 3vh;
     font-weight: 500;
     color: rgb(59, 58, 58);
+    animation: changeOpacity, 0.3s;
     transition: 0.3s;
+  }
+  #form-error {
+    color: rgb(255, 0, 0);
   }
 
   #appointment-type {
-    all: unset;
     background-color: rgb(212, 211, 211);
     width: 10vw;
-    margin-left: 1vh;
     padding: 1vh;
     border-radius: 2vh;
-    font-size: 3vh;
-    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
-    font-weight: 500;
-    color: rgb(59, 58, 58);
-    transition: 0.3s;
   }
 
-  #form-service {
-    all: unset;
+  #timeslot-container {
+    background-color: rgb(225, 225, 225);
+    width: 30vw;
+    height: 30vh;
+    overflow-y: scroll;
+  }
+
+  #form-service,
+  #customer-email {
     background-color: rgb(212, 211, 211);
     width: 30vw;
     margin-top: 1vh;
     margin-bottom: 1vh;
     padding: 1vh;
     border-radius: 2vh;
-    font-size: 3vh;
-    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
-    font-weight: 500;
-    color: rgb(59, 58, 58);
-    transition: 0.3s;
   }
 
   #form-note {
-    all: unset;
     background-color: rgb(212, 211, 211);
     width: 30vw;
-    height: 15vh;
+    height: 10vh;
     padding: 1vh;
-    border-radius: 2vh;
-    font-size: 3vh;
-    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
-    font-weight: 500;
-    color: rgb(59, 58, 58);
-    transition: 0.3s;
+    border-radius: 2vh
   }
 
   .form-button {
     all: unset;
     height: 5vh;
     width: 12vw;
-    border-radius: 2vh;
-    padding: 1vh;
-    background-color: rgb(235, 164, 89);
     margin: 3vh 1vh 1vh;
-    font-size: 3vh;
-    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
-    font-weight: 600;
-    text-align: center;
-    color: rgb(75, 75, 75);
+    padding: 1vh;
+    border-radius: 2vh;
+    background-color: rgb(235, 164, 89);
     border: 0.5vh solid rgb(235, 164, 89);
+    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+    font-size: 3vh;
+    font-weight: 600;
+    color: rgb(75, 75, 75);
+    text-align: center;
+    animation: changeOpacity, 0.3s;
+    transition: 0.3s;
   }
   .form-button:hover {
     background-color: rgb(175, 122, 65);
