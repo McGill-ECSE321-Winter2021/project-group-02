@@ -89,9 +89,16 @@ export default {
         );
         if (workspaceResponse.status !== 200) return;
         let workspaces = workspaceResponse.data;
+        console.log(workspaces);
         for (let i = 0; i < this.appointments.length; i++) {
-          this.appointments[i].workspaceId = workspaces[i].name;
+          for (let j = 0; j < workspaces.length; j++) {
+            if (this.appointments[i].workspaceId === workspaces[j].workspaceId)
+              this.appointments[i].workspaceId = workspaces[i].spaceName;
+          }
         }
+        document.getElementById(
+          "view-technician-schedule-opacity-container"
+        ).style.opacity = 1;
         console.log(this.appointments);
       } catch (error) {
         console.log(error);
@@ -131,24 +138,14 @@ export default {
 }
 
 #view-technician-schedule-opacity-container {
+  opacity: 0;
   height: 100%;
   width: 100%;
   border-radius: 5vh;
-  animation: changeOpacity 0.3s;
   transition: 0.3s;
   overflow-y: scroll;
   padding-top: 5vh;
   padding-bottom: 5vh;
-}
-
-@keyframes changeOpacity {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
 }
 
 .view-technician-schedule-button {
@@ -185,6 +182,7 @@ export default {
   padding-top: 3vh;
   padding-bottom: 3vh;
   margin: auto;
+  text-align: center;
 }
 
 .view-technician-schedule-text {
