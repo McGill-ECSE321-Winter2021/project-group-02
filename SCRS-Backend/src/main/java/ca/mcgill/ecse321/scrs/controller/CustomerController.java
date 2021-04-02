@@ -122,7 +122,7 @@ public class CustomerController
         if (email == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         Customer customer = customerService.getCustomerByEmail(email);
 
-        if (customer == null) return new ResponseEntity<>(null, HttpStatus.OK);
+        if (customer == null) return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 
         return new ResponseEntity<>(convertToDto(customer), HttpStatus.OK);
     }

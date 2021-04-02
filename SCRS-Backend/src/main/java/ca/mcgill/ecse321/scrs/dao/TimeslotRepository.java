@@ -20,4 +20,6 @@ TimeslotRepository extends CrudRepository<Timeslot, Integer>
     List<Timeslot> findAllByStartDateGreaterThanEqualAndStartDateLessThanEqualOrderByStartDate(Date startDate, Date lastStartDate);
 
     List<Timeslot> findAllByTechniciansAndStartDateGreaterThanEqualAndAndStartDateLessThanEqualOrderByStartDate(Technician technician, Date startDate, Date lastStartDate);
+    
+    List<Timeslot> findAllByStartDateGreaterThanEqualOrderByStartDate(Date startDate);
 }
