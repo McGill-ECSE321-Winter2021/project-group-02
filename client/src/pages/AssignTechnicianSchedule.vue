@@ -96,7 +96,6 @@
         curTimeslot: null,
 				sel: false,
 				timeslots: [],
-				selectedTimeslots: [],
 			};
 		},
 		methods: {
