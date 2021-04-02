@@ -26,13 +26,15 @@ export default {
         1}-${now.getDate()}`;
       let nextWeekString = `${nextWeek.getFullYear()}-${nextWeek.getMonth() +
         1}-${nextWeek.getDate()}`;
-      let scheduleResponse = axios.get(
-        proxy.proxy`api/technician/viewschedule/${this.$store.state.user}/${nowString}/${nextWeekString}`
+      let scheduleResponse = await axios.get(
+        proxy.proxy +
+          `api/technician/viewschedule/${this.$store.state.user}/${nowString}/${nextWeekString}`
       );
       if (scheduleResponse.status !== 200) return;
       this.appointments = scheduleResponse.data;
+      console.log(this.appointments);
     } catch (error) {
-      console.log(`${error}`);
+      console.log(error);
     }
   },
 };
