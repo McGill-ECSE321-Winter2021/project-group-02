@@ -100,7 +100,10 @@ export default {
       } catch (error) {
         console.log(error);
       }
-    }
+    } else
+      document.getElementById(
+        "view-technician-schedule-opacity-container"
+      ).style.opacity = 1;
   },
 };
 </script>

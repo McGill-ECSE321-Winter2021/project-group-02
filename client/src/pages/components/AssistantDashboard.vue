@@ -34,7 +34,7 @@
       </button>
     </div>
     <div class="assistant-dashboard-container" id="d">
-      <p class="dashboard-title">Worspaces</p>
+      <p class="dashboard-title">Workpaces</p>
       <button class="dashboard-button">Set Space Availabilities</button>
       <button class="dashboard-button">View Space Availabilities</button>
     </div>
