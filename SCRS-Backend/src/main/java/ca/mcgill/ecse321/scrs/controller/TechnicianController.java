@@ -127,20 +127,18 @@ public class TechnicianController
     @CrossOrigin(origins = "*")
     public ResponseEntity<List<TimeslotDto>> getAllByDate(@PathVariable("id") int technicianId, @PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate)//, @CookieValue(value = "id", defaultValue = "-1") String ID)
     {
-
         Date newStartDate = Date.valueOf(startDate);
         Date newEndDate = Date.valueOf(endDate);
 
-//        int id = Integer.parseInt(ID);
-//        if (id == -1)
-//        {
-//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//
-//        if (!isAdmin(scrsUserService.getSCRSUserByID(id)) && id != technicianId) //does not have permission to view.
-//        {
-//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
+        if (technicianId == -1)
+        {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if (!isAdmin(scrsUserService.getSCRSUserByID(technicianId))) //does not have permission to view.
+        {
+           return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
 
         Technician technician = technicianService.getTechnicianByID(technicianId);
         if (technician == null)

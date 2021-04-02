@@ -34,6 +34,7 @@ public class TimeslotController
 
 
     @GetMapping(value = {"/getTimeslots", "/getTimeslots/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<List<TimeslotDto>> getTimeslots()
     {
         List<Timeslot> timeslots = timeslotService.getAllTimeslots();
@@ -41,6 +42,7 @@ public class TimeslotController
     }
 
     @GetMapping(value = {"/available/{startDate}/{endDate}", "/available/{startDate}/{endDate}/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<List<TimeslotDto>> getAvailableTimeslot(@PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate)
     {
         try {
@@ -55,6 +57,7 @@ public class TimeslotController
     }
 
     @PutMapping(value = {"/assignTech", "/assignTech/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<TimeslotDto> assignTechnicianToTimeslot(@RequestParam(name = "timeslotId") int timeslotId, @RequestParam(name = "technicianId") int technicianId)
     {
         Timeslot timeslot = timeslotService.getTimeslotById(timeslotId);
@@ -90,6 +93,7 @@ public class TimeslotController
     }
 
     @PostMapping(value = {"/create", "/create/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<TimeslotDto> createTimeslot(@RequestBody TimeslotDto timeslotDto)
     {
         if (timeslotDto == null)
@@ -111,6 +115,7 @@ public class TimeslotController
     }
 
     @DeleteMapping(value = {"/delete/{id}", "/delete/{id}/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<TimeslotDto> deleteTimeslot(@PathVariable("id") int timeslotID)
     {
         try

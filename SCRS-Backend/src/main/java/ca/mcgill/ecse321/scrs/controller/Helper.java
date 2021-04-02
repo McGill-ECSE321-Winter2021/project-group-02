@@ -105,7 +105,7 @@ public class Helper
     {
         if (technicians == null)
         {
-            throw new IllegalArgumentException("There is no such timeslot list!");
+            throw new IllegalArgumentException("There is no such technician list!");
         }
         ArrayList<TechnicianDto> technicianDtos = new ArrayList<>();
         for (Technician t: technicians)
@@ -149,5 +149,19 @@ public class Helper
         WorkspaceDto workspaceDto = new WorkspaceDto(workspace.getWorkspaceID(), workspace.getSpaceName());
         workspaceDto.setTimeslotsId(workspace.getAvailabilities());
         return workspaceDto;
+    }
+
+    public static List<WorkspaceDto> convertListToDto(List<Workspace> workspaces)
+    {
+        if (workspaces == null)
+        {
+            throw new IllegalArgumentException("There is no such workspace list!");
+        }
+        ArrayList<WorkspaceDto> workspaceDtos = new ArrayList<>();
+        for (Workspace w: workspaces)
+        {
+            workspaceDtos.add(convertToDto(w));
+        }
+        return workspaceDtos;
     }
 }
