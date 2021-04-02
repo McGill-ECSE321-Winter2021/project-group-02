@@ -96,14 +96,14 @@
 
     data() { return {
       selectAppointmentType: "",
-      inputService: undefined,
-      inputNote: undefined,
+      inputService: "",
+      inputNote: "",
       assistantBooking: false,
-      inputEmail: undefined,
+      inputEmail: "",
       customerId: this.$store.state.user,
       timeslots: [],
       selectTimeslotId: [],
-      errorMsg: undefined
+      errorMsg: ""
     };},
 
     methods: {
@@ -139,6 +139,7 @@
       timeslotSelect(timeslot) {
         if (this.selectTimeslotId.length !== 0) {
           let previousTimeslot = document.getElementById(this.selectTimeslotId[0]);
+          // passing an empty string will revert the css to its default value
           previousTimeslot.style.backgroundColor = "";
           previousTimeslot.style.color = "";
           previousTimeslot.style.borderColor = "";
@@ -195,9 +196,9 @@
     },
 
     async mounted() {
-      if (this.$store.state.user !== "assistant" && this.$store.state.user !== "customer") this.$router.push("/dashboard");
+      if (this.$store.state.userType !== "assistant" && this.$store.state.userType !== "customer") this.$router.push("/dashboard");
 
-      if (this.$store.state.user === "assistant") {
+      if (this.$store.state.userType === "assistant") {
         this.customerId = -1;
         this.assistantBooking = true;
       }

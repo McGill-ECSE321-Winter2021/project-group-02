@@ -110,9 +110,7 @@ public class TimeslotController
         {
             return new ResponseEntity<>(new TimeslotDto(), HttpStatus.EXPECTATION_FAILED);
         }
-
     }
-
 
     @DeleteMapping(value = {"/delete/{id}", "/delete/{id}/"})
     @CrossOrigin(origins = "*")
