@@ -63,7 +63,6 @@ export default {
     },
   },
   async mounted() {
-    console.log(this.$store.state.user);
     try {
       let now = new Date(Date.now());
       let nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
@@ -77,7 +76,6 @@ export default {
       );
       if (scheduleResponse.status !== 200) return;
       this.appointments = scheduleResponse.data;
-      console.log(this.appointments);
     } catch (error) {
       console.log(error);
     }
@@ -89,7 +87,6 @@ export default {
         );
         if (workspaceResponse.status !== 200) return;
         let workspaces = workspaceResponse.data;
-        console.log(workspaces);
         for (let i = 0; i < this.appointments.length; i++) {
           for (let j = 0; j < workspaces.length; j++) {
             if (this.appointments[i].workspaceId === workspaces[j].workspaceId)
