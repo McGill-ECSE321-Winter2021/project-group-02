@@ -3,7 +3,7 @@
     <div class="customer-dashboard-container" id="a">
       <p class="dashboard-title">Appointments</p>
       <div class="customer-dashboard-inside-container">
-        <button class="dashboard-button">Create Appointment</button>
+        <button class="dashboard-button" @click="bookAppointment()">Create Appointment</button>
         <div class="dashboard-spacer"></div>
         <button class="dashboard-button">Modify Appointment</button>
       </div>
@@ -41,9 +41,17 @@ export default {
   methods: {
     modifyAccount: function() {
       document.getElementById("customer-dashboard").style.opacity = 0;
+      document.getElementById("logout-button").style.opacity = 0;
       let vm = this;
       setTimeout(function() {
         vm.$router.push("/myaccount");
+      }, 300);
+    },
+    bookAppointment: function() {
+      document.getElementById("customer-dashboard").style.opacity = 0;
+      let vm = this;
+      setTimeout(function() {
+        vm.$router.push("/bookappointment");
       }, 300);
     },
   },

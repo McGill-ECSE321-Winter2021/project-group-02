@@ -172,10 +172,9 @@ const testGetAvailableTimeslots = async () => {
   // ========== get available timeslots ==========
   try {
     let startDate = timeslotToCheck.startDate;
-    let endDate = timeslotToCheck.startDate;
 
     let availableTimeslotResponse = await axios.get(
-      backend_address + `/api/timeslot/available/${startDate}/${endDate}`
+      backend_address + `/api/timeslot/available/${startDate}`
     );
 
     if (

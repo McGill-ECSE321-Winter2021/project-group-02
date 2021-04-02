@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static ca.mcgill.ecse321.scrs.controller.Helper.*;
@@ -27,6 +28,7 @@ public class WorkspaceController
     SCRSUserService scrsUserService;
 
     @PostMapping(value = {"/create", "/create/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<WorkspaceDto> createWorkspace(@RequestParam(value = "name") String workspaceName)
     {
         if (workspaceName == null)
@@ -41,6 +43,7 @@ public class WorkspaceController
     }
 
     @DeleteMapping(value = {"/delete/{id}", "/delete/{id}/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<WorkspaceDto> deleteWorkspace(@PathVariable("id") int workspaceId)
     {
         try {
@@ -56,6 +59,7 @@ public class WorkspaceController
     }
 
     @GetMapping(value = {"/availabilities/{id}","/availabilities/{id}/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<List<TimeslotDto>> getAllAvailableTimeslotsByWorkspace(@PathVariable("id") int workspaceId)
     {
         try {
@@ -65,6 +69,19 @@ public class WorkspaceController
                 return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             return new ResponseEntity<>(convertToDto(timeslotService.getTimeslotsByWorkspace(workspace)),HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    @GetMapping(value = {"/getall","/getall/"})
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<List<WorkspaceDto>> getAll()
+    {
+        try {
+            ArrayList<Workspace> workspaces = new ArrayList<>(workspaceService.getAllWorkspaces());
+            return new ResponseEntity<>(convertListToDto(workspaces),HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

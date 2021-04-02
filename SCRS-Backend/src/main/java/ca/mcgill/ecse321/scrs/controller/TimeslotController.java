@@ -32,29 +32,32 @@ public class TimeslotController
     @Autowired
     WorkspaceService workspaceService;
 
-
     @GetMapping(value = {"/getTimeslots", "/getTimeslots/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<List<TimeslotDto>> getTimeslots()
     {
         List<Timeslot> timeslots = timeslotService.getAllTimeslots();
         return new ResponseEntity<>(convertToDto(timeslots), HttpStatus.OK);
     }
 
-    @GetMapping(value = {"/available/{startDate}/{endDate}", "/available/{startDate}/{endDate}/"})
-    public ResponseEntity<List<TimeslotDto>> getAvailableTimeslot(@PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate)
+    @GetMapping(value = {"/available/{startDate}", "/available/{startDate}/"})
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<List<TimeslotDto>> getAvailableTimeslot(@PathVariable("startDate") String startDate)
     {
-        try {
+        try
+        {
             Date start = Date.valueOf(startDate);
-            Date end = Date.valueOf(endDate);
 
-            List<Timeslot> availableTimeslots = timeslotService.getAvailableTimeslots(start, end);
+            List<Timeslot> availableTimeslots = timeslotService.getAvailableTimeslots(start);
             return new ResponseEntity<>(convertToDto(availableTimeslots), HttpStatus.OK);
-        } catch (Exception e) {
-            return  new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e)
+        {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping(value = {"/assignTech", "/assignTech/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<TimeslotDto> assignTechnicianToTimeslot(@RequestParam(name = "timeslotId") int timeslotId, @RequestParam(name = "technicianId") int technicianId)
     {
         Timeslot timeslot = timeslotService.getTimeslotById(timeslotId);
@@ -90,15 +93,14 @@ public class TimeslotController
     }
 
     @PostMapping(value = {"/create", "/create/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<TimeslotDto> createTimeslot(@RequestBody TimeslotDto timeslotDto)
     {
         if (timeslotDto == null)
         {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
         Workspace workspace = workspaceService.getWorkspaceById(timeslotDto.getWorkspaceId());
-
         try
         {
             Timeslot newTimeslot = timeslotService.createTimeslot(timeslotDto.getStartDate(), timeslotDto.getEndDate(), timeslotDto.getStartTime(), timeslotDto.getEndTime(), workspace);
@@ -111,6 +113,7 @@ public class TimeslotController
     }
 
     @DeleteMapping(value = {"/delete/{id}", "/delete/{id}/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<TimeslotDto> deleteTimeslot(@PathVariable("id") int timeslotID)
     {
         try

@@ -79,7 +79,7 @@ public class TimeslotService
     {
         checkDateValidity(startDate, endDate);
         if (technician == null || technicianRepository.findByScrsUserId(technician.getScrsUserId()) == null) throw new IllegalArgumentException("Invalid technician.");
-        List<Timeslot> timeslotsInPeriod = timeslotRepository.findAllByStartDateGreaterThanEqualAndStartDateLessThanEqualOrderByStartDate(startDate,endDate);
+        List<Timeslot> timeslotsInPeriod = timeslotRepository.findAllByTechniciansAndStartDateGreaterThanEqualAndAndStartDateLessThanEqualOrderByStartDate(technician, startDate,endDate);
         List<Timeslot> technicianTimeslots= toList(timeslotRepository.findByTechnicians(technician));
         technicianTimeslots.retainAll(timeslotsInPeriod);
         return timeslotsInPeriod;
@@ -93,10 +93,9 @@ public class TimeslotService
     }
 
     @Transactional
-    public List<Timeslot> getAvailableTimeslots(Date startDate, Date endDate)
+    public List<Timeslot> getAvailableTimeslots(Date startDate)
     {
-        checkDateValidity(startDate, endDate);
-        List<Timeslot> timeslotsInPeriod = timeslotRepository.findAllByStartDateGreaterThanEqualAndStartDateLessThanEqualOrderByStartDate(startDate, endDate);
+        List<Timeslot> timeslotsInPeriod = timeslotRepository.findAllByStartDateGreaterThanEqualOrderByStartDate(startDate);
         timeslotsInPeriod.removeIf(timeslot -> appointmentRepository.existsByTimeslots(timeslot));
         return timeslotsInPeriod;
     }
