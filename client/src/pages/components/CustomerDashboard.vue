@@ -41,6 +41,7 @@ export default {
   methods: {
     modifyAccount: function() {
       document.getElementById("customer-dashboard").style.opacity = 0;
+      document.getElementById("logout-button").style.opacity = 0;
       let vm = this;
       setTimeout(function() {
         vm.$router.push("/myaccount");

@@ -24,6 +24,7 @@ export default {
   methods: {
     viewSchedule: function() {
       document.getElementById("technician-dashboard").style.opacity = 0;
+      document.getElementById("logout-button").style.opacity = 0;
       let vm = this;
       setTimeout(function() {
         vm.$router.push("/viewtechnicianschedule");
@@ -31,6 +32,7 @@ export default {
     },
     modifyAccount: function() {
       document.getElementById("technician-dashboard").style.opacity = 0;
+      document.getElementById("logout-button").style.opacity = 0;
       let vm = this;
       setTimeout(function() {
         vm.$router.push("/myaccount");
