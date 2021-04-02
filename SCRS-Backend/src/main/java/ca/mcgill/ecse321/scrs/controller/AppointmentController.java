@@ -2,6 +2,7 @@ package ca.mcgill.ecse321.scrs.controller;
 
 import ca.mcgill.ecse321.scrs.dto.AppointmentDto;
 import ca.mcgill.ecse321.scrs.dto.TimeslotDto;
+import ca.mcgill.ecse321.scrs.dto.WorkspaceDto;
 import ca.mcgill.ecse321.scrs.model.Appointment;
 import ca.mcgill.ecse321.scrs.model.Customer;
 import ca.mcgill.ecse321.scrs.model.Timeslot;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,22 +40,38 @@ public class AppointmentController
     @GetMapping(path = {"/getall/{id}", "/getall/{id}/"})
     @CrossOrigin(origins = "*")
     public ResponseEntity<List<AppointmentDto>> getAllAppointments(@PathVariable String id) {
-        if(id == null)return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
-        int ID = Integer.parseInt(id);
+        // if(id == null)return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        // int ID = Integer.parseInt(id);
 
-        Customer customer = customerService.getCustomerByID(ID);
-        if(customer == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        // Customer customer = customerService.getCustomerByID(ID);
+        // if(customer == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
 
-        List<Appointment> list = appointmentService.getAppointmentsByCustomer(customer);
-        List<AppointmentDto> dtoList = new ArrayList<>();
+        // List<Appointment> list = appointmentService.getAppointmentsByCustomer(customer);
+        // List<AppointmentDto> dtoList = new ArrayList<>();
 
-        if(list != null){
-            for (Appointment appointment : list)
-            {
-                dtoList.add(convertToDto(appointment));
-            }
-        }
+        // if(list != null){
+        //     for (Appointment appointment : list)
+        //     {
+        //         dtoList.add(convertToDto(appointment));
+        //     }
+        // }
+        // return new ResponseEntity<>(dtoList, HttpStatus.OK);
+
+        
+        ArrayList<AppointmentDto> dtoList = new ArrayList<>();
+
+// int id, String type, String service, String note, int customerId, ArrayList<Integer> timeslotsId)
+
+        ArrayList<Integer> array=new ArrayList<Integer>(10);
+        array.add(1);
+        array.add(2);
+
+
+        dtoList.add(new AppointmentDto(3, Appointment.AppointmentType.CarWash.toString(),"service","note",8,array));
+
+        System.out.println("feet");
         return new ResponseEntity<>(dtoList, HttpStatus.OK);
+
     }
 
     @GetMapping(path = {"/getById/{id}", "/getById/{id}/"})
@@ -190,4 +208,48 @@ public class AppointmentController
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+ @GetMapping(value = {"/getStartAndEnd/{id}","/getStartAndEnd/{id}/"})
+    public ResponseEntity<TimeslotDto> getAppointmentStartAndEnd(@PathVariable("id") int appointmentId)
+    {
+        try {
+            Appointment appointment= appointmentService.getAppointmentById(appointmentId);
+            if(appointment==null)
+            {
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        ArrayList<Timeslot> timeslots = new ArrayList<>(appointmentService.getAppointmentById(appointmentId).getTimeslots());
+
+        if (timeslots.size() == 0) return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        
+        Date minD= timeslots.get(0).getStartDate();
+        Date maxD= timeslots.get(0).getEndDate();
+
+        Time minT= timeslots.get(0).getStartTime();
+        Time maxT = timeslots.get(0).getEndTime();
+
+        for (Timeslot t : timeslots) {
+        if(t.getEndDate().after(maxD)){
+            maxD = t.getEndDate();
+            maxT = t.getEndTime();
+
+        } else if (t.getEndDate().equals(maxD)) {
+            if(t.getEndTime().after(maxT)) maxT = t.getEndTime();
+        } else if (t.getStartDate().before(minD)){
+            minD = t.getStartDate();
+            minT = t.getStartTime();
+        } else if (t.getStartDate().equals(minD)) {
+            if (t.getStartTime().before(minT)) minT = t.getStartTime();
+        }
+        }
+            TimeslotDto output = new TimeslotDto(-1,minD,maxD,minT,maxT,-1);
+
+            return new ResponseEntity<>(output, HttpStatus.OK); //B-baka timeslotDto only for dates UwO
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+    
 }

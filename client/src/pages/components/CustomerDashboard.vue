@@ -8,7 +8,12 @@
         <button class="dashboard-button">Modify Appointment</button>
       </div>
       <div class="customer-dashboard-inside-container">
-        <button class="dashboard-button">View All Appointments</button>
+
+        <button 
+          class="dashboard-button" 
+          v-on:click="viewBookedAppt()">View All Appointments
+        </button>
+
         <div class="dashboard-spacer"></div>
         <button class="dashboard-button">View Notifications</button>
       </div>
@@ -53,6 +58,15 @@ export default {
       setTimeout(function() {
         vm.$router.push("/bookappointment");
       }, 300);
+
+    },
+    viewBookedAppt:function(){
+      let t = this;
+
+      setTimeout(function(){
+        t.$router.push("/viewbookedappointments");
+      }, 300);
+
     },
   },
 };
