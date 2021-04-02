@@ -75,7 +75,7 @@ public class WorkspaceController
 
     }
 
-    @GetMapping(value = {"/getAll","/getAll/"})
+    @GetMapping(value = {"/getall","/getall/"})
     @CrossOrigin(origins = "*")
     public ResponseEntity<List<WorkspaceDto>> getAll()
     {
