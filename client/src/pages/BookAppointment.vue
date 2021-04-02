@@ -55,8 +55,19 @@
 
           <div class="form-container">
             <label class="form-text">Timeslot:</label>
-            <div id="timeslot-container"/>
+            <div id="timeslot-container">
+              <div class="timeslot"
+                   v-for="(timeslot, index) in timeslots"
+                   :key="index"
+                   :id="timeslot.timeslotId"
+                   @click="timeslotSelect(timeslot)"
+              >
+                <label class="form-text">Date: {{timeslot.startDate}}</label>
+                <label class="form-text">Time: {{timeslot.startTime.slice(0, 5)}} to {{timeslot.endTime.slice(0, 5)}}</label>
+              </div>
+            </div>
           </div>
+
         </div>
 
         <label id="form-error" class="form-text"
@@ -125,6 +136,20 @@
         }
       },
 
+      timeslotSelect(timeslot) {
+        if (this.selectTimeslotId.length !== 0) {
+          let previousTimeslot = document.getElementById(this.selectTimeslotId[0]);
+          previousTimeslot.style.backgroundColor = "";
+          previousTimeslot.style.color = "";
+          previousTimeslot.style.borderColor = "";
+        }
+        this.selectTimeslotId = [timeslot.timeslotId];
+        let timeslotComponent = document.getElementById(this.selectTimeslotId[0]);
+        timeslotComponent.style.backgroundColor = "rgb(175, 122, 65)"
+        timeslotComponent.style.color = "whitesmoke";
+        timeslotComponent.style.borderColor = "rgb(75, 75, 75)";
+      },
+
       async bookAppointment() {
         if (this.selectAppointmentType === "") {
           this.errorMsg = "Appointment service is not selected"
@@ -175,13 +200,21 @@
       }
 
       try {
+        let today = new Date();
+        today = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`
 
-        let response = await axios.get(proxy.proxy + `/api/timeslot/available/`);
+        let response = await axios.get(proxy.proxy + "/api/timeslot/available/" + today);
         this.timeslots = response.data;
+        console.log(`${this.timeslots}`)
       } catch (error) {
         console.error(error);
       }
       */
+
+      this.timeslots = [
+          {timeslotId: 1, startDate: "2021-04-02", endDate: "2021-04-02", startTime: "14:55:48", endTime: "14:55:48", workspaceId: 1},
+          {timeslotId: 2, startDate: "2021-04-03", endDate: "2021-04-03", startTime: "14:55:48", endTime: "14:55:48", workspaceId: 2}
+      ];
     }
   }
 </script>
@@ -189,7 +222,8 @@
 <style scoped>
   #book-appointment,
   #book-appointment-container,
-  #appointment-form {
+  #appointment-form,
+  #timeslot-container {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -265,8 +299,9 @@
   #timeslot-container {
     background-color: rgb(225, 225, 225);
     width: 30vw;
-    height: 30vh;
+    height: 40vh;
     overflow-y: scroll;
+    border-radius: 2vh
   }
 
   #form-service,
@@ -282,9 +317,30 @@
   #form-note {
     background-color: rgb(212, 211, 211);
     width: 30vw;
-    height: 10vh;
+    height: 15vh;
     padding: 1vh;
     border-radius: 2vh
+  }
+
+  .timeslot {
+    all: unset;
+    width: 27vw;
+    margin-bottom: 1vh;
+    border-radius: 2vh;
+    background-color: rgb(235, 164, 89);
+    border: 0.5vh solid rgb(235, 164, 89);
+    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+    font-size: 3vh;
+    font-weight: 600;
+    color: rgb(75, 75, 75);
+    text-align: center;
+    animation: changeOpacity, 0.3s;
+    transition: 0.3s;
+  }
+  .timeslot:hover {
+    background-color: rgb(175, 122, 65);
+    color: whitesmoke;
+    border-color: rgb(75, 75, 75);
   }
 
   .form-button {

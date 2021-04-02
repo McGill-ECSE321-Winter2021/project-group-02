@@ -93,10 +93,9 @@ public class TimeslotService
     }
 
     @Transactional
-    public List<Timeslot> getAvailableTimeslots(Date startDate, Date endDate)
+    public List<Timeslot> getAvailableTimeslots(Date startDate)
     {
-        checkDateValidity(startDate, endDate);
-        List<Timeslot> timeslotsInPeriod = timeslotRepository.findAllByStartDateGreaterThanEqualAndStartDateLessThanEqualOrderByStartDate(startDate, endDate);
+        List<Timeslot> timeslotsInPeriod = timeslotRepository.findAllByStartDateGreaterThanEqualOrderByStartDate(startDate);
         timeslotsInPeriod.removeIf(timeslot -> appointmentRepository.existsByTimeslots(timeslot));
         return timeslotsInPeriod;
     }
