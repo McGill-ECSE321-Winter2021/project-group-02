@@ -164,7 +164,7 @@
           return;
         }
         if (this.selectTimeslotId.length === 0) {
-          this.errorMsg = "Select at least one availability for the appointment"
+          this.errorMsg = "Select an availability for the appointment"
           return;
         }
         try {
@@ -175,6 +175,9 @@
             customerId: this.customerId,
             timeslotsId: this.selectTimeslotId,
           };
+          if(this.selectAppointmentType !== "other") {
+            bookAppointmentData.service = "";
+          }
 
           let bookingResult = await axios.post(
               proxy.proxy + "/api/appointment/book",
@@ -192,7 +195,7 @@
     },
 
     async mounted() {
-      /*if (this.$store.state.user !== "assistant" && this.$store.state.user !== "customer") this.$router.push("/dashboard");
+      if (this.$store.state.user !== "assistant" && this.$store.state.user !== "customer") this.$router.push("/dashboard");
 
       if (this.$store.state.user === "assistant") {
         this.customerId = -1;
@@ -205,16 +208,14 @@
 
         let response = await axios.get(proxy.proxy + "/api/timeslot/available/" + today);
         this.timeslots = response.data;
-        console.log(`${this.timeslots}`)
+
+        if(this.timeslots.length === 0) {
+          this.errorMsg = "There are no availabilities for appointments. Please try again later"
+        }
       } catch (error) {
         console.error(error);
+        this.errorMsg = "Something went wrong fetching available timeslots. Please try again later"
       }
-      */
-
-      this.timeslots = [
-          {timeslotId: 1, startDate: "2021-04-02", endDate: "2021-04-02", startTime: "14:55:48", endTime: "14:55:48", workspaceId: 1},
-          {timeslotId: 2, startDate: "2021-04-03", endDate: "2021-04-03", startTime: "14:55:48", endTime: "14:55:48", workspaceId: 2}
-      ];
     }
   }
 </script>
@@ -301,7 +302,7 @@
     width: 30vw;
     height: 40vh;
     overflow-y: scroll;
-    border-radius: 2vh
+    border-radius: 2vh;
   }
 
   #form-service,
@@ -325,10 +326,9 @@
   .timeslot {
     all: unset;
     width: 27vw;
-    margin-bottom: 1vh;
     border-radius: 2vh;
     background-color: rgb(235, 164, 89);
-    border: 0.5vh solid rgb(235, 164, 89);
+    border: 0.5vh solid rgb(225, 225, 225);
     font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
     font-size: 3vh;
     font-weight: 600;
