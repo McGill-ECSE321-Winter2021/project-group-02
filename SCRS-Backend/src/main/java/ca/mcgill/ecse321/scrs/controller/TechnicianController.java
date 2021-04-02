@@ -135,10 +135,13 @@ public class TechnicianController
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        /*
         if (!isAdmin(scrsUserService.getSCRSUserByID(technicianId))) //does not have permission to view.
         {
            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
+
+         */
 
         Technician technician = technicianService.getTechnicianByID(technicianId);
         if (technician == null)
