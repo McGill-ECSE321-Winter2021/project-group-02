@@ -194,7 +194,10 @@ export default {
         postData.service = this.service;
         postData.rating = this.rating;
         postData.feedback = this.feedback;
-        postData.timeslots = this.timeslotsId;
+        if (this.selectTimeslotId.length === 0)
+        {
+          postData.timeslots = this.selectTimeslotId[0];
+        }
 
         let response = await axios.post(
             proxy.proxy + `/api/appointment/modifyAppointment`,
