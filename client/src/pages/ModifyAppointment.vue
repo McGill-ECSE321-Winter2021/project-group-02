@@ -461,6 +461,27 @@ export default {
   flex-direction: column;
 }
 
+.timeslot {
+  all: unset;
+  border-radius: 2vh;
+  background-color: rgb(235, 164, 89);
+  border: 0.5vh solid rgb(225, 225, 225);
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  font-size: 3vh;
+  font-weight: 600;
+  color: rgb(75, 75, 75);
+  text-align: center;
+  animation: changeOpacity, 0.3s;
+  transition: 0.3s;
+  text-align: center;
+  padding: 2vh;
+}
+.timeslot:hover {
+  background-color: rgb(175, 122, 65);
+  color: whitesmoke;
+  border-color: rgb(75, 75, 75);
+}
+
 @keyframes changeOpacity {
   from {
     opacity: 0;
