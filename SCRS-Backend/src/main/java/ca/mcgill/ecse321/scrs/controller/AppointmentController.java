@@ -36,6 +36,7 @@ public class AppointmentController
 
 
     @GetMapping(path = {"/getall/{id}", "/getall/{id}/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<List<AppointmentDto>> getAllAppointments(@PathVariable String id) {
         if(id == null)return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         int ID = Integer.parseInt(id);
@@ -56,6 +57,7 @@ public class AppointmentController
     }
 
     @GetMapping(path = {"/getById/{id}", "/getById/{id}/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<AppointmentDto> getAppointmentById(@PathVariable String id)
     {
         if(id == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
@@ -71,6 +73,7 @@ public class AppointmentController
     }
 
     @GetMapping(path = {"/notifications/{id}", "/notifications/{id}/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<List<AppointmentDto>> notifications(@PathVariable String id) {
         if(id == null)return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         int ID = Integer.parseInt(id);
@@ -112,6 +115,7 @@ public class AppointmentController
     }
 
     @PostMapping(value = {"/book", "/book/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<AppointmentDto> bookAppointment(@RequestBody AppointmentDto appointmentDto)
     {
         if (appointmentDto == null)
@@ -135,6 +139,7 @@ public class AppointmentController
     }
 
     @PutMapping(value = {"/pay", "/pay/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<AppointmentDto> payAppointment(@RequestParam(name = "appointmentId") int appointmentId)
     {
         try
@@ -152,6 +157,7 @@ public class AppointmentController
     }
 
     @PutMapping(value = {"/rate", "/rate/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<AppointmentDto> rateAppointment(@RequestParam(name = "appointmentId") int appointmentId, @RequestParam(name = "rating") int rating)
     {
         if (rating > 10 || rating < 0)
@@ -169,6 +175,7 @@ public class AppointmentController
     }
 
     @PutMapping(value = {"/modifyAppointment", "/modifyAppointment/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<AppointmentDto> modifyAppointment(@RequestBody AppointmentDto appointmentDto)
     {
         if (appointmentDto == null)
