@@ -176,27 +176,34 @@
 			},
 		},
 		async mounted() {
-			if (this.$store.state.user === -1) this.$router.push("/");
-			let appointmentResponse = await axios.get(
-				proxy.proxy +
-					`/api/customer/getByID/${this.$store.state.apptIdToModify}`
-			);
-			if (appointmentResponse.status === 200) {
+			try {
+				if (this.$store.state.user === -1) this.$router.push("/");
+				let appointmentResponse = await axios.get(
+					proxy.proxy +
+						`/api/customer/getByID/${this.$store.state.apptIdToModify}`
+				);
 				let apptTime = await axios.get(
 					proxy.proxy +
-						`/api/appointment/getStartAndEnd/${appointmentResponse.data.appointmentId}`
-				);
-				let customer = await axios.get(
-					proxy.proxy +
-						`/api/customer/getById/${appointmentResponse.data.customerId}`
+						`/api/appointment/getStartAndEnd/${this.$store.state.apptIdToModify}`
 				);
 				this.startTime = apptTime.data.startTime;
 				this.endTime = apptTime.data.endTime;
 				this.startDate = apptTime.data.startDate;
-				this.customerEmail = customer.data.customerEmail;
-			} else {
+				if (appointmentResponse.status === 200) {
+					let customer = await axios.get(
+						proxy.proxy +
+							`/api/customer/getById/${appointmentResponse.data.customerId}`
+					);
+					this.customerEmail = customer.data.customerEmail;
+				} else {
+					document.getElementById("payment-error").innerHTML =
+						"Could not find appointment";
+					document.getElementById("payment-error").style.opacity = 1;
+				}
+			} catch (error) {
+				console.error(error);
 				document.getElementById("payment-error").innerHTML =
-					"Could not find appointment";
+					"An error occurred, please try refreshing the page.";
 				document.getElementById("payment-error").style.opacity = 1;
 			}
 		},
