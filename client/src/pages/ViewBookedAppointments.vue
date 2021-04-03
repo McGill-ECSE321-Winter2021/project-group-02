@@ -1,52 +1,52 @@
 <template>
   <div class="view-booked-appointments">
     <div id="booked-appointments-container">
-        
-<!-- Add No Appointments as default -->
+      <!-- <label class="form-text">Appointments:</label><br> -->
 
-        <ul id="list-of-appointments">
-        <li v-for="appointment in appointments" :key="appointment.appointmentId">
-            
-            <div class="myaccount-spacer"></div>
+    <div class="myaccount-spacer"></div>
 
-            <div class="assignement-slot">
-
-                <p>Date:</p>
-                <br>
-                <p>Date:</p> 
-                <br>
-            <!-- Appointment Type:  -->
-            {{ appointment.appointmentType }}
-            <br/>
-            <p v-if="appointment.paymentStatus">Paid: Yes</p>
-            <p v-else>Paid: No</p>
+      <div id="appointment-containter">
+        <div class="appointment"
+          v-for="(appointment,index) in appointments"
+          :key="index"
+          :id="appointment.appointmentId"
+        >
+        <label class="form-text">Appointment Time: {{timeslots.startDate}}-{{timeslots.endDate}} </label><br>
+        <label class="form-text">From {{timeslots.startTime}} to {{timeslots.endTime}}</label><br>
+        <label class="form-text">Appointment Type: {{convertForDisplay(appointment.appointmentType)}}</label><br>
+        <label class="form-text"></label><br>
 
         <div class="myappointments-button-container">
-            <div class="vertical-center">
-			<input
-				class="myappointments-button"
-				type="button"
-				value="Rate"
-				v-on:click="rate(appointmentId)"
-				/>
-            <input
-				class="myappointments-button"
-				type="button"
-				value="Pay"
-				v-on:click="pay(appointmentId)"
-				/>
-                
-            <input
-				class="myappointments-button"
-				type="button"
-				value="Change"
-				v-on:click="change(appointmentId)"
-				/>
-            </div>
-</div>
+        
+          <input
+
+          v-if="appointment.paymentStatus==false"
+          class="myappointments-button"
+          type="button"
+          value="Pay"
+          v-on:click="pay(appointmentId)"
+          />  
+
+          <input
+          class="myappointments-button"
+          type="button"
+          value="Modify"
+          v-on:click="modify(appointmentId)"
+          />
+
+          <input
+          class="myappointments-button"
+          type="button"
+          value="Rate"
+          v-on:click="rate(appointmentId)"
+          />
+    <!-- <div class="myaccount-spacer"></div> -->
+
         </div>
-    </li>
-        </ul>
+
+        </div>
+
+      </div>
 
       <div id="dashboard-change-opacity">
         
@@ -60,7 +60,7 @@
       </div>
     </div>
 
-    </div>
+  </div>
 
 </template>
 
@@ -69,7 +69,7 @@
 	import proxy from "../constants.js";
 
 export default {
-    name: "ViewBookedAppointments",
+    name: "ViewBookedAppointmentsAssistant",
     props: {
     msg: String,
     },
@@ -89,24 +89,48 @@ export default {
         console.log(appointmentId) //not reactive??
 
     },
-    change: function(appointmentId) {   
+    modify: function(appointmentId) {   
         console.log(appointmentId)
    
     },
 
-backViewDash: function() {
-				let t = this;
-				setTimeout(function() {
-					t.$router.push("/dashboard");
-				}, 300);
-			},
+//CarWash, Maintenance, OilChange, TireChange, Towing, Inspection, RoadsideAssistance, Checkup, Other
+    convertForDisplay: function(type){
+      switch (type) {
+          case "CarWash":
+            return "Car Wash";
+          case "Maintenance":
+            return "Maintenance";
+          case "OilChange":
+            return "Oil Change";
+          case "TireChange":
+            return "Tire Change";
+          case "Towing":
+            return "Towing";
+          case "Inspection":
+            return "Inspection";
+          case "RoadsideAssistance":
+            return "Roadside Assistance";
+          case "Checkup":
+            return "Checkup";
+          default:
+            return "Other";
+      }
+    },
+
+    backViewDash: function() {
+      let t = this;
+      setTimeout(function() {
+        t.$router.push("/dashboard");
+      }, 300);
+      },
 
     },
 
   async mounted() {
     try {
       
-      let appointmentResponse = axios.get(
+      let appointmentResponse = await axios.get(
         proxy.proxy+`/api/appointment/getall/${this.$store.state.user}`
       );
     console.log(appointmentResponse);
@@ -119,20 +143,20 @@ backViewDash: function() {
     }
 
 
+    var i;
+    for(i=0;i<this.appointments.length; i++ ){
+      try {
 
+      let timeslotResponse = await axios.get(
+        proxy.proxy+`/api/appointment/getStartAndEnd/${this.appointments[i].appointmentId}`
+      );
+      if (timeslotResponse.status !== 200) return;
+      this.timeslots = timeslotResponse.data;
 
-    // try {
-
-    //   let timeslotResponse = axios.get(
-    //     proxy.proxy+`/api/appointment/getStartAndEnd/${this.appointments[0].appointmentId}`
-    //   );
-    //   if (timeslotResponse.status !== 200) return;
-    //   this.timeslots = timeslotResponse.data;
-
-    // } catch (error) {
-    //   console.log(`${error}`);
-    // }
-    
+    } catch (error) {
+      console.log(`${error}`);
+    }
+    }
 
 
   },
@@ -142,38 +166,6 @@ backViewDash: function() {
 
 <style scoped>
 
-#list-of-appointments{
-    background-color: wheat;
-}
-
-.assignement-slot{
-    width: 800px;
-    text-align: left;
-    margin-right: auto;
-    margin-left: auto;
-    font-size: 2.5vh;
-		font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
-		font-weight: 600;
-		color: rgb(75, 75, 75);
-        background:whitesmoke;
-    padding: 30px;
-    border-radius: 5vh;
-}
-
-ul {
-    list-style-type: none;
-}
-
-#booked-appointments-container {
-  display: grid;
-  grid-template-columns: 40vw 40vw;
-  height: 80vh;
-  width: 80vw;
-  border-radius: 5vh;
-  background-color: whitesmoke;
-  transition: 0.3s;
-}
-/* bg */
 .view-booked-appointments {
   height: 110vh;
   width: 100vw;
@@ -182,87 +174,90 @@ ul {
   background-position: 0 0, 7.5vh 7.5vh;
   background-size: 15vh 15vh;
   background-color: rgb(238, 207, 173);
+
+  display: flex;
+/* align-items: center; */
+/* justify-content: center; */
+flex-direction: column;
 }
 
-.myappointments-button-container{
-    height: 300px;
-  position: relative;
-  border: 0.5vh solid rgb(235, 164, 89);
-  
+#booked-appointments-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
-.myaccount-spacer {
-		height: 1vw;
-	}
+.appointment{
 
-.vertical-center {
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
+
+  text-align:center;
 }
 
 
-    .view-booked-appointments {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    }
+#appointment-containter{
+  display: flex;
+  background-color: whitesmoke;
+  width:600px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  justify-content: center;
 
-    .appointment {
-		display: grid;
-		grid-template-columns: 40vw 40vw;
-		grid-template-rows: 40vh 40vh;
-		height: 80vh;
-		width: 80vw;
-		border-radius: 5vh;
-		background-color: whitesmoke;
-		transition: 0.3s;
-	}
+  border-radius: 5vh;
+  padding:10px;
+}
 
-	.appointment-container {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		flex-direction: column;
-	}
+.myaccount-spacer{
+  height: 1vw;
+}
 
-	.appointment-inside-container {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		flex-direction: row;
-	}
+/* Text */
 
-	.myappointments-button {
-		all: unset;
-        display: flex;
-		align-items: center;
-		justify-content: center;
-		height: 5vh;
-		width: 12vw;
-		border-radius: 2vh;
-		padding: 0.1vh;
-		background-color: rgb(235, 164, 89);
-		margin-top: 1vh;
-		margin-bottom: 1vh;
-		transition: 0.3s;
-		font-size: 3vh;
-		font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
-		font-weight: 600;
-		color: rgb(75, 75, 75);
-		border: 0.5vh solid rgb(235, 164, 89);
-        
-	}
+.form-text{
+  font-size: 3vh;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+	font-weight: 600;
+	color: rgb(75, 75, 75);
+}
 
-	.myappointments-button:hover {
+/* Buttons */
+
+/* .myappointments-button-container{
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+} */
+
+
+.myappointments-button{
+  all: unset;
+  /* display: flex; */
+  text-align: center;
+	align-items: center;
+	justify-content: center;
+	height: 4vh;
+	width: 8vw;
+  border-radius: 2vh;
+	padding: 0.1vh;
+	background-color: rgb(235, 164, 89);
+	margin-bottom: 1vh;
+  margin-left: 0.5vh;
+  margin-right: 0.5vh;
+	transition: 0.3s;
+	font-size: 3vh;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+	font-weight: 600;
+	color: rgb(75, 75, 75);
+	border: 0.5vh solid rgb(235, 164, 89);
+}
+
+.myappointments-button:hover {
 		background-color: rgb(175, 122, 65);
 		color: whitesmoke;
 		border-color: rgb(75, 75, 75);
 	}
+
 
 #back-button {
   all: unset;
@@ -295,7 +290,6 @@ ul {
   color: whitesmoke;
   border-color: rgb(75, 75, 75);
 }
-
 </style>
 
 

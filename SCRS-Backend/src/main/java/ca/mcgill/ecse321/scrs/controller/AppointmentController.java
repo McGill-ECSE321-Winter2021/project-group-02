@@ -66,10 +66,15 @@ public class AppointmentController
         array.add(1);
         array.add(2);
 
+        ArrayList<AppointmentDto> dtoList2 = new ArrayList<>();
+        ArrayList<Integer> array2=new ArrayList<Integer>(10);
+        array.add(3);
+        array.add(5);
 
         dtoList.add(new AppointmentDto(3, Appointment.AppointmentType.CarWash.toString(),"service","note",8,array));
 
-        System.out.println("feet");
+        dtoList.add(new AppointmentDto(4, Appointment.AppointmentType.Maintenance.toString(),"service","note2",8,array2));
+
         return new ResponseEntity<>(dtoList, HttpStatus.OK);
 
     }
@@ -210,41 +215,76 @@ public class AppointmentController
     }
 
  @GetMapping(value = {"/getStartAndEnd/{id}","/getStartAndEnd/{id}/"})
-    public ResponseEntity<TimeslotDto> getAppointmentStartAndEnd(@PathVariable("id") int appointmentId)
+ @CrossOrigin(origins = "*")
+ public ResponseEntity<TimeslotDto> getAppointmentStartAndEnd(@PathVariable("id") int appointmentId)
     {
         try {
-            Appointment appointment= appointmentService.getAppointmentById(appointmentId);
-            if(appointment==null)
-            {
-                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        ArrayList<Timeslot> timeslots = new ArrayList<>(appointmentService.getAppointmentById(appointmentId).getTimeslots());
+//            Appointment appointment= appointmentService.getAppointmentById(appointmentId);
+//
+//            if(appointment==null)
+//            {
+//                System.out.println("output1");
+//
+//                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//            }
+//        ArrayList<Timeslot> timeslots = new ArrayList<>(appointmentService.getAppointmentById(appointmentId).getTimeslots());
+//
+//        if (timeslots.size() == 0) {
+//            System.out.println("output2");
+//
+//            return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//
+//        Date minD= timeslots.get(0).getStartDate();
+//        Date maxD= timeslots.get(0).getEndDate();
+//
+//        Time minT= timeslots.get(0).getStartTime();
+//        Time maxT = timeslots.get(0).getEndTime();
+//
+//        for (Timeslot t : timeslots) {
+//        if(t.getEndDate().after(maxD)){
+//            maxD = t.getEndDate();
+//            maxT = t.getEndTime();
+//
+//        } else if (t.getEndDate().equals(maxD)) {
+//            if(t.getEndTime().after(maxT)) maxT = t.getEndTime();
+//        } else if (t.getStartDate().before(minD)){
+//            minD = t.getStartDate();
+//            minT = t.getStartTime();
+//        } else if (t.getStartDate().equals(minD)) {
+//            if (t.getStartTime().before(minT)) minT = t.getStartTime();
+//        }
+//        }
 
-        if (timeslots.size() == 0) return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        
-        Date minD= timeslots.get(0).getStartDate();
-        Date maxD= timeslots.get(0).getEndDate();
+//        ArrayList<AppointmentDto> dtoList = new ArrayList<>();
+//
+//// int id, String type, String service, String note, int customerId, ArrayList<Integer> timeslotsId)
+//
+//        ArrayList<Integer> array=new ArrayList<Integer>(10);
+//        array.add(1);
+//        array.add(2);
+//
+//
+//        dtoList.add(new AppointmentDto(3, Appointment.AppointmentType.CarWash.toString(),"service","note",8,array));
+//
+//        Date firstDate = new Date(2020,3,21);
+//        Date lastDate = new Date(2020,3,21);
+//
+//        Time firstTime = Time.valueOf("18:45:20");
+//        Time lastTime = Time.valueOf("19:05:20");
+//
+            long millis=System.currentTimeMillis();
+            Date firstDate =new java.sql.Date(millis);
+            Date lastDate =new java.sql.Date(millis);
 
-        Time minT= timeslots.get(0).getStartTime();
-        Time maxT = timeslots.get(0).getEndTime();
+            Time firstTime = Time.valueOf("18:45:20");
+            Time lastTime = Time.valueOf("19:05:20");
+        TimeslotDto send= new TimeslotDto(3,firstDate,lastDate,firstTime,lastTime,5);
 
-        for (Timeslot t : timeslots) {
-        if(t.getEndDate().after(maxD)){
-            maxD = t.getEndDate();
-            maxT = t.getEndTime();
-
-        } else if (t.getEndDate().equals(maxD)) {
-            if(t.getEndTime().after(maxT)) maxT = t.getEndTime();
-        } else if (t.getStartDate().before(minD)){
-            minD = t.getStartDate();
-            minT = t.getStartTime();
-        } else if (t.getStartDate().equals(minD)) {
-            if (t.getStartTime().before(minT)) minT = t.getStartTime();
-        }
-        }
-            TimeslotDto output = new TimeslotDto(-1,minD,maxD,minT,maxT,-1);
-
-            return new ResponseEntity<>(output, HttpStatus.OK); //B-baka timeslotDto only for dates UwO
+            //TimeslotDto output = new TimeslotDto(-1,minD,maxD,minT,maxT,-1);
+            System.out.println("output3");
+            //return new ResponseEntity<>(output, HttpStatus.OK); //B-baka timeslotDto only for dates UwO
+            return new ResponseEntity<>(send, HttpStatus.OK); //B-baka timeslotDto only for dates UwO
 
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
