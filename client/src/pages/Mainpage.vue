@@ -10,7 +10,7 @@
     <div id="mainpage-container">
       <div id="mainpage-select-user">
         <img id="mainpage-image" src="../assets/logo3.png" alt="logo" />
-        <p class="mainpage-title">Who are you?</p>
+        <p class="mainpage-title">Shrimp Car Repair Shop</p>
         <button class="mainpage-button" @click="customer()">Customer</button>
         <button class="mainpage-button" @click="technician()">
           Technician
@@ -144,7 +144,15 @@ export default {
   methods: {
     ...mapActions(["setUser"]),
     contactInfo: function() {
-      alert("Hey this is none of you're business!!!");
+      let contactInfo = `
+      ================ Contact Info =================
+
+      email: marwan.kanaan@gov.ca.edu.ru.university.ca
+      office hours: 1:30 to 3:30 PM on thursdays
+
+      ==========================================
+      `;
+      alert(contactInfo);
     },
     customer: function() {
       this.userType = "customer";
@@ -250,7 +258,7 @@ export default {
           document.getElementById("mainpage-container").style.height = "80vh";
           document.getElementById("mainpage-container").style.width = "80vw";
           document.getElementById("mainpage-login").style.opacity = 0;
-          document.getElementById("mmainpage-contact-info").style.opacity = 0;
+          document.getElementById("mainpage-contact-info").style.opacity = 0;
           const vm = this;
           setTimeout(function() {
             vm.$router.push("/dashboard");
