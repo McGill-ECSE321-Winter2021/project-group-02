@@ -26,7 +26,7 @@
 						class="payment-input"
 						id="payment-card"
 						v-model="cardNo"
-						pattern="\d*"
+						pattern="[0-9]*"
 						maxlength="19"
 						placeholder="Card Number"
 						type="tel"
@@ -39,7 +39,7 @@
 						type="tel"
 						placeholder="MM / YY"
 						pattern="\d*"
-						maxlength="7"
+						maxlength="5"
 					/>
 					<input
 						v-if="this.$store.state.userType === 'customer'"
@@ -49,9 +49,24 @@
 						type="tel"
 						placeholder="CVC"
 						pattern="\d*"
-						maxlength="4"
+						maxlength="3"
 					/>
 					<p id="payment-error">Invalid information</p>
+					<div class="payment-button-container">
+						<input
+							class="payment-button"
+							type="button"
+							value="Pay Via Paypal"
+							@click="payPal()"
+						/>
+						<div class="payment-spacer"></div>
+						<input
+							class="payment-button"
+							type="button"
+							value="Pay Via Slow Cooker Meal"
+							@click="slowCooker()"
+						/>
+					</div>
 					<div class="payment-button-container">
 						<input
 							class="payment-button"
@@ -149,6 +164,16 @@
 					console.error(error);
 				}
 			},
+			payPal: function() {
+				document.getElementById("payment-error").innerHTML =
+					"But we want your credit card info pls 👉👈";
+				document.getElementById("payment-error").style.opacity = 1;
+			},
+			slowCooker: function() {
+				document.getElementById("payment-error").innerHTML =
+					"Please provide Marwan with fresh ribs in his slow cooker";
+				document.getElementById("payment-error").style.opacity = 1;
+			},
 		},
 		async mounted() {
 			if (this.$store.state.user === -1) this.$router.push("/");
@@ -220,7 +245,7 @@
 		align-items: center;
 		justify-content: center;
 		height: 5vh;
-		width: 12vw;
+		width: 20vw;
 		border-radius: 2vh;
 		padding: 1vh;
 		background-color: rgb(235, 164, 89);
@@ -244,7 +269,7 @@
 		all: unset;
 		background-color: rgb(212, 211, 211);
 		font-size: 3vh;
-		width: 30vw;
+		width: 44vw;
 		margin-top: 1vh;
 		margin-bottom: 1vh;
 		padding: 2vh;
