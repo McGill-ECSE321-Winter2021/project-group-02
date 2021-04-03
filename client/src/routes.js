@@ -8,6 +8,7 @@ import ModifyAppointment from "./pages/ModifyAppointment.vue";
 import AssignTechnicianSchedule from "./pages/AssignTechnicianSchedule.vue";
 import CreateAccount from "./pages/CreateAccount.vue";
 import BookAppointment from "./pages/BookAppointment";
+import PayForAppointment from "./pages/PayForAppointment.vue";
 
 Vue.use(Router);
 
@@ -55,5 +56,10 @@ export default new Router({
       name: "BookAppointment",
       component: BookAppointment,
     },
+    {
+      path: "/pay",
+      name: "PayForAppointment",
+      component: PayForAppointment,
+    }
   ],
 });
