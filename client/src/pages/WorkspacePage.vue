@@ -1,70 +1,185 @@
 <template>
   <div id="workspace-page">
     <div id="workspace-container" class="v-container">
-      <h1 id="workspace-title">Workspace</h1>
-      <div id="workspace-option" class="h-container">
-        <select id="workspace-select"
-                v-model="curWorkspace"
-                @change="dropdown()"
+
+      <h1 id="workspace-title" class="form-text">Workspace / Timeslot</h1>
+
+      <div id="workspace-option" class="button-container">
+        <select
+            id="workspace-select"
+            class="form-text"
+            v-model="curWorkspace"
+            @change="dropdown()"
         >
           <option value="Select a Workspace" disabled selected>Select a Workspace</option>
           <option
               v-for="(workspace, index) in workspaces"
               :key="index"
               :value="workspace"
-          >
-            {{ workspace.workspaceName }}
-          </option>
+          > {{
+              workspace.workspaceName
+          }} </option>
         </select>
-        <input id="new-workspace"
-               type="button"
-               value="New Workspace"
-               @click="newButton()"
-        >
-      </div>
 
-      <div id="new-container" class="v-container"
-           v-if="this.new === true"
-      >
-        <form class="form"
-              @submit.prevent="createButton()"
-        >
-          <input class="text"
+        <button id="new-workspace" class="text-button" @click="newButton()">New Workspace</button>
+      </div>
+      <label id="form-error" class="form-text" v-if="errorMsg !== ''">{{
+          this.errorMsg
+      }}</label>
+
+      <div id="new-container" class="v-container" v-if="this.new === true">
+        <form class="v-container" @submit.prevent="createButton()">
+
+          <input class="form-input"
                  type="text"
                  placeholder="name"
                  v-model="newWorkspaceName"
           >
-          <div>
-            <input type="button" class="button" value="Cancel" @click="cancelButton()">
-            <input type="submit" class="button" value="Create">
+
+          <div class="button-container">
+            <button class="text-button" @click="cancelButton()">Cancel</button>
+            <div class="button-spacer"/>
+            <input type="submit" class="text-button" value="Create">
           </div>
         </form>
       </div>
 
-      <div id="edit-container" class="v-container"
-           v-if="this.sel === true"
-      >
-        <form class="form"
-              @submit.prevent="updateButton()"
-        >
-          <input id="edit-name-input" class="text"
-                 type="text"
-                 placeholder="new name"
-                 v-model="newWorkspaceName"
-          >
+      <div id="edit-container" v-if="this.edit === true">
+        <div id="form-container" class="form">
+          <form class="form" @submit.prevent="updateButton()">
+            <div class="button-container">
+              <label class="form-text">Workspace:</label>
+              <button class="text-button" @click="deleteWorkspace()">Delete</button>
+              <div class="button-spacer"/>
+              <input type="submit" class="text-button" value="Update">
+            </div>
+            <input id="edit-name-input"
+                   class="form-input"
+                   type="text"
+                   placeholder="new name"
+                   v-model="newWorkspaceName"
+            >
+          </form>
 
-          <div>
-            <input type="button" class="button" value="Delete" @click="deleteButton()">
-            <input type="submit" class="button" value="Update">
+          <form class="form" @submit.prevent="addTimeslot()">
+            <div class="button-container">
+              <label class="form-text">New Timeslot:</label>
+              <input type="submit" class="text-button" value="Add">
+            </div>
+
+            <div class="button-container">
+              <label class="timeslot-text">Date:</label>
+              <select id="year-select" class="timeslot-select" v-model="newTimeslot.year">
+                <option value=-1 selected disabled>year</option>
+                <option
+                    v-for="index in 10"
+                    :key="index"
+                    :value="index + curYear - 1"
+                >{{
+                    index + curYear - 1
+                }}</option>
+              </select>
+              <select id="month-select" class="timeslot-select" v-model="newTimeslot.month">
+                <option value=-1 selected disabled>mm</option>
+                <option
+                    v-for="index in 12"
+                    :key="index"
+                    :value="index"
+                >{{
+                    index
+                }}</option>
+              </select>
+              <select id="date-select" class="timeslot-select" v-model="newTimeslot.day">
+                <option value=-1 selected disabled>dd</option>
+                <option
+                    v-for="index in 31"
+                    :key="index"
+                    :value="index"
+                >{{
+                    index
+                  }}</option>
+              </select>
+            </div>
+
+            <div class="button-container">
+              <label class="timeslot-text">Start Time:</label>
+              <select id="start-hour-select" class="timeslot-select" v-model="newTimeslot.startHour">
+                <option value=-1 selected disabled>hh</option>
+                <option
+                    v-for="index in 24"
+                    :key="index"
+                    :value="index"
+                >{{
+                    index
+                  }}</option>
+              </select>
+              <label class="form-text">:</label>
+              <select id="start-minute-select" class="timeslot-select" v-model="newTimeslot.startMinute">
+                <option value=-1 selected disabled>mm</option>
+                <option value="00">00</option>
+                <option
+                    v-for="index in 3"
+                    :key="index"
+                    :value="index * 15"
+                >{{
+                    index * 15
+                  }}</option>
+              </select>
+            </div>
+            <div class="button-container">
+              <label class="timeslot-text">End Time:</label>
+              <select id="end-hour-select" class="timeslot-select" v-model="newTimeslot.endHour">
+                <option value=-1 selected disabled>hh</option>
+                <option
+                    v-for="index in 24"
+                    :key="index"
+                    :value="index"
+                >{{
+                    index
+                  }}</option>
+              </select>
+              <label class="form-text">:</label>
+              <select id="end-minute-select" class="timeslot-select" v-model="newTimeslot.endMinute">
+                <option value=-1 selected disabled>mm</option>
+                <option value="00">00</option>
+                <option
+                    v-for="index in 3"
+                    :key="index"
+                    :value="(index) * 15"
+                >{{
+                    index * 15
+                  }}</option>
+              </select>
+            </div>
+          </form>
+        </div>
+
+        <div id="timeslot-container" class="form">
+
+          <div class="button-container">
+            <label class="form-text">Timeslots:</label>
+            <button class="text-button" @click="deleteTimeslot()" v-if="selectTimeslotId !== ''">Delete</button>
           </div>
-        </form>
+          <div id="timeslot-select">
+            <div
+                class="timeslot"
+                v-for="(timeslot, index) in timeslots"
+                :key="index"
+                :id="timeslot.timeslotId"
+                @click="timeslotSelect(timeslot)"
+            >
+              <label class="form-text">Date: {{ timeslot.startDate }}</label>
+              <label class="form-text"
+              >Time: {{ timeslot.startTime.slice(0, 5) }} to
+                {{ timeslot.endTime.slice(0, 5) }}</label
+              >
+            </div>
+          </div>
+
+        </div>
       </div>
 
-      <input id="back" class="button"
-             type="button"
-             value="Back"
-             @click="backViewDash()"
-      >
+      <button id="back" class="form-button" @click="backViewDash()">Back</button>
     </div>
   </div>
 </template>
@@ -78,18 +193,32 @@ export default {
   props: {
     msg: String,
   },
+
   data() {
     return {
       curWorkspace: "Select a Workspace",
       workspaces: [],
-      sel: false,
+      edit: false,
       new: false,
-      newWorkspaceName: ""
+      newWorkspaceName: "",
+      timeslots: [],
+      selectTimeslotId: "",
+      newTimeslot: {
+        year: -1,
+        month: -1,
+        day: -1,
+        startHour: -1,
+        endHour: -1,
+        startMinute: -1,
+        endMinute: -1,
+      },
+      curYear: new Date().getFullYear(),
+      errorMsg: ""
     };
   },
 
   methods: {
-    backViewDash: function() {
+    backViewDash() {
       let t = this;
       t.cancelButton();
       document.getElementById("workspace-title").style.opacity = 0;
@@ -100,30 +229,32 @@ export default {
       }, 300);
     },
 
-    dropdown: function() {
+    dropdown() {
       if (this.curWorkspace === "Select a Workspace") {
-        this.sel = false;
+        this.edit = false;
         return;
       }
-      this.sel = true;
+      this.edit = true;
       this.new = false;
       this.newWorkspaceName = this.curWorkspace.workspaceName;
     },
 
-    newButton: function () {
+    newButton() {
       if (this.new === true) return;
       this.new=true;
-      this.sel=false;
+      this.edit=false;
       this.curWorkspace='Select a Workspace';
       this.newWorkspaceName="";
     },
-    cancelButton: function () {
+
+    cancelButton() {
       this.new=false;
-      this.sel=false;
+      this.edit=false;
       this.curWorkspace='Select a Workspace';
       this.newWorkspaceName="";
     },
-    createButton: async function () {
+
+    async createButton() {
       try {
         let createWorkspaceData = "name=foo";
 
@@ -140,7 +271,8 @@ export default {
         console.error(error);
       }
     },
-    updateButton: async function () {
+
+    async updateButton() {
       try {
         let updatedWorkspace = {
           workspaceId: this.curWorkspace.workspaceId,
@@ -161,7 +293,8 @@ export default {
         console.error(error)
       }
     },
-    deleteButton: async function () {
+
+    async deleteWorkspace() {
       try {
         let workspaceId = this.curWorkspace.workspaceId;
 
@@ -175,7 +308,22 @@ export default {
       } catch (error) {
         console.error(error);
       }
-    }
+    },
+
+    timeslotSelect(timeslot) {
+      if (this.selectTimeslotId.length !== 0) {
+        let previousTimeslot = document.getElementById(this.selectTimeslotId);
+        // passing an empty string will revert the css to its default value
+        previousTimeslot.style.backgroundColor = "";
+        previousTimeslot.style.color = "";
+        previousTimeslot.style.borderColor = "";
+      }
+      this.selectTimeslotId = timeslot.timeslotId;
+      let timeslotComponent = document.getElementById(this.selectTimeslotId);
+      timeslotComponent.style.backgroundColor = "rgb(175, 122, 65)"
+      timeslotComponent.style.color = "whitesmoke";
+      timeslotComponent.style.borderColor = "rgb(75, 75, 75)";
+    },
   },
   async mounted() {
     //TODO UNCOMMENT ONCE BACKEND WORKS
@@ -201,18 +349,36 @@ export default {
 </script>
 
 <style scoped>
-  .v-container,
-  .form {
+  .v-container {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    margin-bottom: 1vh;
     transition: 0.3s;
   }
 
-  .h-container {
-    margin-bottom: 1vh;
+  .form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    animation: changeOpacity 0.3s;
+    transition: 0.3s;
+  }
+
+  /* display text formatting */
+  .form-text,
+  .form-input,
+  .form-button,
+  .text-button,
+  .timeslot-select,
+  .timeslot-text {
+    all: unset;
+    margin-right: 1vw;
+    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+    font-size: 3vh;
+    font-weight: 500;
+    color: rgb(59, 58, 58);
+    animation: changeOpacity, 0.3s;
     transition: 0.3s;
   }
 
@@ -229,6 +395,7 @@ export default {
     background-size: 15vh 15vh;
     background-color: rgb(238, 207, 173);
   }
+
   #workspace-container {
     height: 80vh;
     width: 80vw;
@@ -237,78 +404,101 @@ export default {
     transition: 0.3s;
   }
 
-  #workspace-title {
-    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
-    font-size: 3vh;
-    font-weight: 600;
-    color: rgb(59, 58, 58);
-    padding-bottom: 1vh;
-    animation: changeOpacity 0.3s;
+  #edit-container,
+  .button-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
     transition: 0.3s;
+  }
+
+  #timeslot-select {
+    background-color: rgb(225, 225, 225);
+    width: 30vw;
+    height: 35vh;
+    overflow-y: scroll;
+    border-radius: 2vh;
+    margin-top: 1vh;
+  }
+
+  #workspace-title {
+    margin-right: 0vw;
+    margin-bottom: 1vh;
+    font-weight: 600;
+  }
+
+  #workspace-option {
+    margin-bottom: 0.5vh;
+  }
+
+  #form-error {
+    color: rgb(255, 0, 0);
   }
 
   #workspace-select {
-    all: unset;
     background-color: rgb(212, 211, 211);
-    font-size: 2.5vh;
     padding: 0.5vh 4vw;
     border-radius: 2vh;
-    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
     font-weight: 600;
-    color: rgb(59, 58, 58);
-    transition: 0.3s;
-  }
-  #new-workspace{
-    all: unset;
-    height: 3vh;
-    width: 10vw;
-    margin-left: 1vw;
-    border-radius: 2vh;
-    background-color: rgb(235, 164, 89);
-    transition: 0.3s;
     font-size: 2.5vh;
-    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
-    font-weight: 600;
-    text-align: center;
-    color: rgb(75, 75, 75);
-    border: 0.5vh solid rgb(235, 164, 89);
-  }
-  #new-workspace:hover {
-    background-color: rgb(175, 122, 65);
-    color: whitesmoke;
-    border-color: rgb(75, 75, 75);
   }
 
-  .text {
-    all: unset;
+  .text-button {
+    height: 3vh;
+    width: 10vw;
+    margin-right: 0vw;
+    border-radius: 2vh;
+    background-color: rgb(235, 164, 89);
+    border: 0.5vh solid rgb(235, 164, 89);
+    font-weight: 600;
+    font-size: 2.5vh;
+    text-align: center;
+  }
+
+  .form-input {
     background-color: rgb(212, 211, 211);
     width: 30vw;
-    margin: 1vh;
+    margin-top: 1vh;
+    margin-bottom: 1vh;
     padding: 1vh;
     border-radius: 2vh;
-    font-size: 3vh;
-    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
-    font-weight: 500;
-    color: rgb(59, 58, 58);
-    transition: 0.3s;
   }
 
-  .button {
-    all: unset;
+  .timeslot-text {
+    font-size: 2.5vh;
+    margin-left: 5vw;
+  }
+
+  .timeslot-select {
+    height: 3vh;
+    font-size: 2.5vh;
+    text-align: center;
+    background-color: rgb(212, 211, 211);
+    margin-top: 1vh;
+    border-radius: 2vh;
+    padding: 0.5vh 0.5vw;
+  }
+
+  .form-button {
     height: 3vh;
     width: 10vw;
     border-radius: 2vh;
     padding: 1vh;
     background-color: rgb(235, 164, 89);
-    margin: 1vh 1vh 0;
-    font-size: 3vh;
-    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+    border: 0.5vh solid rgb(235, 164, 89);
+    margin: 1vh;
     font-weight: 600;
     text-align: center;
-    color: rgb(75, 75, 75);
-    border: 0.5vh solid rgb(235, 164, 89);
   }
-  .button:hover {
+
+  .button-spacer {
+    width: 1vw;
+  }
+
+  /* hover effect format */
+  .form-button:hover,
+  #new-workspace:hover {
     background-color: rgb(175, 122, 65);
     color: whitesmoke;
     border-color: rgb(75, 75, 75);
