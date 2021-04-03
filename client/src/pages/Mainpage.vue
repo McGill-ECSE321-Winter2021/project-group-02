@@ -1,7 +1,15 @@
 <template>
   <div class="mainpage">
+    <button
+      @click="contactInfo()"
+      class="mainpage-button"
+      id="mainpage-contact-info"
+    >
+      Contact info
+    </button>
     <div id="mainpage-container">
       <div id="mainpage-select-user">
+        <img id="mainpage-image" src="../assets/logo3.png" alt="logo" />
         <p class="mainpage-title">Who are you?</p>
         <button class="mainpage-button" @click="customer()">Customer</button>
         <button class="mainpage-button" @click="technician()">
@@ -135,6 +143,9 @@ export default {
   },
   methods: {
     ...mapActions(["setUser"]),
+    contactInfo: function() {
+      alert("Hey this is none of you're business!!!");
+    },
     customer: function() {
       this.userType = "customer";
       document.getElementById("mainpage-select-user").style.opacity = 0;
@@ -239,6 +250,7 @@ export default {
           document.getElementById("mainpage-container").style.height = "80vh";
           document.getElementById("mainpage-container").style.width = "80vw";
           document.getElementById("mainpage-login").style.opacity = 0;
+          document.getElementById("mmainpage-contact-info").style.opacity = 0;
           const vm = this;
           setTimeout(function() {
             vm.$router.push("/dashboard");
@@ -475,5 +487,26 @@ export default {
   font-weight: 600;
   color: rgb(59, 58, 58);
   padding-bottom: 3vh;
+}
+
+#mainpage-image {
+  height: 10vh;
+  width: auto;
+  margin-bottom: 1vh;
+}
+
+#mainpage-contact-info {
+  position: absolute;
+  top: 2vh;
+  right: 2vw;
+  background-color: grey;
+  color: whitesmoke;
+  border-color: rgb(75, 75, 75);
+  opacity: 1;
+  transition: 0.3s;
+}
+
+#mainpage-contact-info:hover {
+  background-color: rgb(66, 66, 66);
 }
 </style>
