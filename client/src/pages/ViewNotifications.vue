@@ -1,7 +1,7 @@
 <template>
 	<div class="notifications">
 		<div id="notifications-container">
-			<H1 id="notifications-title" class="myaccount-title"
+			<H1 id="notifications-title" class="notifications-title"
 				>Upcoming Appointments</H1
 			>
 			<div
@@ -159,7 +159,7 @@
 	}
 
 	.no-notifications {
-		margin-top: 9vh;
+		margin-top: 8vh;
 	}
 
 	#back-button {
@@ -200,7 +200,7 @@
 
 	.notifications-title {
 		font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
-		font-size: 3vh;
+		font-size: 4.5vh;
 		font-weight: 600;
 		color: rgb(59, 58, 58);
 		padding-bottom: 3vh;

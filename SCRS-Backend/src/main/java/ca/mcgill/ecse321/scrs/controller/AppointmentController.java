@@ -79,6 +79,47 @@ public class AppointmentController
 
     }
 
+    @GetMapping(path = {"/getallappointments", "/getallappointments/"})
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<List<AppointmentDto>> getAllAppointments() {
+//
+//         List<Appointment> list = appointmentService.getAllAppointments();
+//         List<AppointmentDto> dtoList = new ArrayList<>();
+//
+//         if(list != null){
+//             for (Appointment appointment : list)
+//             {
+//                 dtoList.add(convertToDto(appointment));
+//             }
+//         }
+//         return new ResponseEntity<>(dtoList, HttpStatus.OK);
+
+
+        ArrayList<AppointmentDto> dtoList = new ArrayList<>();
+
+// int id, String type, String service, String note, int customerId, ArrayList<Integer> timeslotsId)
+
+        ArrayList<Integer> array=new ArrayList<Integer>(10);
+        array.add(1);
+        array.add(2);
+
+        ArrayList<AppointmentDto> dtoList2 = new ArrayList<>();
+        ArrayList<Integer> array2=new ArrayList<Integer>(10);
+        array.add(3);
+        array.add(5);
+
+        dtoList.add(new AppointmentDto(3, Appointment.AppointmentType.CarWash.toString(),"service","note",8,array));
+
+        dtoList.add(new AppointmentDto(4, Appointment.AppointmentType.Maintenance.toString(),"service","note2",8,array2));
+        dtoList.add(new AppointmentDto(5, Appointment.AppointmentType.Maintenance.toString(),"service","note2",8,array2));
+
+
+        dtoList.add(new AppointmentDto(6, Appointment.AppointmentType.Maintenance.toString(),"service","note2",6,array2));
+
+        return new ResponseEntity<>(dtoList, HttpStatus.OK);
+
+    }
+
     @GetMapping(path = {"/getById/{id}", "/getById/{id}/"})
     @CrossOrigin(origins = "*")
     public ResponseEntity<AppointmentDto> getAppointmentById(@PathVariable String id)
