@@ -3,7 +3,7 @@
     <div id="booked-appointments-container">
       <!-- <label class="form-text">Appointments:</label><br> -->
 
-    <div class="myaccount-spacer"></div>
+    <!-- <div class="myaccount-spacer"></div> -->
 
       <div id="appointment-containter">
         <div class="appointment"
@@ -11,10 +11,24 @@
           :key="index"
           :id="appointment.appointmentId"
         >
-        <label class="form-text">Appointment Time: {{timeslots.startDate}}-{{timeslots.endDate}} </label><br>
+
+        <label 
+        class="form-text"
+        v-if="timeslots.startDate===timeslots.endDate"
+        >Appointment Time: {{timeslots.startDate}} </label>
+
+        <label 
+        class="form-text"
+        v-if="timeslots.startDate!==timeslots.endDate"
+        >Appointment Time: {{timeslots.startDate}}-{{timeslots.endDate}} </label>
+        <br>
+
+
         <label class="form-text">From {{timeslots.startTime}} to {{timeslots.endTime}}</label><br>
-        <label class="form-text">Appointment Type: {{convertForDisplay(appointment.appointmentType)}}</label><br>
-        <label class="form-text"></label><br>
+        <label class="form-text">Appointment Type: {{convertForDisplay(appointment.appointmentType)}}</label>
+
+        <div class="myaccount-spacer"></div>
+
 
         <div class="myappointments-button-container">
         
@@ -94,7 +108,6 @@ export default {
    
     },
 
-//CarWash, Maintenance, OilChange, TireChange, Towing, Inspection, RoadsideAssistance, Checkup, Other
     convertForDisplay: function(type){
       switch (type) {
           case "CarWash":
@@ -186,6 +199,7 @@ flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 20px;
+ 
 }
 
 .appointment{

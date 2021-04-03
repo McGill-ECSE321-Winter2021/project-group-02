@@ -98,43 +98,64 @@ public class AppointmentController
     @GetMapping(path = {"/notifications/{id}", "/notifications/{id}/"})
     @CrossOrigin(origins = "*")
     public ResponseEntity<List<AppointmentDto>> notifications(@PathVariable String id) {
-        if(id == null)return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
-        int ID = Integer.parseInt(id);
+//        if(id == null)return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+//        int ID = Integer.parseInt(id);
+//
+//        Customer customer = customerService.getCustomerByID(ID);
+//        if(customer == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+//
+//        List<Appointment> list = appointmentService.getAppointmentsByCustomer(customer);
+//
+//        if(list != null){
+//            //finding the same date next week
+//            Date now = new Date(LocalDate.now().toEpochDay());
+//            Calendar calendar = Calendar.getInstance();
+//            calendar.setTime(now);
+//            calendar.add(Calendar.DATE, 7);
+//            Date nextWeek = new Date(calendar.getTimeInMillis());
+//
+//            List<AppointmentDto> notificationList = new ArrayList<>();
+//            for (Appointment appointment : list)
+//            {
+//                List<Timeslot> timeslots = appointment.getTimeslots();
+//                ArrayList<Integer> newTimeslots = new ArrayList<>();
+//                for (Timeslot timeslot : timeslots)
+//                {
+//                    if (timeslot.getStartDate().compareTo(now) >= 0 && timeslot.getStartDate().compareTo(nextWeek) <= 0)
+//                    {
+//                        newTimeslots.add(timeslot.getTimeSlotID());
+//                    }
+//                }
+//                if (!newTimeslots.isEmpty())
+//                {
+//                    AppointmentDto appointmentDto = new AppointmentDto(appointment.getAppointmentID(), appointment.getAppointmentType().toString(), appointment.getService(), appointment.getNote(), appointment.getRating(), appointment.getFeedback(), appointment.getPaid(), appointment.getCustomer().getScrsUserId(), newTimeslots);
+//                    notificationList.add(appointmentDto);
+//                }
+//            }
 
-        Customer customer = customerService.getCustomerByID(ID);
-        if(customer == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        //test
 
-        List<Appointment> list = appointmentService.getAppointmentsByCustomer(customer);
+        ArrayList<AppointmentDto> dtoList = new ArrayList<>();
 
-        if(list != null){
-            //finding the same date next week
-            Date now = new Date(LocalDate.now().toEpochDay());
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(now);
-            calendar.add(Calendar.DATE, 7);
-            Date nextWeek = new Date(calendar.getTimeInMillis());
+// int id, String type, String service, String note, int customerId, ArrayList<Integer> timeslotsId)
 
-            List<AppointmentDto> notificationList = new ArrayList<>();
-            for (Appointment appointment : list)
-            {
-                List<Timeslot> timeslots = appointment.getTimeslots();
-                ArrayList<Integer> newTimeslots = new ArrayList<>();
-                for (Timeslot timeslot : timeslots)
-                {
-                    if (timeslot.getStartDate().compareTo(now) >= 0 && timeslot.getStartDate().compareTo(nextWeek) <= 0)
-                    {
-                        newTimeslots.add(timeslot.getTimeSlotID());
-                    }
-                }
-                if (!newTimeslots.isEmpty())
-                {
-                    AppointmentDto appointmentDto = new AppointmentDto(appointment.getAppointmentID(), appointment.getAppointmentType().toString(), appointment.getService(), appointment.getNote(), appointment.getRating(), appointment.getFeedback(), appointment.getPaid(), appointment.getCustomer().getScrsUserId(), newTimeslots);
-                    notificationList.add(appointmentDto);
-                }
-            }
+        ArrayList<Integer> array=new ArrayList<Integer>(10);
+        array.add(1);
+        array.add(2);
 
-            return new ResponseEntity<>(notificationList, HttpStatus.OK);
-        }else return new ResponseEntity<>(null, HttpStatus.OK);
+        ArrayList<AppointmentDto> dtoList2 = new ArrayList<>();
+        ArrayList<Integer> array2=new ArrayList<Integer>(10);
+        array.add(3);
+        array.add(5);
+
+        dtoList.add(new AppointmentDto(3, Appointment.AppointmentType.CarWash.toString(),"service","note",8,array));
+
+        dtoList.add(new AppointmentDto(4, Appointment.AppointmentType.Maintenance.toString(),"service","note2",8,array2));
+
+        return new ResponseEntity<>(dtoList, HttpStatus.OK);
+
+//        return new ResponseEntity<>(notificationList, HttpStatus.OK);
+//        }else return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @PostMapping(value = {"/book", "/book/"})
