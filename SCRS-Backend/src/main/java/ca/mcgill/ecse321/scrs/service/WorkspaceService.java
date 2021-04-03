@@ -28,6 +28,14 @@ public class WorkspaceService
     }
 
     @Transactional
+    public Workspace updateWorkspace(Workspace workspace)
+    {
+        if (workspace == null || workspaceRepository.findByWorkspaceID(workspace.getWorkspaceID()) == null) throw new IllegalArgumentException("Invalid workspace");
+        workspaceRepository.save(workspace);
+        return workspace;
+    }
+
+    @Transactional
     public List<Workspace> getAllWorkspaces()
     {
         return toList(workspaceRepository.findAll());
