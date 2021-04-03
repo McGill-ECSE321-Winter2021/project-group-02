@@ -30,17 +30,10 @@
 					>{{ timeslots.startTime }} to {{ timeslots.endTime }}</label
 				><br />
 			</div>
-			<span 
-				class="no-notifications"
-				v-if="appointments.length===0"
-			>
+			<span class="no-notifications" v-if="appointments.length === 0">
 				No new notifications
 			</span>
-			<button
-				id="back-button"
-				v-on:click="backViewDash()"
-				> Back</button>
-
+			<button id="back-button" v-on:click="backViewDash()">Back</button>
 		</div>
 	</div>
 </template>
@@ -106,7 +99,6 @@
 			} catch (error) {
 				console.log(`${error}`);
 			}
-
 			var i;
 			for (i = 0; i < this.appointments.length; i++) {
 				try {
@@ -151,8 +143,6 @@
 		transition: 0.3s;
 	}
 
-
-
 	.notification,
 	.no-notifications {
 		background-color: rgb(235, 164, 89);
@@ -168,8 +158,8 @@
 		color: rgb(75, 75, 75);
 	}
 
-	.no-notifications{
-		margin-top:9vh;
+	.no-notifications {
+		margin-top: 9vh;
 	}
 
 	#back-button {
