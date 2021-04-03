@@ -9,7 +9,7 @@
             id="workspace-select"
             class="form-text"
             v-model="curWorkspace"
-            @change="dropdown()"
+            @change="workspaceSelect()"
         >
           <option value="Select a Workspace" disabled selected>Select a Workspace</option>
           <option
@@ -21,14 +21,14 @@
           }} </option>
         </select>
 
-        <button id="new-workspace" class="text-button" @click="newButton()">New Workspace</button>
+        <button id="new-workspace" class="text-button" @click="newWorkspace()">New Workspace</button>
       </div>
       <label id="form-error" class="form-text" v-if="errorMsg !== ''">{{
           this.errorMsg
       }}</label>
 
       <div id="new-container" class="v-container" v-if="this.new === true">
-        <form class="v-container" @submit.prevent="createButton()">
+        <form class="v-container" @submit.prevent="createWorkspace()">
 
           <input class="form-input"
                  type="text"
@@ -37,7 +37,7 @@
           >
 
           <div class="button-container">
-            <button class="text-button" @click="cancelButton()">Cancel</button>
+            <button class="text-button" @click="cancelWorkspace()">Cancel</button>
             <div class="button-spacer"/>
             <input type="submit" class="text-button" value="Create">
           </div>
@@ -61,7 +61,7 @@
             >
           </form>
 
-          <form class="form" @submit.prevent="addTimeslot()">
+          <form class="form" @submit.prevent="createTimeslot()">
             <div class="button-container">
               <label class="form-text">New Timeslot:</label>
               <input type="submit" class="text-button" value="Add">
@@ -69,7 +69,7 @@
 
             <div class="button-container">
               <label class="timeslot-text">Date:</label>
-              <select id="year-select" class="timeslot-select" v-model="newTimeslot.year">
+              <select id="year-select" class="timeslot-select" v-model="timeslotForm.year" @change="setDate()">
                 <option value=-1 selected disabled>year</option>
                 <option
                     v-for="index in 10"
@@ -79,7 +79,7 @@
                     index + curYear - 1
                 }}</option>
               </select>
-              <select id="month-select" class="timeslot-select" v-model="newTimeslot.month">
+              <select id="month-select" class="timeslot-select" v-model="timeslotForm.month" @change="setDate()">
                 <option value=-1 selected disabled>mm</option>
                 <option
                     v-for="index in 12"
@@ -89,7 +89,7 @@
                     index
                 }}</option>
               </select>
-              <select id="date-select" class="timeslot-select" v-model="newTimeslot.day">
+              <select id="date-select" class="timeslot-select" v-model="timeslotForm.day" @change="setDate()">
                 <option value=-1 selected disabled>dd</option>
                 <option
                     v-for="index in 31"
@@ -103,7 +103,7 @@
 
             <div class="button-container">
               <label class="timeslot-text">Start Time:</label>
-              <select id="start-hour-select" class="timeslot-select" v-model="newTimeslot.startHour">
+              <select id="start-hour-select" class="timeslot-select" v-model="timeslotForm.startHour" @change="setStartTime()">
                 <option value=-1 selected disabled>hh</option>
                 <option
                     v-for="index in 24"
@@ -114,9 +114,9 @@
                   }}</option>
               </select>
               <label class="form-text">:</label>
-              <select id="start-minute-select" class="timeslot-select" v-model="newTimeslot.startMinute">
+              <select id="start-minute-select" class="timeslot-select" v-model="timeslotForm.startMinute" @change="setStartTime()">
                 <option value=-1 selected disabled>mm</option>
-                <option value="00">00</option>
+                <option value=0>00</option>
                 <option
                     v-for="index in 3"
                     :key="index"
@@ -126,9 +126,10 @@
                   }}</option>
               </select>
             </div>
-            <div class="button-container">
+
+            <div class="button-container" v-if="timeslotForm.startHour !== -1 && timeslotForm.startMinute !== -1">
               <label class="timeslot-text">End Time:</label>
-              <select id="end-hour-select" class="timeslot-select" v-model="newTimeslot.endHour">
+              <select id="end-hour-select" class="timeslot-select" v-model="timeslotForm.endHour" @change="setEndTime()">
                 <option value=-1 selected disabled>hh</option>
                 <option
                     v-for="index in 24"
@@ -139,9 +140,9 @@
                   }}</option>
               </select>
               <label class="form-text">:</label>
-              <select id="end-minute-select" class="timeslot-select" v-model="newTimeslot.endMinute">
+              <select id="end-minute-select" class="timeslot-select" v-model="timeslotForm.endMinute" @change="setEndTime()">
                 <option value=-1 selected disabled>mm</option>
-                <option value="00">00</option>
+                <option value=0>00</option>
                 <option
                     v-for="index in 3"
                     :key="index"
@@ -203,15 +204,17 @@ export default {
       newWorkspaceName: "",
       timeslots: [],
       selectTimeslotId: "",
-      newTimeslot: {
+      timeslotForm: {
         year: -1,
         month: -1,
         day: -1,
         startHour: -1,
-        endHour: -1,
         startMinute: -1,
+        endHour: -1,
         endMinute: -1,
       },
+      newStartDate: new Date(),
+      newEndDate: new Date(),
       curYear: new Date().getFullYear(),
       errorMsg: ""
     };
@@ -229,34 +232,30 @@ export default {
       }, 300);
     },
 
-    dropdown() {
-      if (this.curWorkspace === "Select a Workspace") {
-        this.edit = false;
-        return;
-      }
-      this.edit = true;
-      this.new = false;
-      this.newWorkspaceName = this.curWorkspace.workspaceName;
-    },
-
-    newButton() {
+    newWorkspace() {
       if (this.new === true) return;
-      this.new=true;
-      this.edit=false;
-      this.curWorkspace='Select a Workspace';
-      this.newWorkspaceName="";
+      this.new = true;
+      this.edit = false;
+      this.curWorkspace = 'Select a Workspace';
+      this.newWorkspaceName = "";
+      this.errorMsg = "";
     },
 
-    cancelButton() {
+    cancelWorkspace() {
       this.new=false;
       this.edit=false;
       this.curWorkspace='Select a Workspace';
       this.newWorkspaceName="";
+      this.errorMsg = "";
     },
 
-    async createButton() {
+    async createWorkspace() {
+      if (this.newWorkspaceName === "" || this.newWorkspaceName === undefined) {
+        this.errorMsg = "The workspace name is not filled"
+        return;
+      }
       try {
-        let createWorkspaceData = "name=foo";
+        let createWorkspaceData = `name=${this.newWorkspaceName}`;
 
         let createWorkspaceResponse = await axios.post(
             proxy.proxy + "/api/workspace/create",
@@ -265,14 +264,43 @@ export default {
 
         if (createWorkspaceResponse.status === 200) {
           this.workspaces.push(createWorkspaceResponse.data);
-          this.cancelButton();
+          this.cancelWorkspace();
         }
       } catch (error) {
         console.error(error);
+        this.errorMsg = "Something went wrong creating the workspace. Please try again later";
+      }
+    },
+
+    async workspaceSelect() {
+      if (this.curWorkspace === "Select a Workspace") {
+        this.edit = false;
+        return;
+      }
+      this.edit = true;
+      this.new = false;
+      this.newWorkspaceName = this.curWorkspace.workspaceName;
+      this.errorMsg = "";
+      this.timeslotForm.year = this.timeslotForm.month = this.timeslotForm.day = -1;
+      this.timeslotForm.startHour = this.timeslotForm.startMinute = -1;
+      this.timeslotForm.endHour = this.timeslotForm.endMinute = -1;
+
+      try {
+        let response = await axios.get(proxy.proxy + "/api/workspace/availabilities/" + this.curWorkspace.workspaceId);
+        this.timeslots = response.data;
+      } catch (error) {
+        console.error(error);
+        this.cancelWorkspace();
+        this.errorMsg = "Something went wrong loading workspace. Please try again later"
       }
     },
 
     async updateButton() {
+      if (this.newWorkspaceName === "" || this.newWorkspaceName === undefined) {
+        this.errorMsg = "The workspace name is empty"
+        this.newWorkspaceName = this.curWorkspace.workspaceName;
+        return;
+      }
       try {
         let updatedWorkspace = {
           workspaceId: this.curWorkspace.workspaceId,
@@ -285,16 +313,19 @@ export default {
         );
 
         if (updatedWorkspaceResponse.status === 200) {
-          let index = this.workspaces.findIndex(workspace => workspace === this.curWorkspace);
-          this.workspaces[index] = updatedWorkspaceResponse.data;
-          this.curWorkspace = updatedWorkspaceResponse.data;
+          let response = await axios.get(proxy.proxy + "/api/workspace/getAll");
+          this.workspaces = response.data;
         }
       } catch (error) {
         console.error(error)
+        this.errorMsg = "Something went wrong updating the workspace name. Please try again later";
       }
     },
 
     async deleteWorkspace() {
+      if (this.timeslots.length !== 0) {
+        this.errorMsg = "Please delete all timeslots before deleting workspace"
+      }
       try {
         let workspaceId = this.curWorkspace.workspaceId;
 
@@ -303,20 +334,93 @@ export default {
         );
 
         if (deleteWorkspaceResponse.status === 200) {
-          this.cancelButton();
+          this.cancelWorkspace();
         }
       } catch (error) {
         console.error(error);
+        this.errorMsg = "Failed to delete workspace. Please try again later"
+      }
+    },
+
+    setDate() {
+      if (this.timeslotForm.year === -1 || this.timeslotForm.month === -1 || this.timeslotForm.day === -1) return;
+
+      this.newStartDate.setFullYear(this.timeslotForm.year, this.timeslotForm.month - 1, this.timeslotForm.day);
+      this.newEndDate.setFullYear(this.timeslotForm.year, this.timeslotForm.month - 1, this.timeslotForm.day);
+      this.timeslotForm.month = this.newStartDate.getMonth() + 1;
+      this.timeslotForm.day = this.newStartDate.getDate();
+    },
+
+    setStartTime() {
+      if(this.timeslotForm.startHour === -1 || this.timeslotForm.startMinute === -1) return;
+      this.newStartDate.setHours(this.timeslotForm.startHour, this.timeslotForm.startMinute);
+    },
+
+    setEndTime() {
+      if(this.timeslotForm.endHour === -1 || this.timeslotForm.endMinute === -1) return;
+
+      if(this.timeslotForm.startHour > this.timeslotForm.endHour) {
+        this.timeslotForm.endHour = -1;
+        this.timeslotForm.endMinute = -1
+        return;
+      } else if (this.timeslotForm.startHour === this.timeslotForm.endHour && this.timeslotForm.startMinute >= this.timeslotForm.endMinute) {
+        this.timeslotForm.endMinute = -1;
+        return;
+      }
+
+      this.newEndDate.setHours(this.timeslotForm.endHour, this.timeslotForm.endMinute);
+    },
+
+    async createTimeslot() {
+      if (this.timeslotForm.year === -1 || this.timeslotForm.month === -1 || this.timeslotForm.day === -1) {
+        this.errorMsg = "A date for the timeslot is not selected"
+        return
+      }
+      if(this.timeslotForm.startHour === -1 || this.timeslotForm.startMinute === -1) {
+        this.errorMsg = "A starting time for the timeslot is not selected"
+        return;
+      }
+      if(this.timeslotForm.endHour === -1 || this.timeslotForm.endMinute === -1) {
+        this.errorMsg = "An end time for the timeslot is not selected"
+        return;
+      }
+      try {
+        let createTimeslotData = {
+          startDate: this.newStartDate,
+          endDate: this.newEndDate,
+          startTime: this.newStartDate.getTime(),
+          endTime: this.newEndDate.getTime(),
+          workspaceId: this.curWorkspace.workspaceId
+        };
+
+        let createTimeslotResponse = await axios.post(
+            proxy.proxy + "/api/workspace/create",
+            createTimeslotData
+        );
+
+        if (createTimeslotResponse.status === 200) {
+          this.timeslotForm.year = this.timeslotForm.month = this.timeslotForm.day = -1;
+          this.timeslotForm.startHour = this.timeslotForm.startMinute = -1;
+          this.timeslotForm.endHour = this.timeslotForm.endMinute = -1;
+          this.timeslots.push(createTimeslotResponse.data);
+        }
+      } catch (error) {
+        console.error(error);
+        this.errorMsg = "Something went wrong adding the timeslot to workspace. Please try again later";
       }
     },
 
     timeslotSelect(timeslot) {
-      if (this.selectTimeslotId.length !== 0) {
+      if (this.selectTimeslotId !== "") {
         let previousTimeslot = document.getElementById(this.selectTimeslotId);
         // passing an empty string will revert the css to its default value
         previousTimeslot.style.backgroundColor = "";
         previousTimeslot.style.color = "";
         previousTimeslot.style.borderColor = "";
+      }
+      if (this.selectTimeslotId === timeslot.timeslotId) {
+        this.selectTimeslotId = "";
+        return;
       }
       this.selectTimeslotId = timeslot.timeslotId;
       let timeslotComponent = document.getElementById(this.selectTimeslotId);
@@ -324,26 +428,36 @@ export default {
       timeslotComponent.style.color = "whitesmoke";
       timeslotComponent.style.borderColor = "rgb(75, 75, 75)";
     },
+
+    async deleteTimeslot() {
+      try {
+        let deleteWorkspaceResponse = await axios.delete(
+            proxy.proxy + `/api/timeslot/delete/${this.selectTimeslotId}`
+        );
+
+        if (deleteWorkspaceResponse.status === 200) {
+          let response = await axios.get(proxy.proxy + "/api/workspace/availabilities/" + this.curWorkspace.workspaceId);
+          this.timeslots = response.data;
+        }
+      } catch (error) {
+        console.error(error);
+        this.errorMsg = "Failed to delete timeslot. Please try again later"
+      }
+    }
   },
+
   async mounted() {
-    //TODO UNCOMMENT ONCE BACKEND WORKS
-    /*if (this.$store.state.user !== "assistant") this.$router.push("/");
+    if (this.$store.state.userType !== "assistant") this.$router.push("/dashboard");
 
     try {
-      let response = await axios.get(proxy.proxy + "/api/technician/getAll");
-      this.technicians = response.data;
-      response = await axios.get(proxy.proxy + "/api/workspace/getAll");
+      let response = await axios.get(proxy.proxy + "/api/workspace/getAll");
       this.workspaces = response.data;
     } catch (error) {
       console.error(error);
-    }*/
+    }
 
-    //TODO REMOVE DUMMY CODE BELOW ONCE BACKEND CONTAINS VALUES
-    this.workspaces = [
-      { workspaceName: "ws1", workspaceId: 4 },
-      { workspaceName: "ws2", workspaceId: 3 },
-      { workspaceName: "wsAlix", workspaceId: 6969 },
-    ];
+    this.newStartDate.setSeconds(0,0);
+    this.newEndDate.setSeconds(0,0);
   }
 }
 </script>
@@ -446,7 +560,6 @@ export default {
 
   .text-button {
     height: 3vh;
-    width: 10vw;
     margin-right: 0vw;
     border-radius: 2vh;
     background-color: rgb(235, 164, 89);
@@ -454,6 +567,7 @@ export default {
     font-weight: 600;
     font-size: 2.5vh;
     text-align: center;
+    padding: 0 0.5vw;
   }
 
   .form-input {
