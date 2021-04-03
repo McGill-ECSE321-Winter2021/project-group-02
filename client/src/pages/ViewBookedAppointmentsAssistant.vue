@@ -11,10 +11,16 @@
 			placeholder="customer ID"
 		/>
         </div>
+    <div class="myaccount-spacer"></div>
 
         <div class="form-sub">
-            <button id="submit-button" type="button" 
+            <button 
+            class="myappointments-button"
+            id="submit-button" type="button" 
             v-on:click=getToApptPage() >Submit</button>
+            
+            <p id="myaccount-edit-error"></p>
+
         </div>
 
         </form>
@@ -37,7 +43,18 @@
 
 <div id="appointment-containter"
     v-if= "this.enteredValue==true" >
+
+    <div class="myaccount-spacer"></div>
+
+
+        <div class="list-or-not-appointments"
+        v-if="appointments.length===0"
+        >
+        <p>No appointments</p>
+
+        </div>
         <div class="appointment"
+        v-else
           v-for="(appointment,index) in appointments"
           :key="index"
           :id="appointment.appointmentId"
@@ -46,12 +63,14 @@
         <label 
         class="form-text"
         v-if="timeslots.startDate===timeslots.endDate"
-        >Appointment Time: {{timeslots.startDate}} </label>
+        >Appointment Time: 
+        {{timeslots.startDate}} </label>
 
         <label 
         class="form-text"
         v-if="timeslots.startDate!==timeslots.endDate"
-        >Appointment Time: {{timeslots.startDate}}-{{timeslots.endDate}} </label>
+        >Appointment Time: 
+        {{timeslots.startDate}}-{{timeslots.endDate}} </label>
         <br>
 
 
@@ -78,20 +97,14 @@
           value="Modify"
           v-on:click="modify(appointmentId)"
           />
-
-          <input
-          class="myappointments-button"
-          type="button"
-          value="Rate"
-          v-on:click="rate(appointmentId)"
-          />
+          
     <!-- <div class="myaccount-spacer"></div> -->
 
         </div>
-
+</div>
         </div>
 
-      </div>
+     
 
         <br>
         
@@ -118,6 +131,7 @@ export default {
       timeslots:[],
       customerIDEntry: "",
       enteredValue:false,
+      customerReceived:[],
     };
   },
 
@@ -137,6 +151,7 @@ export default {
 // },
     getToApptPage: function(){
         console.log("hello");
+        this.getUserID(this.customerIDEntry);
         this.getAppointments(this.customerIDEntry);
     },
 
@@ -218,26 +233,34 @@ export default {
 
 
     getUserID: async function(){
-        try {
-			let response = await axios.get(
-				proxy.proxy+`/api/customer/getByID/${this.customerIDEntry}` //need to pass the variable but how customerIDEntry
-			);
-            if (response.data == null || response.status !== 200){
-                
-                
-                
-                return;
-            }
-  
-            this.customer = this.customer.data;
-            } catch (error) {
-      console.log(`${error}`);
-    }
+				try {
+					// fetch data of user with given ID
+					let response = null;
+                    response = await axios.get(
+                        proxy.proxy + `/api/customer/getByID/${this.customerIDEntry}`
+                    );
+                    this.customerReceived = response.data;
 
-    },
+                    if(this.customerReceived===null){
+                        console.log("hoi");
+                        document.getElementById("myaccount-edit-error").innerHTML =
+                            "User not identified, please try again";
+                        document.getElementById("myaccount-edit-error").style.opacity = 1;
+                        document.getElementById("customerIdForm").reset();
+                        this.customerIDEntry="";
+                        this.customer=[];
+                        return;
+                    }
+                    return;
+
+				} catch (error) {
+					console.error(`${error}`);
+					document.getElementById("myaccount-edit-error").innerHTML =
+						"Unknown error, please try again later";
+					document.getElementById("myaccount-edit-error").style.opacity = 1;
+				}
+			},
     
-
-  
 },
 };
 </script>
@@ -245,6 +268,37 @@ export default {
 
 <style scoped>
 
+#customer-id-input {
+		all: unset;
+		background-color: rgb(212, 211, 211);
+		font-size: 2vh;
+		width: 8vw;
+		margin-top: 1vh;
+		margin-bottom: 1vh;
+		padding: 2vh;
+		border-radius: 2vh;
+		font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+		font-weight: 600;
+		color: rgb(59, 58, 58);
+		transition: 0.3s;
+	}
+
+.myaccount-spacer{
+  height: 1vw;
+}
+.appointment{
+    background-color: whitesmoke;
+    border-radius: 5vh;
+    padding: 15px;
+      width: 30vw;
+display: flex;
+  /* grid-template-columns: 40vw 40vw; */
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  justify-content: center;
+    
+}
 .view-booked-appointments-assistant {
   height: 110vh;
   width: 100vw;
@@ -282,6 +336,34 @@ flex-direction: column;
 	font-weight: 600;
 	color: rgb(75, 75, 75);
 }
+
+.myappointments-button{
+  all: unset;
+  /* display: flex; */
+  text-align: center;
+	align-items: center;
+	justify-content: center;
+	height: 4vh;
+	width: 8vw;
+  border-radius: 2vh;
+	padding: 0.1vh;
+	background-color: rgb(235, 164, 89);
+	margin-bottom: 1vh;
+  margin-left: 0.5vh;
+  margin-right: 0.5vh;
+	transition: 0.3s;
+	font-size: 3vh;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+	font-weight: 600;
+	color: rgb(75, 75, 75);
+	border: 0.5vh solid rgb(235, 164, 89);
+}
+
+.myappointments-button:hover {
+		background-color: rgb(175, 122, 65);
+		color: whitesmoke;
+		border-color: rgb(75, 75, 75);
+	}
 
 #back-button {
   all: unset;

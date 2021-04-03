@@ -1,40 +1,37 @@
 <template>
-  <div class="view-notifications">
-<div id="notifications-container">
+	<div class="notifications">
+		<div id="notifications-container">
+			<H1 id="notifications-title" class="myaccount-title"
+				>Upcoming Appointments</H1>
 
-<div class="myaccount-spacer"></div>
-
-      <div id="notifications-containter">
         <div class="notification"
-          v-for="(notification,index) in notifications"
+          v-for="(appointment,index) in appointments"
           :key="index"
-          :id="notification.appointmentId"
+          :id="appointment.appointmentId"
         >
-        <label class="form-text">Appointment Time: {{timeslots.startDate}}-{{timeslots.endDate}} </label><br>
-        <label class="form-text">From {{timeslots.startTime}} to {{timeslots.endTime}}</label><br>
-        <label class="form-text">Appointment Type: {{convertForDisplay(notification.appointmentType)}}</label><br>
-          
-    <!-- <div class="myaccount-spacer"></div> -->
+        <label class="form-text"> {{convertForDisplay(appointment.appointmentType)}}</label><br>
 
-        </div>
+        <label 
+        class="form-text"
+        v-if="timeslots.startDate===timeslots.endDate"
+        >
+        {{timeslots.startDate}} </label>
 
-        </div>
-
-      </div>
-
-      <div id="dashboard-change-opacity">
+        <label 
+        class="form-text"
+        v-if="timeslots.startDate!==timeslots.endDate"
+        >
         
-			<input
-				id="back-button"
-				type="button"
-				value="Back"
-				v-on:click="backViewDash()"
-				/>
+        {{timeslots.startDate}}-{{timeslots.endDate}} </label>
+        <br>
+
+        
+        <label class="form-text">{{timeslots.startTime}} to {{timeslots.endTime}}</label><br>
+
 
       </div>
-    </div>
-
-
+		</div>
+	</div>
 </template>
 
 <script>
@@ -47,27 +44,15 @@ export default {
     msg: String,
     },
   components: {},
+
   data() {
     return {
-      notifications: [],
+      appointments: [],
       timeslots:[],
     };
   },
-    methods: {},
-  async mounted() {
-    try {
-      
-      let notificationResponse = await axios.get(
-        proxy.proxy+`api/appointment/notifications/${this.$store.state.user}`
-      );
-      if (notificationResponse.status !== 200) return;
-      this.notifications = notificationResponse.data;
-    } catch (error) {
-      console.log(`${error}`);
-    }
-  },
-
-convertForDisplay: function(type){
+    methods: {
+      convertForDisplay: function(type){
       switch (type) {
           case "CarWash":
             return "Car Wash";
@@ -98,27 +83,86 @@ convertForDisplay: function(type){
       },
 
 
+    },
+  async mounted() {
+    try {
+      
+      let notificationResponse = await axios.get(
+        proxy.proxy+`/api/appointment/notifications/${this.$store.state.user}`
+      );
+      
+      if (notificationResponse.status !== 200) return;
+
+      this.appointments = notificationResponse.data;
+    } catch (error) {
+      console.log(`${error}`);
+    }
+
+       var i;
+    for(i=0;i<this.appointments.length; i++ ){
+      try {
+
+      let timeslotResponse = await axios.get(
+        proxy.proxy+`/api/appointment/getStartAndEnd/${this.appointments[i].appointmentId}`
+      );
+      if (timeslotResponse.status !== 200) return;
+      this.timeslots = timeslotResponse.data;
+
+    } catch (error) {
+      console.log(`${error}`);
+    }
+    }
+  },
+
+
+
 };
 </script>
 
 <style scoped>
-.view-notifications {
-  height: 110vh;
-  width: 100vw;
-  background-image: radial-gradient(whitesmoke 20%, transparent 20%),
-    radial-gradient(rgb(235, 164, 89) 20%, transparent 20%);
-  background-position: 0 0, 7.5vh 7.5vh;
-  background-size: 15vh 15vh;
-  background-color: rgb(238, 207, 173);
 
-  display: flex;
-/* align-items: center; */
-/* justify-content: center; */
-flex-direction: column;
-}
+	.notifications {
+		height: 100vh;
+		width: 100vw;
+		background-image: radial-gradient(whitesmoke 20%, transparent 20%),
+			radial-gradient(rgb(235, 164, 89) 20%, transparent 20%);
+		background-position: 0 0, 7.5vh 7.5vh;
+		background-size: 15vh 15vh;
+		background-color: rgb(238, 207, 173);
+	}
+
+	#notifications-container {
+		height: 70vh;
+		width: 50vw;
+		border-radius: 5vh;
+		background-color: whitesmoke;
+	}
+
+	.notifications,
+	#notifications-container {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
+		transition: 0.3s;
+	}
+
+  .notification{
+    background-color: rgb(235, 164, 89);
+    margin: 1vh;
+    border-radius: 1vh;
+    padding: 1vh;
+		width: 30vw;
+    text-align: center;
+
+    font-size: 3vh;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  font-weight: 600;
+  color: rgb(75, 75, 75);
+  }
 
 
-#back-button {
+	#back-button {
   all: unset;
   display: flex;
   align-items: center;
@@ -149,5 +193,30 @@ flex-direction: column;
   color: whitesmoke;
   border-color: rgb(75, 75, 75);
 }
+
+	.myaccount-spacer {
+		width: 3vw;
+	}
+
+	
+	.notifications-title {
+		font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+		font-size: 3vh;
+		font-weight: 600;
+		color: rgb(59, 58, 58);
+		padding-bottom: 3vh;
+		animation: changeOpacity 0.3s;
+		transition: 0.3s;
+	}
+
+	@keyframes changeOpacity {
+		from {
+			opacity: 0;
+		}
+
+		to {
+			opacity: 1;
+		}
+	}
 
 </style>

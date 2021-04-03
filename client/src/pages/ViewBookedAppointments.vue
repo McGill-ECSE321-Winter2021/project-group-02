@@ -15,17 +15,20 @@
         <label 
         class="form-text"
         v-if="timeslots.startDate===timeslots.endDate"
-        >Appointment Time: {{timeslots.startDate}} </label>
+        >Appointment Time: <br>
+        {{timeslots.startDate}} </label>
 
         <label 
         class="form-text"
         v-if="timeslots.startDate!==timeslots.endDate"
-        >Appointment Time: {{timeslots.startDate}}-{{timeslots.endDate}} </label>
+        >Appointment Time: <br>
+        
+        {{timeslots.startDate}}-{{timeslots.endDate}} </label>
         <br>
 
 
-        <label class="form-text">From {{timeslots.startTime}} to {{timeslots.endTime}}</label><br>
-        <label class="form-text">Appointment Type: {{convertForDisplay(appointment.appointmentType)}}</label>
+        <label class="form-text">{{timeslots.startTime}} to {{timeslots.endTime}}</label><br>
+        <label class="form-text">Type: {{convertForDisplay(appointment.appointmentType)}}</label>
 
         <div class="myaccount-spacer"></div>
 
@@ -155,7 +158,6 @@ export default {
       console.log(`${error}`);
     }
 
-
     var i;
     for(i=0;i<this.appointments.length; i++ ){
       try {
@@ -170,8 +172,6 @@ export default {
       console.log(`${error}`);
     }
     }
-
-
   },
 };
 </script>
@@ -203,7 +203,6 @@ flex-direction: column;
 }
 
 .appointment{
-
 
   text-align:center;
 }
