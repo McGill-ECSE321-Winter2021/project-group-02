@@ -3,8 +3,17 @@
 		<div id="payment-container">
 			<H1 id="payment-title" class="payment-title">Pay for Appointment</H1>
 			<div id="payment-form-container">
-				<label class="appointment-info-payment">Data</label>
-				<!-- TODO EDIT THIS TO DISPLAY APPOINTMENT DATE AND CUSTOMER ETC... ^^^ -->
+				<label
+					class="appointment-info-payment"
+					v-if="this.$store.state.userType === 'assistant'"
+				>
+					Customer: {{ this.customerEmail }}
+				</label>
+				<br />
+				<label class="appointment-info-payment">
+					{{ this.startDate }} - {{ this.startTime }} to
+					{{ this.endTime }}
+				</label>
 				<form
 					class="payment-form"
 					id="payment-form"
@@ -85,6 +94,10 @@
 				cardNo: "",
 				expDate: "",
 				cvc: "",
+				startDate: "",
+				startTime: "",
+				endTime: "",
+				customerEmail: "",
 			};
 		},
 		methods: {
@@ -93,7 +106,7 @@
 				document.getElementById("payment-form-container").style.opacity = 0;
 				document.getElementById("payment-title").style.opacity = 0;
 				setTimeout(function() {
-					t.$router.push("/dashboard"); //TODO CHANGE TO APPOINTMENTS
+					t.$router.push("/viewbookedappointments");
 				}, 300);
 			},
 			change: function() {
@@ -137,10 +150,30 @@
 				}
 			},
 		},
-		mounted() {
-			//if (this.$store.state.user === -1) this.$router.push("/"); TODO UNCOMMENT
-			//fetch customer name, appointment date/time TODO
-			this.$store.state.userType = "assistant";
+		async mounted() {
+			if (this.$store.state.user === -1) this.$router.push("/");
+			let appointmentResponse = await axios.get(
+				proxy.proxy +
+					`/api/customer/getByID/${this.$store.state.apptIdToModify}`
+			);
+			if (appointmentResponse.status === 200) {
+				let apptTime = await axios.get(
+					proxy.proxy +
+						`/api/appointment/getStartAndEnd/${appointmentResponse.data.appointmentId}`
+				);
+				let customer = await axios.get(
+					proxy.proxy +
+						`/api/customer/getById/${appointmentResponse.data.customerId}`
+				);
+				this.startTime = apptTime.data.startTime;
+				this.endTime = apptTime.data.endTime;
+				this.startDate = apptTime.data.startDate;
+				this.customerEmail = customer.data.customerEmail;
+			} else {
+				document.getElementById("payment-error").innerHTML =
+					"Could not find appointment";
+				document.getElementById("payment-error").style.opacity = 1;
+			}
 		},
 	};
 </script>
@@ -172,6 +205,13 @@
 		justify-content: center;
 		flex-direction: column;
 		transition: 0.3s;
+	}
+
+	.appointment-info-payment {
+		font-size: 2vh;
+		font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+		font-weight: 600;
+		color: rgb(75, 75, 75);
 	}
 
 	.payment-button {
