@@ -8,61 +8,92 @@
           v-on:submit.prevent="submitEdit()"
       >
         <h1 id="modify-appointment-title">Modify Appointment</h1>
-        <div id="service-container">
-          <label class="modify-appointment-label">Select a service:</label>
-          <select id="modify-appointment-type"
-                  v-model="apptTypeEdit"
-          >
-            <option value="" selected disabled>Choose service</option>
-            <option value="carWash">Car Wash</option>
-            <option value="maintenance">Maintenance</option>
-            <option value="oilChange">Oil Change</option>
-            <option value="tireChange">Tire Change</option>
-            <option value="towing">Towing</option>
-            <option value="inspection">Inspection</option>
-            <option value="roadsideAssistance">Roadside Assistance</option>
-            <option value="checkup">Checkup</option>
-            <option value="other">Other</option>
-          </select>
+
+        <div id="modify-appointment-form-splitter">
+          <div class="modify-appointment-form-container">
+            <div id="service-container"
+              v-if="this.upcomingAppointment">
+              <label class="modify-appointment-label">Select a service:</label>
+              <select id="modify-appointment-type"
+                      v-model="appointmentType"
+              >
+                <option value="" selected disabled>Choose service</option>
+                <option value="carWash">Car Wash</option>
+                <option value="maintenance">Maintenance</option>
+                <option value="oilChange">Oil Change</option>
+                <option value="tireChange">Tire Change</option>
+                <option value="towing">Towing</option>
+                <option value="inspection">Inspection</option>
+                <option value="roadsideAssistance">Roadside Assistance</option>
+                <option value="checkup">Checkup</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <input
+                class="modify-appointment-input"
+                v-if="this.upcomingAppointment && this.appointmentType === 'other'"
+                v-model="service"
+                type="text"
+                placeholder="service"
+            />
+
+            <div id="modify-appointment-rating-label-container"
+                 v-if="!this.upcomingAppointment">
+              <input
+                  class="modify-appointment-input"
+                  id="modify-appointment-slider"
+                  v-model="rating"
+                  type="range"
+                  min="0"
+                  max="10"
+              />
+              <label class="modify-appointment-label">
+                Rating: {{ this.rating }}
+              </label>
+            </div>
+
+            <textarea
+                v-if="!this.upcomingAppointment"
+                class="modify-appointment-input"
+                id="modify-appointment-edit-feedback"
+                v-model="feedback"
+                placeholder="Write feedback about quality of service..."
+                wrap="soft"
+            />
+
+            <textarea
+                id="modify-appointment-note"
+                placeholder="Write notes to the mechanic..."
+                v-if="this.upcomingAppointment"
+                v-model="note"
+                wrap="soft"
+            />
+          </div>
+
+          <div class="modify-appointment-form-container"
+            v-if="this.upcomingAppointment">
+            <label class="modify-appointment-label">Timeslot:</label>
+            <div id="timeslot-container">
+              <div
+                  class="timeslot"
+                  v-for="(timeslot, index) in timeslots"
+                  :key="index"
+                  :id="timeslot.timeslotId"
+                  @click="timeslotSelect(timeslot)"
+              >
+                <label class="modify-appointment-label">Date: {{ timeslot.startDate }}</label>
+                <div class="timeslot-spacer"></div>
+                <label class="modify-appointment-label"
+                >Time: {{ timeslot.startTime.slice(0, 5) }} to
+                  {{ timeslot.endTime.slice(0, 5) }}</label
+                >
+              </div>
+            </div>
+          </div>
         </div>
 
-        <input
-            class="modify-appointment-input"
-            v-if="this.apptType === 'other'"
-            type="text"
-            placeholder="service"
-        >
-
-        <input
-            v-if="this.pastAppointment"
-            class="modify-appointment-input"
-            id="modify-appointment-edit-rating"
-            v-model="ratingEdit"
-            type="number"
-            min="0"
-            max="10"
-            placeholder="rating [0-10]"
-        />
-
-        <input
-            v-if="this.pastAppointment"
-            class="modify-appointment-input"
-            id="modify-appointment-edit-feedback"
-            v-model="feedbackEdit"
-            type="text"
-            placeholder="feedback"
-        />
-
-        <input
-            v-if="!this.pastAppointment"
-            class="modify-appointment-input"
-            id="modify-appointment-edit-time"
-            v-model="timeEdit"
-            type="text"
-            placeholder="time"
-        />
-
-        <textarea id="modify-appointment-note" placeholder="Write notes to the mechanic..."></textarea>
+        <p id="modify-appointment-error">Invalid information</p>
 
         <div id="modify-appointment-button-container">
           <input
@@ -90,7 +121,17 @@ export default {
     msg: String,
   },
   data() {
-    return {};
+    return {
+      appt: null,
+      appointmentType: "",
+      service: "",
+      rating: -1,
+      feedback: "",
+      note: "",
+      upcomingAppointment: true,
+      selectTimeslotId: [],
+      timeslots: [],
+    };
   },
   methods: {
     ...mapActions(["setApptIdToModify"]),
@@ -107,18 +148,53 @@ export default {
               proxy.proxy + `/api/appointment/getById/${this.apptIdToModify}`
           );
 
-          this.apptData = response.data;
+          this.appt = response.data;
+          this.appointmentType = this.appt.appointmentType;
+          this.service = this.appt.service;
+          this.rating = this.appt.rating;
+          this.feedback = this.appt.feedback;
+          this.timeslots = this.appt.timeslotsId;
 
         } catch (error) {
           console.error(`${error}`);
-          document.getElementById("modify-account-error").innerHTML =
+          document.getElementById("modify-appointment-error").innerHTML =
               "Unknown error, please try again later";
-          document.getElementById("modify-account-error").style.opacity = 1;
+          document.getElementById("modify-appointment-error").style.opacity = 1;
+      }
+
+      if (this.appt === null)
+      {
+        console.error("Failed to find requested appointment to modify. Returning to dashboard");
+        this.$router.push("/dashboard");
+      }
+
+      // if an appointment exists on the backend, it is required to have at least one associated timeslot.
+      try {
+        // fetch data of appt with given ID
+        let response = await axios.get(
+            proxy.proxy + `/api/getTimeslot/${this.appt.timeslotsId[0]}`
+        );
+
+        let endDate = response.data.endDate;
+        let today = new Date();
+
+        this.upcomingAppointment = today < endDate;
+
+      } catch (error) {
+        console.error(`${error}`);
+        document.getElementById("modify-appointment-error").innerHTML =
+            "Unknown error, please try again later";
+        document.getElementById("modify-appointment-error").style.opacity = 1;
       }
     },
     submitEdit: async function() {
       try {
-        let postData = this.apptData;
+        let postData = this.appt;
+        postData.appointmentType = this.appointmentType;
+        postData.service = this.service;
+        postData.rating = this.rating;
+        postData.feedback = this.feedback;
+        postData.timeslots = this.timeslotsId;
 
         let response = await axios.post(
             proxy.proxy + `/api/appointment/modifyAppointment`,
@@ -137,7 +213,46 @@ export default {
             "Unknown error, please try again later";
         document.getElementById("modify-appointment-status").style.opacity = 1;
       }
-    }
+    },
+    timeslotSelect(timeslot) {
+      if (this.selectTimeslotId.length !== 0) {
+        let previousTimeslot = document.getElementById(
+            this.selectTimeslotId[0]
+        );
+        // passing an empty string will revert the css to its default value
+        previousTimeslot.style.backgroundColor = "";
+        previousTimeslot.style.color = "";
+        previousTimeslot.style.borderColor = "";
+      }
+      this.selectTimeslotId = [timeslot.timeslotId];
+      let timeslotComponent = document.getElementById(this.selectTimeslotId[0]);
+      timeslotComponent.style.backgroundColor = "rgb(175, 122, 65)";
+      timeslotComponent.style.color = "whitesmoke";
+      timeslotComponent.style.borderColor = "rgb(75, 75, 75)";
+    },
+    fetchTimeslots: async function() {
+      try {
+        let today = new Date();
+        today = `${today.getFullYear()}-${today.getMonth() +
+        1}-${today.getDate()}`;
+
+        let response = await axios.get(
+            proxy.proxy + "/api/timeslot/available/" + today
+        );
+        this.timeslots = response.data;
+
+        if (this.upcomingAppointment && this.timeslots.length === 0 && this.appt.timeslotsId.length !== 0) {
+          document.getElementById("modify-appointment-error").innerHTML =
+              "There are no availabilities for appointments. Please try again later";
+          document.getElementById("modify-appointment-error").style.opacity = 1;
+        }
+      } catch (error) {
+        console.error(error);
+        document.getElementById("modify-appointment-error").innerHTML =
+            "Something went wrong fetching available timeslots. Please try again later";
+        document.getElementById("modify-appointment-error").style.opacity = 1;
+      }
+    },
   },
   mounted() {
     this.apptIdToModify = this.$store.state.apptIdToModify;
@@ -278,6 +393,72 @@ export default {
   padding-bottom: 3vh;
   animation: changeOpacity 0.3s;
   transition: 0.3s;
+}
+
+#modify-appointment-slider {
+  height: 0.1vh;
+}
+
+#modify-appointment-slider :hover {
+  opacity: 1;
+}
+
+#modify-appointment-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 3vh;
+  height: 3vh;
+  cursor: pointer;
+  background: rgb(235, 164, 89);
+  border-radius: 50%;
+}
+
+#modify-appointment-error {
+  opacity: 0;
+  font-size: 3vh;
+  font-weight: 600;
+  color: rgb(59, 58, 58);
+  transition: 0.3s;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+}
+
+#modify-appointment-form-splitter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  transition: 0.3s;
+}
+
+.modify-appointment-form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  animation: changeOpacity 0.3s;
+  transition: 0.3s;
+  padding-right: 1vw;
+  padding-left: 1vw;
+}
+
+#timeslot-container {
+  background-color: rgb(225, 225, 225);
+  width: 35vw;
+  height: 36vh;
+  overflow-y: scroll;
+  border-radius: 2vh;
+  padding-top: 2vh;
+  padding-bottom: 2vh;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  transition: 0.3s;
+}
+
+#modify-appointment-rating-label-container {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 @keyframes changeOpacity {
