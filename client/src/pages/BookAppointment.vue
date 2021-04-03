@@ -67,7 +67,6 @@
                 @click="timeslotSelect(timeslot)"
               >
                 <label class="form-text">Date: {{ timeslot.startDate }}</label>
-                <div class="timeslot-spacer"></div>
                 <label class="form-text"
                   >Time: {{ timeslot.startTime.slice(0, 5) }} to
                   {{ timeslot.endTime.slice(0, 5) }}</label
@@ -249,8 +248,7 @@ export default {
 <style scoped>
 #book-appointment,
 #book-appointment-container,
-#appointment-form,
-#appointment-type {
+#appointment-form {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -317,6 +315,7 @@ export default {
   transition: 0.3s;
   padding-bottom: 1vh;
   padding-top: 1vh;
+  margin-right: 1vw;
 }
 #form-error {
   color: rgb(255, 0, 0);
@@ -373,16 +372,12 @@ export default {
   animation: changeOpacity, 0.3s;
   transition: 0.3s;
   text-align: center;
-  padding: 2vh;
+  padding: 1vh;
 }
 .timeslot:hover {
   background-color: rgb(175, 122, 65);
   color: whitesmoke;
   border-color: rgb(75, 75, 75);
-}
-
-.timeslot-spacer {
-  width: 1vw;
 }
 
 .form-button {
