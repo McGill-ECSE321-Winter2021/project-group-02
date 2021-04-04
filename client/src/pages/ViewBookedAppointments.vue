@@ -4,48 +4,49 @@
 			<H1 id="appointments-title" class="appointments-title"
 				>Booked Appointments</H1
 			>
-			<div class="list-container">
+			<div class="list-container"
+      v-if="this.appointments.length!==0">
 				<div
 					class="appointment-list"
-					v-for="(appointment, index) in appointments"
+					v-for="(appointment, index) in this.appointments"
 					:key="index"
 					:id="appointment.appointmentId"
 				>
 					<div class="appointments-text-container">
 						<label class="form-text">
-							{{ convertForDisplay(appointment.appointmentType) }}</label
+							{{ convertForDisplay(appointment.appointment.appointmentType) }}</label
 						><br />
 						<label
 							class="form-text"
-							v-if="timeslots.startDate === timeslots.endDate"
+							v-if="appointment.timeslot.startDate === appointment.timeslot.endDate"
 						>
-							{{ timeslots.startDate }}
+							{{ appointment.timeslot.startDate }}
 						</label>
 						<label
 							class="form-text"
-							v-if="timeslots.startDate !== timeslots.endDate"
+							v-else
 						>
-							{{ timeslots.startDate }}-{{ timeslots.endDate }}
+							{{ appointment.timeslot.startDate }}-{{ appointment.timeslot.endDate }}
 						</label>
 						<br />
 						<label class="form-text"
-							>{{ timeslots.startTime }} to {{ timeslots.endTime }}</label
+							>{{ appointment.timeslot.startTime }} to {{ appointment.timeslot.endTime }}</label
 						><br />
 					</div>
 					<button
-						v-if="appointment.paymentStatus == false"
+						v-if="appointment.appointment.paymentStatus == false"
 						class="appointments-button"
-						v-on:click="pay(appointmentId)"
+						v-on:click="pay(appointment.appointment.appointmentId)"
 					>
 						Pay
 					</button>
 					<button
 						class="appointments-button"
-						v-on:click="modify(appointmentId)"
+						v-on:click="modify(appointment.appointment.appointmentId)"
 					>
 						Modify
 					</button>
-					<button class="appointments-button" v-on:click="rate(appointmentId)">
+					<button class="appointments-button" v-on:click="rate(appointment.appointment.appointmentId)">
 						Rate
 					</button>
 				</div>
@@ -118,6 +119,7 @@
 		},
 
 		async mounted() {
+      let tempArray1=[]
 			try {
 				let appointmentResponse = await axios.get(
 					proxy.proxy + `/api/appointment/getall/${this.$store.state.user}`
@@ -125,24 +127,30 @@
 				console.log(appointmentResponse);
 
 				if (appointmentResponse.status !== 200) return;
-				this.appointments = appointmentResponse.data;
+				tempArray1 = appointmentResponse.data;
 			} catch (error) {
 				console.log(`${error}`);
 			}
 
-			var i;
-			for (i = 0; i < this.appointments.length; i++) {
+			let tempArray=[];
+
+			for (let i = 0; i < tempArray1.length; i++) {
 				try {
 					let timeslotResponse = await axios.get(
 						proxy.proxy +
-							`/api/appointment/getStartAndEnd/${this.appointments[i].appointmentId}`
+							`/api/appointment/getStartAndEnd/${tempArray1[i].appointmentId}`
 					);
-					if (timeslotResponse.status !== 200) return;
-					this.timeslots = timeslotResponse.data;
+          let appt = {
+						appointment:tempArray1[i],
+						timeslot:timeslotResponse.data,
+          }
+          tempArray.push(appt);
+
 				} catch (error) {
 					console.log(`${error}`);
 				}
 			}
+      this.appointments=tempArray;
 		},
 	};
 </script>

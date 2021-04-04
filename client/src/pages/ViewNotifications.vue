@@ -15,19 +15,19 @@
 				><br />
 				<label
 					class="form-text"
-					v-if="timeslots.startDate === timeslots.endDate"
+					v-if="timeslots[index].startDate === timeslots[index].endDate"
 				>
-					{{ timeslots.startDate }}
+					{{ timeslots[index].startDate }}
 				</label>
 				<label
 					class="form-text"
-					v-if="timeslots.startDate !== timeslots.endDate"
+					v-if="timeslots[index].startDate !== timeslots[index].endDate"
 				>
-					{{ timeslots.startDate }}-{{ timeslots.endDate }}
+					{{ timeslots[index].startDate }}-{{ timeslots[index].endDate }}
 				</label>
 				<br />
 				<label class="form-text"
-					>{{ timeslots.startTime }} to {{ timeslots.endTime }}</label
+					>{{ timeslots[index].startTime }} to {{ timeslots[index].endTime }}</label
 				><br />
 			</div>
 			<span class="no-notifications" v-if="appointments.length === 0">
@@ -107,7 +107,7 @@
 							`/api/appointment/getStartAndEnd/${this.appointments[i].appointmentId}`
 					);
 					if (timeslotResponse.status !== 200) return;
-					this.timeslots = timeslotResponse.data;
+					this.timeslots.push(timeslotResponse.data);
 				} catch (error) {
 					console.log(`${error}`);
 				}
