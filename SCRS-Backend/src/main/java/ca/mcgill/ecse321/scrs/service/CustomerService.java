@@ -1,7 +1,9 @@
 package ca.mcgill.ecse321.scrs.service;
 
+import ca.mcgill.ecse321.scrs.dao.AppointmentRepository;
 import ca.mcgill.ecse321.scrs.controller.Helper;
 import ca.mcgill.ecse321.scrs.dao.CustomerRepository;
+import ca.mcgill.ecse321.scrs.model.Appointment;
 import ca.mcgill.ecse321.scrs.model.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,9 @@ public class CustomerService
 
     @Autowired
     CustomerRepository customerRepository;
+
+    @Autowired
+    AppointmentRepository appointmentRepository;
 
     @Transactional
     public Customer createCustomer(String email, String name, String password, String phone)
@@ -81,6 +86,9 @@ public class CustomerService
     @Transactional
     public Customer deleteCustomer(Customer customer)
     {
+        List<Appointment> appts = appointmentRepository.findAppointmentsByCustomer(customer);
+        appointmentRepository.deleteAll(appts);
+
         customerRepository.delete(customer);
         return customer;
     }
