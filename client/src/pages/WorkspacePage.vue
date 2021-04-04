@@ -17,7 +17,7 @@
               :key="index"
               :value="workspace"
           > {{
-              workspace.workspaceName
+              workspace.spaceName
           }} </option>
         </select>
 
@@ -161,7 +161,7 @@
             <label class="form-text">Timeslots:</label>
             <button class="text-button" @click="deleteTimeslot()" v-if="selectTimeslotId !== ''">Delete</button>
           </div>
-          <div id="timeslot-select">
+          <div id="timeslots">
             <div
                 class="timeslot"
                 v-for="(timeslot, index) in timeslots"
@@ -223,7 +223,7 @@ export default {
   methods: {
     backViewDash() {
       let t = this;
-      t.cancelButton();
+      t.cancelWorkspace();
       document.getElementById("workspace-title").style.opacity = 0;
       document.getElementById("workspace-option").style.opacity = 0;
       document.getElementById("back").style.opacity = 0;
@@ -242,10 +242,15 @@ export default {
     },
 
     cancelWorkspace() {
+      this.curWorkspace="Select a Workspace";
       this.new=false;
       this.edit=false;
-      this.curWorkspace='Select a Workspace';
       this.newWorkspaceName="";
+      this.timeslots = [];
+      this.selectTimeslotId = "";
+      this.timeslotForm.year = this.timeslotForm.month = this.timeslotForm.day = -1;
+      this.timeslotForm.startHour = this.timeslotForm.startMinute = -1;
+      this.timeslotForm.endHour = this.timeslotForm.endMinute = -1;
       this.errorMsg = "";
     },
 
@@ -279,7 +284,7 @@ export default {
       }
       this.edit = true;
       this.new = false;
-      this.newWorkspaceName = this.curWorkspace.workspaceName;
+      this.newWorkspaceName = this.curWorkspace.spaceName;
       this.errorMsg = "";
       this.timeslotForm.year = this.timeslotForm.month = this.timeslotForm.day = -1;
       this.timeslotForm.startHour = this.timeslotForm.startMinute = -1;
@@ -288,6 +293,7 @@ export default {
       try {
         let response = await axios.get(proxy.proxy + "/api/workspace/availabilities/" + this.curWorkspace.workspaceId);
         this.timeslots = response.data;
+        this.selectTimeslotId = "";
       } catch (error) {
         console.error(error);
         this.cancelWorkspace();
@@ -298,7 +304,7 @@ export default {
     async updateButton() {
       if (this.newWorkspaceName === "" || this.newWorkspaceName === undefined) {
         this.errorMsg = "The workspace name is empty"
-        this.newWorkspaceName = this.curWorkspace.workspaceName;
+        this.newWorkspaceName = this.curWorkspace.spaceName;
         return;
       }
       try {
@@ -313,7 +319,8 @@ export default {
         );
 
         if (updatedWorkspaceResponse.status === 200) {
-          let response = await axios.get(proxy.proxy + "/api/workspace/getAll");
+          this.curWorkspace = updatedWorkspaceResponse.data;
+          let response = await axios.get(proxy.proxy + "/api/workspace/getall");
           this.workspaces = response.data;
         }
       } catch (error) {
@@ -325,6 +332,7 @@ export default {
     async deleteWorkspace() {
       if (this.timeslots.length !== 0) {
         this.errorMsg = "Please delete all timeslots before deleting workspace"
+        return;
       }
       try {
         let workspaceId = this.curWorkspace.workspaceId;
@@ -334,6 +342,8 @@ export default {
         );
 
         if (deleteWorkspaceResponse.status === 200) {
+          let response = await axios.get(proxy.proxy + "/api/workspace/getall");
+          this.workspaces = response.data;
           this.cancelWorkspace();
         }
       } catch (error) {
@@ -394,7 +404,7 @@ export default {
         };
 
         let createTimeslotResponse = await axios.post(
-            proxy.proxy + "/api/workspace/create",
+            proxy.proxy + "/api/timeslot/create",
             createTimeslotData
         );
 
@@ -438,6 +448,7 @@ export default {
         if (deleteWorkspaceResponse.status === 200) {
           let response = await axios.get(proxy.proxy + "/api/workspace/availabilities/" + this.curWorkspace.workspaceId);
           this.timeslots = response.data;
+          this.selectTimeslotId = "";
         }
       } catch (error) {
         console.error(error);
@@ -450,7 +461,7 @@ export default {
     if (this.$store.state.userType !== "assistant") this.$router.push("/dashboard");
 
     try {
-      let response = await axios.get(proxy.proxy + "/api/workspace/getAll");
+      let response = await axios.get(proxy.proxy + "/api/workspace/getall");
       this.workspaces = response.data;
     } catch (error) {
       console.error(error);
@@ -527,13 +538,18 @@ export default {
     transition: 0.3s;
   }
 
-  #timeslot-select {
+  #timeslots {
     background-color: rgb(225, 225, 225);
     width: 30vw;
-    height: 35vh;
+    height: 30vh;
     overflow-y: scroll;
     border-radius: 2vh;
-    margin-top: 1vh;
+    padding-top: 2vh;
+    padding-bottom: 2vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    transition: 0.3s;
   }
 
   #workspace-title {
@@ -610,9 +626,25 @@ export default {
     width: 1vw;
   }
 
+  .timeslot {
+    all: unset;
+    border-radius: 2vh;
+    background-color: rgb(235, 164, 89);
+    border: 0.5vh solid rgb(225, 225, 225);
+    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+    font-size: 3vh;
+    font-weight: 600;
+    color: rgb(75, 75, 75);
+    text-align: center;
+    animation: changeOpacity, 0.3s;
+    transition: 0.3s;
+    padding: 1vh;
+  }
+
   /* hover effect format */
   .form-button:hover,
-  #new-workspace:hover {
+  #new-workspace:hover,
+  .timeslot:hover {
     background-color: rgb(175, 122, 65);
     color: whitesmoke;
     border-color: rgb(75, 75, 75);
