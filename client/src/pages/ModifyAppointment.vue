@@ -92,7 +92,7 @@
 					</div>
 				</div>
 
-				<p id="modify-appointment-error">Invalid information</p>
+				<p class="modify-appointment-label" id="modify-appointment-status"></p>
 
 				<div id="modify-appointment-button-container">
 					<input
@@ -180,7 +180,7 @@
 						postData.timeslots = this.selectTimeslotId[0];
 					}
 
-					let response = await axios.post(
+					let response = await axios.put(
 						proxy.proxy + "/api/appointment/modifyAppointment",
 						postData
 					);
@@ -200,6 +200,8 @@
 						"modify-appointment-status"
 					).style.opacity = 1;
 				}
+
+				this.$router.push("/dashboard");
 			},
 			timeslotSelect(timeslot) {
 				if (this.selectTimeslotId.length !== 0) {
@@ -253,6 +255,7 @@
 			this.setApptIdToModify(-1);
 
 			this.fetchApptById();
+			this.fetchTimeslots();
 		},
 	};
 </script>
