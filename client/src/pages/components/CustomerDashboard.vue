@@ -6,12 +6,10 @@
 				<button class="dashboard-button" @click="bookAppointment()">
 					Create Appointment
 				</button>
-			</div>
-			<div class="customer-dashboard-inside-container">
+				<div class="dashboard-spacer"></div>
 				<button class="dashboard-button" v-on:click="viewBookedAppt()">
 					View All Appointments
 				</button>
-
 				<div class="dashboard-spacer"></div>
 				<button class="dashboard-button" v-on:click="viewNotifs()">
 					View Notifications
