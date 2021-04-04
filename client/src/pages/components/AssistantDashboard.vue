@@ -7,7 +7,9 @@
           Create Appointment
         </button>
         <div class="dashboard-spacer"></div>
-        <button class="dashboard-button">View Appointments</button>
+        <button class="dashboard-button"
+				v-on:click="viewBookedAppt()"
+				>View Appointments</button>
       </div>
       <div class="assistant-dashboard-inside-container">
         <button class="dashboard-button">Modify Appointment</button>
@@ -92,6 +94,13 @@ export default {
       let vm = this;
       setTimeout(function() {
         vm.$router.push("/workspace");
+      }, 300);
+    },
+    viewBookedAppt:function(){
+      let t = this;
+
+      setTimeout(function(){
+        t.$router.push("/viewbookedappointmentsassistant");
       }, 300);
     },
   },
