@@ -62,6 +62,7 @@
 <script>
 	import axios from "axios";
 	import proxy from "../constants.js";
+import { mapActions } from 'vuex';
 
 	export default {
 		name: "ViewBookedAppointments",
@@ -77,14 +78,27 @@
 		},
 
 		methods: {
+      ...mapActions(["setApptIdToModify"]),
 			rate: function(appointmentId) {
-				console.log(appointmentId);
+        let t = this;
+        t.setApptIdToModify(appointmentId);
+				setTimeout(function() {
+					t.$router.push(`/modifyappointment`);
+				}, 300);
 			},
 			pay: function(appointmentId) {
-				console.log(appointmentId); //not reactive??
+        let t = this;
+        t.setApptIdToModify(appointmentId);
+				setTimeout(function() {
+					t.$router.push(`/pay`);
+				}, 300);
 			},
 			modify: function(appointmentId) {
-				console.log(appointmentId);
+        let t = this;
+        t.setApptIdToModify(appointmentId);
+				setTimeout(function() {
+					t.$router.push(`/modifyappointment`);
+				}, 300);
 			},
 
 			convertForDisplay: function(type) {
@@ -275,6 +289,7 @@
 	.list-container {
 		overflow-y: scroll;
 		margin-bottom: 3vh;
+    
 	}
 
 	@keyframes changeOpacity {

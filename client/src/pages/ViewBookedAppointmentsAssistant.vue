@@ -61,6 +61,8 @@
 <script>
 	import axios from "axios";
 	import proxy from "../constants.js";
+	import { mapActions } from 'vuex';
+
 
 	export default {
 		name: "ViewBookedAppointmentsAssistant",
@@ -76,14 +78,20 @@
 		},
 
 		methods: {
-			rate: function(appointmentId) {
-				console.log(appointmentId);
-			},
+		...mapActions(["setApptIdToModify"]),
 			pay: function(appointmentId) {
-				console.log(appointmentId); //not reactive??
+        let t = this;
+        t.setApptIdToModify(appointmentId);
+				setTimeout(function() {
+					t.$router.push(`/pay`);
+				}, 300);
 			},
 			modify: function(appointmentId) {
-				console.log(appointmentId);
+        let t = this;
+        t.setApptIdToModify(appointmentId);
+				setTimeout(function() {
+					t.$router.push(`/modifyappointment`);
+				}, 300);
 			},
 
 			convertForDisplay: function(type) {
@@ -123,7 +131,6 @@
 				let appointmentResponse = await axios.get(
 					proxy.proxy + `/api/appointment/getallappointments`
 				);
-				console.log(appointmentResponse);
 
 				if (appointmentResponse.status !== 200) return;
 				tempArray1 = appointmentResponse.data;
@@ -139,10 +146,16 @@
 						proxy.proxy +
 							`/api/appointment/getStartAndEnd/${tempArray1[i].appointmentId}`
 					);
+					let customerResponse= await axios.get(
+						proxy.proxy +
+							`/api/customer/getByID/${tempArray1[i].customerId}`
+					);
+					console.log(customerResponse);
 					let appt = {
 						appointment:tempArray1[i],
 						timeslot:timeslotResponse.data,
-						email:"test@gmail.com",
+						// email:"test@gmail.com",
+						email:customerResponse.data.email,
 					}
 					tempArray.push(appt);
 
