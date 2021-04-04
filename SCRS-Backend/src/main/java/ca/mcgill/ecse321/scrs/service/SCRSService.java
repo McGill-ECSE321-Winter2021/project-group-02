@@ -6,7 +6,8 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class SCRSService {
+public class SCRSService
+{
 
     @Autowired
     SCRSRepository scrsRepository;

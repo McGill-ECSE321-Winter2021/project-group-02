@@ -3,10 +3,11 @@ package ca.mcgill.ecse321.scrs.model;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import java.util.*;
+import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Time;
-import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Workspace
@@ -122,8 +123,7 @@ public class Workspace
         if (isNewWorkspace)
         {
             aAvailability.setWorkspace(this);
-        }
-        else
+        } else
         {
             availabilities.add(aAvailability);
         }
@@ -179,8 +179,7 @@ public class Workspace
             availabilities.remove(aAvailability);
             availabilities.add(index, aAvailability);
             wasAdded = true;
-        }
-        else
+        } else
         {
             wasAdded = addAvailabilityAt(aAvailability, index);
         }

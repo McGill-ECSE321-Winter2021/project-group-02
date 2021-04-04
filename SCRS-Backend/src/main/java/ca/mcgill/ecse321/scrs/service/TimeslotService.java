@@ -39,7 +39,8 @@ public class TimeslotService
     {
         checkDateValidity(startDate, endDate);
         checkTimeValidity(startTime, endTime);
-        if (workspace == null || workspaceRepository.findByWorkspaceID(workspace.getWorkspaceID()) == null ) throw new IllegalArgumentException("Please input a valid workspace.");
+        if (workspace == null || workspaceRepository.findByWorkspaceID(workspace.getWorkspaceID()) == null)
+            throw new IllegalArgumentException("Please input a valid workspace.");
         Timeslot timeslot = new Timeslot();
         timeslot.setStartDate(startDate);
         timeslot.setEndDate(endDate);
@@ -65,9 +66,10 @@ public class TimeslotService
     @Transactional
     public List<Timeslot> getTimeslotsById(List<Integer> timeslotsId)
     {
-        if (timeslotsId == null || timeslotsId.size() == 0) throw new IllegalArgumentException("Please input at least one valid timeslot ID.");
+        if (timeslotsId == null || timeslotsId.size() == 0)
+            throw new IllegalArgumentException("Please input at least one valid timeslot ID.");
         ArrayList<Timeslot> timeslots = new ArrayList<>();
-        for (int id: timeslotsId)
+        for (int id : timeslotsId)
         {
             timeslots.add(timeslotRepository.findByTimeSlotID(id));
         }
@@ -78,9 +80,10 @@ public class TimeslotService
     public List<Timeslot> getTimeslotsByTechnicianBetweenDates(Technician technician, Date startDate, Date endDate)
     {
         checkDateValidity(startDate, endDate);
-        if (technician == null || technicianRepository.findByScrsUserId(technician.getScrsUserId()) == null) throw new IllegalArgumentException("Invalid technician.");
-        List<Timeslot> timeslotsInPeriod = timeslotRepository.findAllByTechniciansAndStartDateGreaterThanEqualAndAndStartDateLessThanEqualOrderByStartDate(technician, startDate,endDate);
-        List<Timeslot> technicianTimeslots= toList(timeslotRepository.findByTechnicians(technician));
+        if (technician == null || technicianRepository.findByScrsUserId(technician.getScrsUserId()) == null)
+            throw new IllegalArgumentException("Invalid technician.");
+        List<Timeslot> timeslotsInPeriod = timeslotRepository.findAllByTechniciansAndStartDateGreaterThanEqualAndAndStartDateLessThanEqualOrderByStartDate(technician, startDate, endDate);
+        List<Timeslot> technicianTimeslots = toList(timeslotRepository.findByTechnicians(technician));
         technicianTimeslots.retainAll(timeslotsInPeriod);
         return timeslotsInPeriod;
     }
@@ -88,7 +91,8 @@ public class TimeslotService
     @Transactional
     public List<Timeslot> getTimeslotsByWorkspace(Workspace workspace)
     {
-        if (workspace == null || workspaceRepository.findByWorkspaceID(workspace.getWorkspaceID()) == null) throw new IllegalArgumentException("Invalid workspace.");
+        if (workspace == null || workspaceRepository.findByWorkspaceID(workspace.getWorkspaceID()) == null)
+            throw new IllegalArgumentException("Invalid workspace.");
         return toList(timeslotRepository.findByWorkspace(workspace));
     }
 
@@ -103,8 +107,10 @@ public class TimeslotService
     @Transactional
     public boolean assignTechnicianToTimeslot(Technician tech, Timeslot ts)
     {
-        if (tech == null || technicianRepository.findByScrsUserId(tech.getScrsUserId()) == null) throw new IllegalArgumentException("Invalid technician.");
-        if (ts == null || timeslotRepository.findByTimeSlotID(ts.getTimeSlotID()) == null) throw new IllegalArgumentException("Invalid timeslot.");
+        if (tech == null || technicianRepository.findByScrsUserId(tech.getScrsUserId()) == null)
+            throw new IllegalArgumentException("Invalid technician.");
+        if (ts == null || timeslotRepository.findByTimeSlotID(ts.getTimeSlotID()) == null)
+            throw new IllegalArgumentException("Invalid timeslot.");
         if (ts.getTechnicians() != null && ts.getTechnicians().contains(tech)) return false;
         ts.addTechnician(tech);
         timeslotRepository.save(ts);

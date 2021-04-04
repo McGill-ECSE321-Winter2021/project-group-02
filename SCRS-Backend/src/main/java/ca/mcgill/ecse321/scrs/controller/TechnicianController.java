@@ -31,25 +31,12 @@ public class TechnicianController
 
     @PostMapping(value = {"/create", "/create/"})
     @CrossOrigin(origins = "*")
-    public ResponseEntity<TechnicianDto> createTechnician(@RequestBody Technician technician, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    public ResponseEntity<TechnicianDto> createTechnician(@RequestBody Technician technician)
     {
-        int id = Integer.parseInt(ID);
-        if (id == -1)
-        {
-            // TODO handle no login error with cookies (uncomment next line)
-            //return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.UNAUTHORIZED);
-            // Please login to create a technician account.
-        }
         if (technician == null)
         {
             return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.EXPECTATION_FAILED);
             // Invalid technician. Please submit a valid technician account to be created.
-        }
-        if (!isAdmin(scrsUserService.getSCRSUserByID(id))) //does not have permission to edit.
-        {
-            // TODO handle bad login error with cookies (uncomment next line)
-            //return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.UNAUTHORIZED);
-            // You do not have permission to create a technician account.
         }
         if (scrsUserService.getSCRSUserByEmail(technician.getEmail()) != null)
         {
@@ -62,25 +49,12 @@ public class TechnicianController
 
     @PutMapping(value = {"/update", "/update/"})
     @CrossOrigin(origins = "*")
-    public ResponseEntity<TechnicianDto> updateAssistant(@RequestBody Technician technician, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    public ResponseEntity<TechnicianDto> updateAssistant(@RequestBody Technician technician)
     {
-        int id = Integer.parseInt(ID);
-        if (id == -1)
-        {
-            // TODO handle no login error with cookies (uncomment next line)
-            //return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.UNAUTHORIZED);
-            // Please login to modify a technician account.
-        }
         if (technician == null)
         {
             return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.EXPECTATION_FAILED);
             // Invalid technician.
-        }
-        if (!isAdmin(scrsUserService.getSCRSUserByID(id)) && id != technician.getScrsUserId()) //does not have permission to edit.
-        {
-            // TODO handle bad login error with cookies (uncomment next line)
-            //return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.UNAUTHORIZED);
-            // You do not have permission to create a technician account.
         }
         if (technicianService.getTechnicianByID(technician.getScrsUserId()) == null)
         {
@@ -98,27 +72,14 @@ public class TechnicianController
 
     @DeleteMapping(value = {"/delete/{id}", "/delete/{id}/"})
     @CrossOrigin(origins = "*")
-    public ResponseEntity<TechnicianDto> deleteTechnician(@PathVariable String id, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    public ResponseEntity<TechnicianDto> deleteTechnician(@PathVariable String id)
     {
         int technicianID = Integer.parseInt(id);
-        int idCookie = Integer.parseInt(ID);
-        if (idCookie == -1)
-        {
-            // TODO handle no login error with cookies (uncomment next line)
-            //return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.UNAUTHORIZED);
-            // Please login to delete a technician account.
-        }
         Technician technician = technicianService.getTechnicianByID(technicianID);
         if (technician == null)
         {
             return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.NOT_ACCEPTABLE);
             // Invalid technician. Please submit a valid technician account to be deleted.
-        }
-        if (!isAdmin(scrsUserService.getSCRSUserByID(idCookie)) && idCookie != technicianID) //does not have permission to edit.
-        {
-            // TODO handle bad login error with cookies (uncomment next line)
-            //return new ResponseEntity<TechnicianDto>(new TechnicianDto(), HttpStatus.UNAUTHORIZED);
-            // You cannot delete a technician account other than your own.
         }
         return new ResponseEntity<>(convertToDto(technicianService.deleteTechnician(technician)), HttpStatus.OK);
     }

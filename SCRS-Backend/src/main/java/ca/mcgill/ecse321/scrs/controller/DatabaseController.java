@@ -43,7 +43,8 @@ public class DatabaseController
     }
 
     @DeleteMapping("/wipe")
-    public ResponseEntity<Boolean> loginCustomer() {
+    public ResponseEntity<Boolean> loginCustomer()
+    {
         clearDatabase();
         return new ResponseEntity<>(true, HttpStatus.OK);
     }

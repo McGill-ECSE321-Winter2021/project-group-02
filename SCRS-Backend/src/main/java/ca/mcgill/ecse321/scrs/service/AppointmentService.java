@@ -16,7 +16,8 @@ import java.util.List;
 import static ca.mcgill.ecse321.scrs.service.ServiceHelpers.toList;
 
 @Service
-public class AppointmentService {
+public class AppointmentService
+{
 
     @Autowired
     AppointmentRepository appointmentRepository;
@@ -26,12 +27,15 @@ public class AppointmentService {
     TimeslotRepository timeslotRepository;
 
     @Transactional
-    public Appointment createAppointment(Appointment.AppointmentType appointmentType, String service, String note, boolean paid, Customer customer, Timeslot... timeslots) {
-        if(appointmentType == null) throw new IllegalArgumentException("Please submit a valid appointment type.");
-        if(customer == null || customerRepository.findByScrsUserId(customer.getScrsUserId()) == null) throw new IllegalArgumentException("Please submit a valid customer.");
+    public Appointment createAppointment(Appointment.AppointmentType appointmentType, String service, String note, boolean paid, Customer customer, Timeslot... timeslots)
+    {
+        if (appointmentType == null) throw new IllegalArgumentException("Please submit a valid appointment type.");
+        if (customer == null || customerRepository.findByScrsUserId(customer.getScrsUserId()) == null)
+            throw new IllegalArgumentException("Please submit a valid customer.");
         try
         {
-            if(timeslots.length == 0 || timeslotRepository.findByTimeSlotID(timeslots[0].getTimeSlotID()) == null) throw new IllegalArgumentException("Please select at least one valid timeslot.");
+            if (timeslots.length == 0 || timeslotRepository.findByTimeSlotID(timeslots[0].getTimeSlotID()) == null)
+                throw new IllegalArgumentException("Please select at least one valid timeslot.");
         } catch (NullPointerException e)
         {
             throw new IllegalArgumentException("Please select at least one valid timeslot.");
@@ -48,27 +52,32 @@ public class AppointmentService {
     }
 
     @Transactional
-    public List<Appointment> getAllAppointments() {
+    public List<Appointment> getAllAppointments()
+    {
         return toList(appointmentRepository.findAll());
     }
 
     @Transactional
-    public Appointment getAppointmentById(int id) {
+    public Appointment getAppointmentById(int id)
+    {
         return appointmentRepository.findByAppointmentID(id);
     }
 
     @Transactional
-    public List<Appointment> getAppointmentsByCustomer(Customer customer) {
+    public List<Appointment> getAppointmentsByCustomer(Customer customer)
+    {
         return appointmentRepository.findAppointmentsByCustomer(customer);
     }
 
     @Transactional
-    public Appointment getAppointmentByTimeslot(Timeslot timeslot) {
+    public Appointment getAppointmentByTimeslot(Timeslot timeslot)
+    {
         return appointmentRepository.findByTimeslotsContains(timeslot);
     }
 
     @Transactional
-    public Appointment rateAppointment(int appointmentId, int rating) {
+    public Appointment rateAppointment(int appointmentId, int rating)
+    {
         Appointment appointment = getAppointmentById(appointmentId);
         if (appointment == null) throw new IllegalArgumentException("No such appointment!");
         if (rating > 10 || rating < 0) throw new IllegalArgumentException("Invalid rating");
@@ -84,9 +93,11 @@ public class AppointmentService {
         if (appt == null) throw new IllegalArgumentException("Invalid appointment");
         if (appt.getAppointmentType() == null) throw new IllegalArgumentException("Invalid appointment type.");
         if (appt.getCustomerId() == -1) throw new IllegalArgumentException("Invalid customer.");
-        if (appt.getTimeslotsId() == null || appt.getTimeslotsId().size() == 0) throw new IllegalArgumentException("No valid timeslots selected.");
-        if (appt.getRating() != -1 && (appt.getRating() > 10 || appt.getRating() < 0)) throw new IllegalArgumentException("Invalid rating");
-  
+        if (appt.getTimeslotsId() == null || appt.getTimeslotsId().size() == 0)
+            throw new IllegalArgumentException("No valid timeslots selected.");
+        if (appt.getRating() != -1 && (appt.getRating() > 10 || appt.getRating() < 0))
+            throw new IllegalArgumentException("Invalid rating");
+
         Appointment apptToModify = appointmentRepository.findByAppointmentID(appt.getAppointmentId());
         if (apptToModify == null) throw new IllegalArgumentException("No such appointment exists");
 

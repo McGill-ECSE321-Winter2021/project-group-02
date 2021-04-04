@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ca.mcgill.ecse321.scrs.controller.Helper.*;
+import static ca.mcgill.ecse321.scrs.controller.Helper.convertListToDto;
+import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDto;
 
 @RestController
 @RequestMapping(path = "/api/workspace")
@@ -35,16 +36,19 @@ public class WorkspaceController
         {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        try {
+        try
+        {
             return new ResponseEntity<>(convertToDto(workspaceService.createWorkspace(workspaceName)), HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping(value = {"/update", "/update/"})
     @CrossOrigin(origins = "*")
-    public ResponseEntity<WorkspaceDto> updateWorkspaceName(@RequestBody WorkspaceDto workspace) {
+    public ResponseEntity<WorkspaceDto> updateWorkspaceName(@RequestBody WorkspaceDto workspace)
+    {
         if (workspace == null)
         {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -54,10 +58,12 @@ public class WorkspaceController
         {
             return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         }
-        try {
+        try
+        {
             updated.setSpaceName(workspace.getSpaceName());
             return new ResponseEntity<>(convertToDto(workspaceService.updateWorkspace(updated)), HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -66,43 +72,49 @@ public class WorkspaceController
     @CrossOrigin(origins = "*")
     public ResponseEntity<WorkspaceDto> deleteWorkspace(@PathVariable("id") int workspaceId)
     {
-        try {
+        try
+        {
             Workspace workspace = workspaceService.getWorkspaceById(workspaceId);
             if (workspace == null)
             {
                 return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             return new ResponseEntity<>(convertToDto(workspaceService.deleteWorkspace(workspace)), HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @GetMapping(value = {"/availabilities/{id}","/availabilities/{id}/"})
+    @GetMapping(value = {"/availabilities/{id}", "/availabilities/{id}/"})
     @CrossOrigin(origins = "*")
     public ResponseEntity<List<TimeslotDto>> getAllAvailableTimeslotsByWorkspace(@PathVariable("id") int workspaceId)
     {
-        try {
-            Workspace workspace= workspaceService.getWorkspaceById(workspaceId);
-            if(workspace==null)
+        try
+        {
+            Workspace workspace = workspaceService.getWorkspaceById(workspaceId);
+            if (workspace == null)
             {
                 return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
             }
-            return new ResponseEntity<>(convertToDto(timeslotService.getTimeslotsByWorkspace(workspace)),HttpStatus.OK);
-        } catch (Exception e) {
+            return new ResponseEntity<>(convertToDto(timeslotService.getTimeslotsByWorkspace(workspace)), HttpStatus.OK);
+        } catch (Exception e)
+        {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
-    @GetMapping(value = {"/getall","/getall/"})
+    @GetMapping(value = {"/getall", "/getall/"})
     @CrossOrigin(origins = "*")
     public ResponseEntity<List<WorkspaceDto>> getAll()
     {
-        try {
+        try
+        {
             ArrayList<Workspace> workspaces = new ArrayList<>(workspaceService.getAllWorkspaces());
-            return new ResponseEntity<>(convertListToDto(workspaces),HttpStatus.OK);
-        } catch (Exception e) {
+            return new ResponseEntity<>(convertListToDto(workspaces), HttpStatus.OK);
+        } catch (Exception e)
+        {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

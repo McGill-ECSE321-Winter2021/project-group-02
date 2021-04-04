@@ -39,14 +39,14 @@ public class CustomerDto
         return email;
     }
 
-    public String getCustomerPhone()
-    {
-        return phone;
-    }
-
     public void setCustomerEmail(String email)
     {
         this.email = email;
+    }
+
+    public String getCustomerPhone()
+    {
+        return phone;
     }
 
     public void setCustomerPhone(String phone)
