@@ -21,11 +21,6 @@
 				<button class="dashboard-button">
 					Available Time Slots
 				</button>
-				<div class="dashboard-spacer"></div>
-				<button class="dashboard-button">Pay for Service</button>
-			</div>
-			<div class="customer-dashboard-inside-container">
-				<button class="dashboard-button">Rate Service</button>
 			</div>
 		</div>
 		<div class="customer-dashboard-container" id="b">
