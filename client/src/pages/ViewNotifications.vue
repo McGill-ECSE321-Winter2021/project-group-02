@@ -11,7 +11,9 @@
 				:id="appointment.appointmentId"
 			>
 				<label class="form-text">
-					{{ convertForDisplay(appointment.appointment.appointmentType) }}</label
+					{{
+						convertForDisplay(appointment.appointment.appointmentType)
+					}}</label
 				><br />
 				<label
 					class="form-text"
@@ -19,15 +21,15 @@
 				>
 					{{ appointment.timeslot.startDate }}
 				</label>
-				<label
-					class="form-text"
-					v-else
-				>
-					{{ appointment.timeslot.startDate }}-{{ appointment.timeslot.endDate }}
+				<label class="form-text" v-else>
+					{{ appointment.timeslot.startDate }}-{{
+						appointment.timeslot.endDate
+					}}
 				</label>
 				<br />
 				<label class="form-text"
-					>{{ appointment.timeslot.startTime }} to {{ appointment.timeslot.endTime }}</label
+					>{{ appointment.timeslot.startTime }} to
+					{{ appointment.timeslot.endTime }}</label
 				><br />
 			</div>
 			<span class="no-notifications" v-if="appointments.length === 0">
@@ -86,7 +88,7 @@
 			},
 		},
 		async mounted() {
-			let tempArray1=[];
+			let tempArray1 = [];
 			try {
 				let notificationResponse = await axios.get(
 					proxy.proxy +
@@ -95,12 +97,10 @@
 
 				if (notificationResponse.status !== 200) return;
 				tempArray1 = notificationResponse.data;
-
 			} catch (error) {
 				console.log(`${error}`);
 			}
-			let tempArray=[];
-
+			let tempArray = [];
 
 			for (let i = 0; i < tempArray1.length; i++) {
 				try {
@@ -109,16 +109,15 @@
 							`/api/appointment/getStartAndEnd/${tempArray1[i].appointmentId}`
 					);
 					let appt = {
-						appointment:tempArray1[i],
-						timeslot:timeslotResponse.data,
-					}
+						appointment: tempArray1[i],
+						timeslot: timeslotResponse.data,
+					};
 					tempArray.push(appt);
-
 				} catch (error) {
 					console.log(`${error}`);
 				}
 			}
-			this.appointments=tempArray;
+			this.appointments = tempArray;
 		},
 	};
 </script>

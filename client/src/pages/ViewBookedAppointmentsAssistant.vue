@@ -4,9 +4,7 @@
 			<H1 id="appointmentsassistant-title" class="appointmentsassistant-title"
 				>All Booked Appointments</H1
 			>
-			<div class="list-container"
-				v-if="this.appointments.length!==0"
->
+			<div class="list-container" v-if="this.appointments.length !== 0">
 				<div
 					class="appointmentsassistant-list"
 					v-for="(appointment, index) in this.appointments"
@@ -14,25 +12,30 @@
 					:id="appointment.appointmentId"
 				>
 					<div class="appointmentsassistant-text-container">
-						<label class="customer-email">{{appointment.email}}</label><br>
+						<label class="customer-email">{{ appointment.email }}</label
+						><br />
 						<label class="form-text">
-							{{ convertForDisplay(appointment.appointment.appointmentType) }}</label
+							{{
+								convertForDisplay(appointment.appointment.appointmentType)
+							}}</label
 						><br />
 						<label
 							class="form-text"
-							v-if="appointment.timeslot.startDate === appointment.timeslot.endDate"
+							v-if="
+								appointment.timeslot.startDate === appointment.timeslot.endDate
+							"
 						>
 							{{ appointment.timeslot.startDate }}
 						</label>
-						<label
-							class="form-text"
-							v-else
-						>
-							{{ appointment.timeslot.startDate }}-{{ appointment.timeslot.endDate }}
+						<label class="form-text" v-else>
+							{{ appointment.timeslot.startDate }}-{{
+								appointment.timeslot.endDate
+							}}
 						</label>
 						<br />
 						<label class="form-text"
-							>{{ appointment.timeslot.startTime }} to {{ appointment.timeslot.endTime }}</label
+							>{{ appointment.timeslot.startTime }} to
+							{{ appointment.timeslot.endTime }}</label
 						><br />
 					</div>
 					<button
@@ -49,7 +52,10 @@
 						Modify
 					</button>
 				</div>
-				<span class="no-appointmentsassistant" v-if="this.appointments.length === 0">
+				<span
+					class="no-appointmentsassistant"
+					v-if="this.appointments.length === 0"
+				>
 					No appointments
 				</span>
 				<button id="back-button" v-on:click="backViewDash()">Back</button>
@@ -61,8 +67,7 @@
 <script>
 	import axios from "axios";
 	import proxy from "../constants.js";
-	import { mapActions } from 'vuex';
-
+	import { mapActions } from "vuex";
 
 	export default {
 		name: "ViewBookedAppointmentsAssistant",
@@ -73,22 +78,21 @@
 		data() {
 			return {
 				appointments: [],
-			
 			};
 		},
 
 		methods: {
-		...mapActions(["setApptIdToModify"]),
+			...mapActions(["setApptIdToModify"]),
 			pay: function(appointmentId) {
-        let t = this;
-        t.setApptIdToModify(appointmentId);
+				let t = this;
+				t.setApptIdToModify(appointmentId);
 				setTimeout(function() {
 					t.$router.push(`/pay`);
 				}, 300);
 			},
 			modify: function(appointmentId) {
-        let t = this;
-        t.setApptIdToModify(appointmentId);
+				let t = this;
+				t.setApptIdToModify(appointmentId);
 				setTimeout(function() {
 					t.$router.push(`/modifyappointment`);
 				}, 300);
@@ -124,9 +128,9 @@
 				}, 300);
 			},
 		},
-		
+
 		async mounted() {
-			let tempArray1=[];
+			let tempArray1 = [];
 			try {
 				let appointmentResponse = await axios.get(
 					proxy.proxy + `/api/appointment/getallappointments`
@@ -138,7 +142,7 @@
 				console.log(`${error}`);
 			}
 
-			let tempArray=[];
+			let tempArray = [];
 
 			for (let i = 0; i < tempArray1.length; i++) {
 				try {
@@ -146,24 +150,22 @@
 						proxy.proxy +
 							`/api/appointment/getStartAndEnd/${tempArray1[i].appointmentId}`
 					);
-					let customerResponse= await axios.get(
-						proxy.proxy +
-							`/api/customer/getByID/${tempArray1[i].customerId}`
+					let customerResponse = await axios.get(
+						proxy.proxy + `/api/customer/getByID/${tempArray1[i].customerId}`
 					);
 					console.log(customerResponse);
 					let appt = {
-						appointment:tempArray1[i],
-						timeslot:timeslotResponse.data,
+						appointment: tempArray1[i],
+						timeslot: timeslotResponse.data,
 						// email:"test@gmail.com",
-						email:customerResponse.data.email,
-					}
+						email: customerResponse.data.email,
+					};
 					tempArray.push(appt);
-
 				} catch (error) {
 					console.log(`${error}`);
 				}
 			}
-			this.appointments=tempArray;
+			this.appointments = tempArray;
 			console.log(this.appointments);
 		},
 	};

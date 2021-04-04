@@ -4,8 +4,7 @@
 			<H1 id="appointments-title" class="appointments-title"
 				>Booked Appointments</H1
 			>
-			<div class="list-container"
-      v-if="this.appointments.length!==0">
+			<div class="list-container" v-if="this.appointments.length !== 0">
 				<div
 					class="appointment-list"
 					v-for="(appointment, index) in this.appointments"
@@ -14,23 +13,27 @@
 				>
 					<div class="appointments-text-container">
 						<label class="form-text">
-							{{ convertForDisplay(appointment.appointment.appointmentType) }}</label
+							{{
+								convertForDisplay(appointment.appointment.appointmentType)
+							}}</label
 						><br />
 						<label
 							class="form-text"
-							v-if="appointment.timeslot.startDate === appointment.timeslot.endDate"
+							v-if="
+								appointment.timeslot.startDate === appointment.timeslot.endDate
+							"
 						>
 							{{ appointment.timeslot.startDate }}
 						</label>
-						<label
-							class="form-text"
-							v-else
-						>
-							{{ appointment.timeslot.startDate }}-{{ appointment.timeslot.endDate }}
+						<label class="form-text" v-else>
+							{{ appointment.timeslot.startDate }}-{{
+								appointment.timeslot.endDate
+							}}
 						</label>
 						<br />
 						<label class="form-text"
-							>{{ appointment.timeslot.startTime }} to {{ appointment.timeslot.endTime }}</label
+							>{{ appointment.timeslot.startTime }} to
+							{{ appointment.timeslot.endTime }}</label
 						><br />
 					</div>
 					<button
@@ -46,7 +49,10 @@
 					>
 						Modify
 					</button>
-					<button class="appointments-button" v-on:click="rate(appointment.appointment.appointmentId)">
+					<button
+						class="appointments-button"
+						v-on:click="rate(appointment.appointment.appointmentId)"
+					>
 						Rate
 					</button>
 				</div>
@@ -62,7 +68,7 @@
 <script>
 	import axios from "axios";
 	import proxy from "../constants.js";
-import { mapActions } from 'vuex';
+	import { mapActions } from "vuex";
 
 	export default {
 		name: "ViewBookedAppointments",
@@ -78,24 +84,24 @@ import { mapActions } from 'vuex';
 		},
 
 		methods: {
-      ...mapActions(["setApptIdToModify"]),
+			...mapActions(["setApptIdToModify"]),
 			rate: function(appointmentId) {
-        let t = this;
-        t.setApptIdToModify(appointmentId);
+				let t = this;
+				t.setApptIdToModify(appointmentId);
 				setTimeout(function() {
 					t.$router.push(`/modifyappointment`);
 				}, 300);
 			},
 			pay: function(appointmentId) {
-        let t = this;
-        t.setApptIdToModify(appointmentId);
+				let t = this;
+				t.setApptIdToModify(appointmentId);
 				setTimeout(function() {
 					t.$router.push(`/pay`);
 				}, 300);
 			},
 			modify: function(appointmentId) {
-        let t = this;
-        t.setApptIdToModify(appointmentId);
+				let t = this;
+				t.setApptIdToModify(appointmentId);
 				setTimeout(function() {
 					t.$router.push(`/modifyappointment`);
 				}, 300);
@@ -133,7 +139,7 @@ import { mapActions } from 'vuex';
 		},
 
 		async mounted() {
-      let tempArray1=[]
+			let tempArray1 = [];
 			try {
 				let appointmentResponse = await axios.get(
 					proxy.proxy + `/api/appointment/getall/${this.$store.state.user}`
@@ -146,7 +152,7 @@ import { mapActions } from 'vuex';
 				console.log(`${error}`);
 			}
 
-			let tempArray=[];
+			let tempArray = [];
 
 			for (let i = 0; i < tempArray1.length; i++) {
 				try {
@@ -154,17 +160,16 @@ import { mapActions } from 'vuex';
 						proxy.proxy +
 							`/api/appointment/getStartAndEnd/${tempArray1[i].appointmentId}`
 					);
-          let appt = {
-						appointment:tempArray1[i],
-						timeslot:timeslotResponse.data,
-          }
-          tempArray.push(appt);
-
+					let appt = {
+						appointment: tempArray1[i],
+						timeslot: timeslotResponse.data,
+					};
+					tempArray.push(appt);
 				} catch (error) {
 					console.log(`${error}`);
 				}
 			}
-      this.appointments=tempArray;
+			this.appointments = tempArray;
 		},
 	};
 </script>
@@ -289,7 +294,6 @@ import { mapActions } from 'vuex';
 	.list-container {
 		overflow-y: scroll;
 		margin-bottom: 3vh;
-    
 	}
 
 	@keyframes changeOpacity {
