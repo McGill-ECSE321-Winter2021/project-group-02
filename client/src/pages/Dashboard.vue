@@ -48,28 +48,16 @@
 		},
 		methods: {
 			...mapActions(["setUser"]),
-			logout: async function() {
-				try {
-					let logoutResponse = await axios.get(
-						proxy.proxy + "/api/login/logout"
-					);
-					if (logoutResponse.status === 200) {
-						this.setUser({ user: -1, userType: "" });
-						document.getElementById(
-							"dashboard-change-opacity"
-						).style.opacity = 0;
-						document.getElementById("logout-button").style.opacity = 0;
-						document.getElementById("dashboard-container").style.height =
-							"50vh";
-						document.getElementById("dashboard-container").style.width = "50vw";
-						let vm = this;
-						setTimeout(function() {
-							vm.$router.push("/");
-						}, 300);
-					} else return;
-				} catch (error) {
-					console.log(`${error}`);
-				}
+			logout: function() {
+				this.setUser({ user: -1, userType: "" });
+				document.getElementById("dashboard-change-opacity").style.opacity = 0;
+				document.getElementById("logout-button").style.opacity = 0;
+				document.getElementById("dashboard-container").style.height = "50vh";
+				document.getElementById("dashboard-container").style.width = "50vw";
+				let vm = this;
+				setTimeout(function() {
+					vm.$router.push("/");
+				}, 300);
 			},
 		},
 		mounted() {
