@@ -4,10 +4,16 @@ import Mainpage from "./pages/Mainpage.vue";
 import Dashboard from "./pages/Dashboard.vue";
 import MyAccount from "./pages/MyAccount.vue";
 import ViewTechnicianSchedule from "./pages/ViewTechnicianSchedule.vue";
+import ViewTechnicianSchedule2 from "./pages/ViewTechnicianSchedule2.vue";
 import ModifyAppointment from "./pages/ModifyAppointment.vue";
 import AssignTechnicianSchedule from "./pages/AssignTechnicianSchedule.vue";
 import CreateAccount from "./pages/CreateAccount.vue";
 import BookAppointment from "./pages/BookAppointment";
+import PayForAppointment from "./pages/PayForAppointment.vue";
+import WorkspacePage from "./pages/WorkspacePage";
+import ViewNotifications from "./pages/ViewNotifications.vue";
+import ViewBookedAppointments from "./pages/ViewBookedAppointments.vue";
+import ViewBookedAppointmentsAssistant from "./pages/ViewBookedAppointmentsAssistant.vue";
 
 Vue.use(Router);
 
@@ -36,6 +42,11 @@ export default new Router({
       component: ViewTechnicianSchedule,
     },
     {
+      path: "/viewtechnicianschedule2",
+      name: "ViewTechnicianSchedule2",
+      component: ViewTechnicianSchedule2,
+    },
+    {
       path: "/modifyappointment",
       name: "modifyAppointment",
       component: ModifyAppointment,
@@ -54,6 +65,31 @@ export default new Router({
       path: "/bookappointment",
       name: "BookAppointment",
       component: BookAppointment,
+    },
+    {
+      path: "/pay",
+      name: "PayForAppointment",
+      component: PayForAppointment,
+    },
+    {
+      path: "/workspace",
+      name: "WorkspacePage",
+      component: WorkspacePage,
+    },
+    {
+      path: "/viewnotifications",
+      name: "ViewNotifications",
+      component: ViewNotifications,
+    },
+    {
+      path: "/viewbookedappointments",
+      name: "ViewBookedAppointments",
+      component: ViewBookedAppointments,
+    },
+    {
+      path: "/viewbookedappointmentsassistant",
+      name: "ViewBookedAppointmentsAssistant",
+      component: ViewBookedAppointmentsAssistant,
     },
   ],
 });

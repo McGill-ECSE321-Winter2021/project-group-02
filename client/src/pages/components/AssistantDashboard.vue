@@ -7,13 +7,8 @@
           Create Appointment
         </button>
         <div class="dashboard-spacer"></div>
-        <button class="dashboard-button">View Appointments</button>
-      </div>
-      <div class="assistant-dashboard-inside-container">
-        <button class="dashboard-button">Modify Appointment</button>
-        <div class="dashboard-spacer"></div>
-        <button class="dashboard-button">
-          Available Time Slots
+        <button class="dashboard-button" v-on:click="viewBookedAppt()">
+          View Appointments
         </button>
       </div>
     </div>
@@ -28,15 +23,18 @@
     </div>
     <div class="assistant-dashboard-container" id="c">
       <p class="dashboard-title">Technician</p>
-      <button class="dashboard-button">View Technician Schedule</button>
+      <button class="dashboard-button" @click="viewTechnicianSchedule()">
+        View Technician Schedule
+      </button>
       <button class="dashboard-button" @click="assignSchedule()">
         Assign Schedule to Technician
       </button>
     </div>
     <div class="assistant-dashboard-container" id="d">
-      <p class="dashboard-title">Workpaces</p>
-      <button class="dashboard-button">Set Space Availabilities</button>
-      <button class="dashboard-button">View Space Availabilities</button>
+      <p class="dashboard-title">Worspaces</p>
+      <button class="dashboard-button" @click="workspace()">
+        View Spaces and Availabilities
+      </button>
     </div>
   </div>
 </template>
@@ -69,6 +67,14 @@ export default {
         vm.$router.push("/assigntechnicianschedule");
       }, 300);
     },
+    viewTechnicianSchedule: function() {
+      document.getElementById("assistant-dashboard").style.opacity = 0;
+      document.getElementById("logout-button").style.opacity = 0;
+      let vm = this;
+      setTimeout(function() {
+        vm.$router.push("/viewtechnicianschedule2");
+      }, 300);
+    },
     createAccount: function() {
       document.getElementById("assistant-dashboard").style.opacity = 0;
       document.getElementById("logout-button").style.opacity = 0;
@@ -83,6 +89,21 @@ export default {
       let vm = this;
       setTimeout(function() {
         vm.$router.push("/bookappointment");
+      }, 300);
+    },
+    workspace: function() {
+      document.getElementById("assistant-dashboard").style.opacity = 0;
+      document.getElementById("logout-button").style.opacity = 0;
+      let vm = this;
+      setTimeout(function() {
+        vm.$router.push("/workspace");
+      }, 300);
+    },
+    viewBookedAppt: function() {
+      let t = this;
+
+      setTimeout(function() {
+        t.$router.push("/viewbookedappointmentsassistant");
       }, 300);
     },
   },

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.Date;
 import java.util.List;
 
-import static ca.mcgill.ecse321.scrs.controller.Helper.*;
+import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDto;
 
 @RestController
 @RequestMapping(path = "/api/timeslot")
@@ -39,6 +39,26 @@ public class TimeslotController
         List<Timeslot> timeslots = timeslotService.getAllTimeslots();
         return new ResponseEntity<>(convertToDto(timeslots), HttpStatus.OK);
     }
+
+    @GetMapping(value = {"/getTimeslot/{id}", "/getTimeslot/{id}/"})
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<TimeslotDto> getAllAvailableTimeslotsById(@PathVariable("id") int timeslotId)
+    {
+        try
+        {
+            Timeslot timeslot = timeslotService.getTimeslotById(timeslotId);
+            if (timeslot == null)
+            {
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            return new ResponseEntity<>(convertToDto(timeslotService.getTimeslotById(timeslotId)), HttpStatus.OK);
+        } catch (Exception e)
+        {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
 
     @GetMapping(value = {"/available/{startDate}", "/available/{startDate}/"})
     @CrossOrigin(origins = "*")

@@ -1,6 +1,5 @@
 package ca.mcgill.ecse321.scrs.dto;
 
-import ca.mcgill.ecse321.scrs.model.Appointment;
 import ca.mcgill.ecse321.scrs.model.Appointment.AppointmentType;
 import ca.mcgill.ecse321.scrs.model.Timeslot;
 
@@ -94,7 +93,7 @@ public class AppointmentDto
     public void setTimeslots(List<Timeslot> timeslots)
     {
         this.timeslotsId = new ArrayList<Integer>();
-        for (Timeslot timeslot: timeslots)
+        for (Timeslot timeslot : timeslots)
         {
             timeslotsId.add(timeslot.getTimeSlotID());
         }

@@ -14,9 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-
 @RestController
 @RequestMapping(path = "/api/login", produces = MediaType.APPLICATION_JSON_VALUE)
 public class LoginController
@@ -33,7 +30,7 @@ public class LoginController
 
     @PostMapping(value = {"/customer", "/customer/"})
     @CrossOrigin(origins = "*")
-    public ResponseEntity<Integer> loginCustomer(@RequestParam("email") String email, @RequestParam("password") String password, HttpServletResponse response)
+    public ResponseEntity<Integer> loginCustomer(@RequestParam("email") String email, @RequestParam("password") String password)
     {
 
         String hashedPassword = Helper.hash(password);
@@ -45,16 +42,13 @@ public class LoginController
             return new ResponseEntity<>(-1, HttpStatus.OK);
         }
 
-        String id = ((Integer) customer.getScrsUserId()).toString();
-        Cookie cookie = new Cookie("id", id);
-        response.addCookie(cookie);
 
         return new ResponseEntity<>(customer.getScrsUserId(), HttpStatus.OK);
     }
 
     @PostMapping(value = {"/assistant", "/assistant/"})
     @CrossOrigin(origins = "*")
-    public ResponseEntity<Integer> loginAssistant(@RequestParam("email") String email, @RequestParam("password") String password, HttpServletResponse response)
+    public ResponseEntity<Integer> loginAssistant(@RequestParam("email") String email, @RequestParam("password") String password)
     {
 
         String hashedPassword = Helper.hash(password);
@@ -66,44 +60,29 @@ public class LoginController
             return new ResponseEntity<>(-1, HttpStatus.OK);
         }
 
-        String id = ((Integer) assistant.getScrsUserId()).toString();
-        Cookie cookie = new Cookie("id", id);
-        response.addCookie(cookie);
-
         return new ResponseEntity<>(assistant.getScrsUserId(), HttpStatus.OK);
     }
 
     @PostMapping(value = {"/technician", "/technician/"})
     @CrossOrigin(origins = "*")
-    public ResponseEntity<Integer> loginTechnician(@RequestParam("email") String email, @RequestParam("password") String password, HttpServletResponse response)
+    public ResponseEntity<Integer> loginTechnician(@RequestParam("email") String email, @RequestParam("password") String password)
     {
 
         String hashedPassword = Helper.hash(password);
 
-        Technician technician = technicianService.getTechnicianByEmail(email);
+        try {
+            Technician technician = technicianService.getTechnicianByEmail(email);
 
-        if (technician == null || !technician.getPassword().equals(hashedPassword))
-        {
-            return new ResponseEntity<>(-1, HttpStatus.OK);
-        }
+            if (technician == null || !technician.getPassword().equals(hashedPassword))
+            {
+                return new ResponseEntity<>(-1, HttpStatus.OK);
+            }
 
-        String id = ((Integer) technician.getScrsUserId()).toString();
-        Cookie cookie = new Cookie("id", id);
-        response.addCookie(cookie);
+            return new ResponseEntity<>(technician.getScrsUserId(), HttpStatus.OK);
+        } catch (Exception ignored)
+        {}
 
-        return new ResponseEntity<>(technician.getScrsUserId(), HttpStatus.OK);
-    }
-
-    @GetMapping(value = {"/logout", "/logout/"})
-    @CrossOrigin(origins = "*")
-    public ResponseEntity<Boolean> logout(HttpServletResponse response)
-    {
-
-        Cookie cookie = new Cookie("id", null);
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
-
-        return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(-1, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping(value = {"/type/{id}", "/type/{id}/"})
@@ -134,6 +113,7 @@ public class LoginController
 
     /**
      * Helper for the 2 methods above. Allows to parse a user to its correct type and return the right response.
+     *
      * @param user SCRSUser object.
      * @return The appropriate response (String for the user type and status)
      */

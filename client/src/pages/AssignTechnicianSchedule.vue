@@ -38,26 +38,29 @@
 					>
 				</select>
 			</div>
-			<div
-				id="assignSchedule-timeslot-container"
-				class="assignSchedule-timeslot-container"
-				v-if="sel"
-			>
-        <select
-            id="assignSchedule-timeslot-select"
-            class="assignSchedule-select"
-            v-model="curTimeslot"
-            @change="dropdown()"
-        >
-          <option disabled selected>Select a Timeslot</option>
-          <option
-              v-for="(timeslot, index) in timeslots"
-              :key="index"
-              :value="timeslot"
-          >{{ timeslot.startDate }}</option
-          >
-        </select>
+
+			<div id="assignSchedule-timeslot-container" v-if="sel">
+				<label class="assignSchedule-label">Timeslot</label>
+				<div id="timeslot-container">
+					<div
+						class="timeslot"
+						v-for="(timeslot, index) in timeslots"
+						:key="index"
+						:id="timeslot.timeslotId"
+						@click="timeslotSelect(timeslot)"
+					>
+						<label class="modify-appointment-label"
+							>Date: {{ timeslot.startDate }}</label
+						>
+						<div class="timeslot-spacer"></div>
+						<label class="modify-appointment-label"
+							>Time: {{ timeslot.startTime.slice(0, 5) }} to
+							{{ timeslot.endTime.slice(0, 5) }}</label
+						>
+					</div>
+				</div>
 			</div>
+
 			<div
 				id="assignSchedule-button-container"
 				class="assignSchedule-button-container"
@@ -68,7 +71,7 @@
 				<div class="assignSchedule-spacer" v-if="sel"></div>
 				<button
 					class="assignSchedule-button"
-					v-if="sel && curTimeslot != null"
+					v-if="sel && selectTimeslotId.length !== 0"
 					v-on:click="assignTimeslots()"
 				>
 					Submit
@@ -93,9 +96,9 @@
 				workspaces: [],
 				curTechnician: "Select a Technician",
 				curWorkspace: "Select a Workspace",
-        curTimeslot: null,
 				sel: false,
 				timeslots: [],
+				selectTimeslotId: [],
 			};
 		},
 		methods: {
@@ -109,6 +112,9 @@
 				).style.opacity = 0;
 				document.getElementById(
 					"assignSchedule-button-container"
+				).style.opacity = 0;
+				document.getElementById(
+					"assignSchedule-timeslot-container"
 				).style.opacity = 0;
 				setTimeout(function() {
 					t.$router.push("/dashboard");
@@ -124,7 +130,6 @@
 				} catch (error) {
 					console.error(error);
 				}
-        console.log(this.timeslots);
 			},
 			dropdown: function() {
 				if (
@@ -138,26 +143,47 @@
 				this.sel = true;
 			},
 			assignTimeslots: async function() {
-        let assignTimeslotData = `timeslotId=${this.curTimeslot.timeslotId}&technicianId=${this.curTechnician.technicianId}`;
+				let assignTimeslotData = `timeslotId=${this.selectTimeslotId[0]}&technicianId=${this.curTechnician.technicianId}`;
 
-        try {
-          await axios.put(
-              proxy.proxy + "/api/timeslot/assignTech",
-              assignTimeslotData
-          );
-        } catch (error) {
-          console.log(error);
-        }
+				try {
+					await axios.put(
+						proxy.proxy + "/api/timeslot/assignTech",
+						assignTimeslotData
+					);
+				} catch (error) {
+					console.log(error);
+				}
+
+				this.backViewDash();
+			},
+			timeslotSelect(timeslot) {
+				if (this.selectTimeslotId.length !== 0) {
+					let previousTimeslot = document.getElementById(
+						this.selectTimeslotId[0]
+					);
+					// passing an empty string will revert the css to its default value
+					previousTimeslot.style.backgroundColor = "";
+					previousTimeslot.style.color = "";
+					previousTimeslot.style.borderColor = "";
+				}
+				this.selectTimeslotId = [timeslot.timeslotId];
+				let timeslotComponent = document.getElementById(
+					this.selectTimeslotId[0]
+				);
+				timeslotComponent.style.backgroundColor = "rgb(175, 122, 65)";
+				timeslotComponent.style.color = "whitesmoke";
+				timeslotComponent.style.borderColor = "rgb(75, 75, 75)";
 			},
 		},
 		async mounted() {
-			if (this.$store.state.userType !== "assistant") this.$router.push("/dashboard");
+			if (this.$store.state.userType !== "assistant")
+				this.$router.push("/dashboard");
 
 			try {
 				let response = await axios.get(proxy.proxy + "/api/technician/getAll");
 				this.technicians = response.data;
 
-				response = await axios.get(proxy.proxy + "/api/workspace/getAll");
+				response = await axios.get(proxy.proxy + "/api/workspace/getall");
 				this.workspaces = response.data;
 			} catch (error) {
 				console.error(error);
@@ -259,10 +285,54 @@
 		flex-direction: row;
 	}
 
-	.assignSchedule-timeslot-container {
-		height: 55vh;
-		animation: changeheight 0.3s;
+	.assignSchedule-label {
+		font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+		font-size: 3vh;
+		font-weight: 500;
+		color: rgb(59, 58, 58);
 		transition: 0.3s;
+	}
+
+	#timeslot-container {
+		background-color: rgb(225, 225, 225);
+		width: 35vw;
+		height: 36vh;
+		overflow-y: scroll;
+		border-radius: 2vh;
+		padding-top: 2vh;
+		padding-bottom: 2vh;
+		display: flex;
+		align-items: center;
+		flex-direction: column;
+		transition: 0.3s;
+	}
+
+	#assignSchedule-timeslot-container {
+		display: flex;
+		width: 100%;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+	}
+
+	.timeslot {
+		all: unset;
+		border-radius: 2vh;
+		background-color: rgb(235, 164, 89);
+		border: 0.5vh solid rgb(225, 225, 225);
+		font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+		font-size: 3vh;
+		font-weight: 600;
+		color: rgb(75, 75, 75);
+		text-align: center;
+		animation: changeOpacity, 0.3s;
+		transition: 0.3s;
+		padding: 2vh;
+	}
+	.timeslot:hover {
+		background-color: rgb(175, 122, 65);
+		color: whitesmoke;
+		border-color: rgb(75, 75, 75);
 	}
 
 	@keyframes changeOpacity {

@@ -10,7 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static ca.mcgill.ecse321.scrs.controller.Helper.*;
+import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDto;
+import static ca.mcgill.ecse321.scrs.controller.Helper.hash;
 
 @RestController
 @RequestMapping(path = "/api/customer", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -41,25 +42,12 @@ public class CustomerController
 
     @PutMapping(value = {"/update", "/update/"})
     @CrossOrigin(origins = "*")
-    public ResponseEntity<CustomerDto> updateCustomer(@RequestBody Customer customer, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    public ResponseEntity<CustomerDto> updateCustomer(@RequestBody Customer customer)
     {
-        int id = Integer.parseInt(ID);
-        if (id == -1)
-        {
-            // TODO handle no login error with cookies (uncomment next line)
-            //return new ResponseEntity<CustomerDto>(new CustomerDto(), HttpStatus.UNAUTHORIZED);
-            // Please login to modify a customer account.
-        }
         if (customer == null)
         {
             return new ResponseEntity<CustomerDto>(new CustomerDto(), HttpStatus.EXPECTATION_FAILED);
             // Invalid customer.
-        }
-        if (!isAdmin(scrsUserService.getSCRSUserByID(id)) && id != customer.getScrsUserId()) //does not have permission to edit.
-        {
-            // TODO handle bad login error with cookies (uncomment next line)
-            //return new ResponseEntity<CustomerDto>(new CustomerDto(), HttpStatus.UNAUTHORIZED);
-            // You cannot modify a customer account other than your own.
         }
         if (customerService.getCustomerByID(customer.getScrsUserId()) == null)
         {
@@ -77,27 +65,14 @@ public class CustomerController
 
     @DeleteMapping(value = {"/delete/{id}", "/delete/{id}/"})
     @CrossOrigin(origins = "*")
-    public ResponseEntity<CustomerDto> deleteCustomer(@PathVariable String id, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    public ResponseEntity<CustomerDto> deleteCustomer(@PathVariable String id)
     {
         int customerID = Integer.parseInt(id);
-        int idCookie = Integer.parseInt(ID);
-        if (idCookie == -1)
-        {
-            // TODO handle no login error with cookies (uncomment next line)
-            //return new ResponseEntity<CustomerDto>(new CustomerDto(), HttpStatus.UNAUTHORIZED);
-            // Please login to delete a customer account.
-        }
         Customer customer = customerService.getCustomerByID(customerID);
         if (customer == null)
         {
             return new ResponseEntity<CustomerDto>(new CustomerDto(), HttpStatus.NOT_ACCEPTABLE);
             // Invalid customer. Please submit a valid customer account to be deleted.
-        }
-        if (!isAdmin(scrsUserService.getSCRSUserByID(idCookie)) && idCookie != customerID) //does not have permission to edit.
-        {
-            // TODO handle bad login error with cookies (uncomment next line)
-            //return new ResponseEntity<CustomerDto>(new CustomerDto(), HttpStatus.UNAUTHORIZED);
-            // You cannot delete a customer account other than your own.
         }
         return new ResponseEntity<>(convertToDto(customerService.deleteCustomer(customer)), HttpStatus.OK);
     }

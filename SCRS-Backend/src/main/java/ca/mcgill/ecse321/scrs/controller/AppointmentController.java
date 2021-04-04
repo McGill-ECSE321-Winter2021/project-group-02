@@ -15,12 +15,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import static ca.mcgill.ecse321.scrs.controller.Helper.*;
+import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDto;
 
 @RestController
 @RequestMapping(path = "/api/appointment", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -36,29 +37,52 @@ public class AppointmentController
 
 
     @GetMapping(path = {"/getall/{id}", "/getall/{id}/"})
-    public ResponseEntity<List<AppointmentDto>> getAllAppointments(@PathVariable String id) {
-        if(id == null)return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<List<AppointmentDto>> getAllAppointments(@PathVariable String id)
+    {
+        if (id == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         int ID = Integer.parseInt(id);
 
         Customer customer = customerService.getCustomerByID(ID);
-        if(customer == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        if (customer == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
 
         List<Appointment> list = appointmentService.getAppointmentsByCustomer(customer);
         List<AppointmentDto> dtoList = new ArrayList<>();
 
-        if(list != null){
+        if (list != null)
+        {
             for (Appointment appointment : list)
             {
                 dtoList.add(convertToDto(appointment));
             }
         }
         return new ResponseEntity<>(dtoList, HttpStatus.OK);
+
+    }
+
+    @GetMapping(path = {"/getallappointments", "/getallappointments/"})
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<List<AppointmentDto>> getAllAppointments()
+    {
+        List<Appointment> list = appointmentService.getAllAppointments();
+        List<AppointmentDto> dtoList = new ArrayList<>();
+
+        if (list != null)
+        {
+            for (Appointment appointment : list)
+            {
+                dtoList.add(convertToDto(appointment));
+            }
+        }
+        return new ResponseEntity<>(dtoList, HttpStatus.OK);
+
     }
 
     @GetMapping(path = {"/getById/{id}", "/getById/{id}/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<AppointmentDto> getAppointmentById(@PathVariable String id)
     {
-        if(id == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        if (id == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
 
         Appointment appointment = appointmentService.getAppointmentById(Integer.parseInt(id));
 
@@ -71,16 +95,19 @@ public class AppointmentController
     }
 
     @GetMapping(path = {"/notifications/{id}", "/notifications/{id}/"})
-    public ResponseEntity<List<AppointmentDto>> notifications(@PathVariable String id) {
-        if(id == null)return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<List<AppointmentDto>> notifications(@PathVariable String id)
+    {
+        if (id == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         int ID = Integer.parseInt(id);
 
         Customer customer = customerService.getCustomerByID(ID);
-        if(customer == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        if (customer == null) return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
 
         List<Appointment> list = appointmentService.getAppointmentsByCustomer(customer);
 
-        if(list != null){
+        if (list != null)
+        {
             //finding the same date next week
             Date now = new Date(LocalDate.now().toEpochDay());
             Calendar calendar = Calendar.getInstance();
@@ -108,17 +135,19 @@ public class AppointmentController
             }
 
             return new ResponseEntity<>(notificationList, HttpStatus.OK);
-        }else return new ResponseEntity<>(null, HttpStatus.OK);
+        } else return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @PostMapping(value = {"/book", "/book/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<AppointmentDto> bookAppointment(@RequestBody AppointmentDto appointmentDto)
     {
         if (appointmentDto == null)
         {
             return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);
         }
-        try {
+        try
+        {
             List<Timeslot> timeslots = timeslotService.getTimeslotsById(appointmentDto.getTimeslotsId());
             if (timeslots == null)
             {
@@ -129,29 +158,34 @@ public class AppointmentController
                     appointmentDto.getService(), appointmentDto.getNote(), appointmentDto.getPaymentStatus(),
                     customer, timeslots.toArray(new Timeslot[0]));
             return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping(value = {"/pay", "/pay/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<AppointmentDto> payAppointment(@RequestParam(name = "appointmentId") int appointmentId)
     {
         try
         {
             Appointment appointment = appointmentService.getAppointmentById(appointmentId);
-            if (appointment == null) {
+            if (appointment == null)
+            {
                 return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);
             }
             appointment.setPaid(true);
             appointment = appointmentService.modifyAppointment(convertToDto(appointment));
             return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
-        } catch (Exception e) {
-            return  new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e)
+        {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping(value = {"/rate", "/rate/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<AppointmentDto> rateAppointment(@RequestParam(name = "appointmentId") int appointmentId, @RequestParam(name = "rating") int rating)
     {
         if (rating > 10 || rating < 0)
@@ -159,7 +193,8 @@ public class AppointmentController
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        try {
+        try
+        {
             Appointment appointment = appointmentService.rateAppointment(appointmentId, rating);
             return new ResponseEntity<>(convertToDto(appointment), HttpStatus.OK);
         } catch (Exception e)
@@ -169,13 +204,15 @@ public class AppointmentController
     }
 
     @PutMapping(value = {"/modifyAppointment", "/modifyAppointment/"})
+    @CrossOrigin(origins = "*")
     public ResponseEntity<AppointmentDto> modifyAppointment(@RequestBody AppointmentDto appointmentDto)
     {
         if (appointmentDto == null)
         {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        try {
+        try
+        {
             Appointment modifiedAppt = appointmentService.modifyAppointment(appointmentDto);
             return new ResponseEntity<>(convertToDto(modifiedAppt), HttpStatus.OK);
         } catch (Exception e)
@@ -183,4 +220,60 @@ public class AppointmentController
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping(value = {"/getStartAndEnd/{id}", "/getStartAndEnd/{id}/"})
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<TimeslotDto> getAppointmentStartAndEnd(@PathVariable("id") int appointmentId)
+    {
+        try
+        {
+            Appointment appointment = appointmentService.getAppointmentById(appointmentId);
+
+            if (appointment == null)
+            {
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            ArrayList<Timeslot> timeslots = new ArrayList<>(appointmentService.getAppointmentById(appointmentId).getTimeslots());
+
+            if (timeslots.size() == 0)
+            {
+                return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            Date minD = timeslots.get(0).getStartDate();
+            Date maxD = timeslots.get(0).getEndDate();
+
+            Time minT = timeslots.get(0).getStartTime();
+            Time maxT = timeslots.get(0).getEndTime();
+
+            for (Timeslot t : timeslots)
+            {
+                if (t.getEndDate().after(maxD))
+                {
+                    maxD = t.getEndDate();
+                    maxT = t.getEndTime();
+
+                } else if (t.getEndDate().equals(maxD))
+                {
+                    if (t.getEndTime().after(maxT)) maxT = t.getEndTime();
+                } else if (t.getStartDate().before(minD))
+                {
+                    minD = t.getStartDate();
+                    minT = t.getStartTime();
+                } else if (t.getStartDate().equals(minD))
+                {
+                    if (t.getStartTime().before(minT)) minT = t.getStartTime();
+                }
+            }
+            TimeslotDto output = new TimeslotDto(-1, minD, maxD, minT, maxT, -1);
+
+            return new ResponseEntity<>(output, HttpStatus.OK);
+
+        } catch (Exception e)
+        {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
 }

@@ -24,3 +24,28 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+task integrationTests(type: Exec) {
+
+    dependsOn 'build'
+
+    group = "verification"
+
+    workingDir './src/test/javascript'
+
+    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows'))
+    {
+        // for windows
+        commandLine 'cmd', '/c', 'node runTests.js'
+    }
+    else
+    {
+        commandLine 'node runTests.js'
+    }
+
+    standardOutput = new ByteArrayOutputStream();
+
+    ext.output = {
+        return standardOutput.toString();
+    }
+}
