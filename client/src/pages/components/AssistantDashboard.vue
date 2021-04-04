@@ -11,11 +11,6 @@
 					View Appointments
 				</button>
 			</div>
-			<div class="assistant-dashboard-inside-container">
-				<button class="dashboard-button">
-					Available Time Slots
-				</button>
-			</div>
 		</div>
 		<div class="assistant-dashboard-container" id="b">
 			<p class="dashboard-title">Accounts</p>

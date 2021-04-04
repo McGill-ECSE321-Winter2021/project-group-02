@@ -17,11 +17,6 @@
 					View Notifications
 				</button>
 			</div>
-			<div class="customer-dashboard-inside-container">
-				<button class="dashboard-button">
-					Available Time Slots
-				</button>
-			</div>
 		</div>
 		<div class="customer-dashboard-container" id="b">
 			<p class="dashboard-title">Accounts</p>
