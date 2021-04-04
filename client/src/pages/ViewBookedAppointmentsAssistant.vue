@@ -58,8 +58,9 @@
 				>
 					No appointments
 				</span>
-				<button id="back-button" v-on:click="backViewDash()">Back</button>
 			</div>
+
+      <button id="back-button" v-on:click="backViewDash()">Back</button>
 		</div>
 	</div>
 </template>

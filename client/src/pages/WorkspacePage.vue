@@ -365,6 +365,7 @@
 							proxy.proxy + "/api/workspace/getall"
 						);
 						this.workspaces = response.data;
+            this.errorMsg = "";
 					}
 				} catch (error) {
 					console.error(error);
@@ -500,6 +501,7 @@
 						this.timeslotForm.startHour = this.timeslotForm.startMinute = -1;
 						this.timeslotForm.endHour = this.timeslotForm.endMinute = -1;
 						this.timeslots.push(createTimeslotResponse.data);
+            this.errorMsg = "";
 					}
 				} catch (error) {
 					console.error(error);
@@ -541,6 +543,7 @@
 						);
 						this.timeslots = response.data;
 						this.selectTimeslotId = "";
+            this.errorMsg = "";
 					}
 				} catch (error) {
 					console.error(error);
