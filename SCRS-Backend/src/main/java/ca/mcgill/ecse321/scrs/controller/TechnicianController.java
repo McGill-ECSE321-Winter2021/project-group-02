@@ -86,7 +86,7 @@ public class TechnicianController
 
     @GetMapping(path = {"/viewschedule/{id}/{startDate}/{endDate}"})
     @CrossOrigin(origins = "*")
-    public ResponseEntity<List<TimeslotDto>> getAllByDate(@PathVariable("id") int technicianId, @PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate)//, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    public ResponseEntity<List<TimeslotDto>> getAllByDate(@PathVariable("id") int technicianId, @PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate)
     {
         Date newStartDate = Date.valueOf(startDate);
         Date newEndDate = Date.valueOf(endDate);
