@@ -4,6 +4,7 @@ import Mainpage from "./pages/Mainpage.vue";
 import Dashboard from "./pages/Dashboard.vue";
 import MyAccount from "./pages/MyAccount.vue";
 import ViewTechnicianSchedule from "./pages/ViewTechnicianSchedule.vue";
+import ViewTechnicianSchedule2 from "./pages/ViewTechnicianSchedule2.vue";
 import ModifyAppointment from "./pages/ModifyAppointment.vue";
 import AssignTechnicianSchedule from "./pages/AssignTechnicianSchedule.vue";
 import CreateAccount from "./pages/CreateAccount.vue";
@@ -12,7 +13,7 @@ import PayForAppointment from "./pages/PayForAppointment.vue";
 import WorkspacePage from "./pages/WorkspacePage";
 import ViewNotifications from "./pages/ViewNotifications.vue";
 import ViewBookedAppointments from "./pages/ViewBookedAppointments.vue";
-import ViewBookedAppointmentsAssistant from "./pages/ViewBookedAppointmentsAssistant.vue"
+import ViewBookedAppointmentsAssistant from "./pages/ViewBookedAppointmentsAssistant.vue";
 
 Vue.use(Router);
 
@@ -39,6 +40,11 @@ export default new Router({
       path: "/viewtechnicianschedule",
       name: "ViewTechnicianSchedule",
       component: ViewTechnicianSchedule,
+    },
+    {
+      path: "/viewtechnicianschedule2",
+      name: "ViewTechnicianSchedule2",
+      component: ViewTechnicianSchedule2,
     },
     {
       path: "/modifyappointment",

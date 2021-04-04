@@ -70,14 +70,19 @@ public class LoginController
 
         String hashedPassword = Helper.hash(password);
 
-        Technician technician = technicianService.getTechnicianByEmail(email);
+        try {
+            Technician technician = technicianService.getTechnicianByEmail(email);
 
-        if (technician == null || !technician.getPassword().equals(hashedPassword))
-        {
-            return new ResponseEntity<>(-1, HttpStatus.OK);
-        }
+            if (technician == null || !technician.getPassword().equals(hashedPassword))
+            {
+                return new ResponseEntity<>(-1, HttpStatus.OK);
+            }
 
-        return new ResponseEntity<>(technician.getScrsUserId(), HttpStatus.OK);
+            return new ResponseEntity<>(technician.getScrsUserId(), HttpStatus.OK);
+        } catch (Exception ignored)
+        {}
+
+        return new ResponseEntity<>(-1, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping(value = {"/type/{id}", "/type/{id}/"})
