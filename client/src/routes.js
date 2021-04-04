@@ -70,25 +70,20 @@ export default new Router({
       name: "WorkspacePage",
       component: WorkspacePage,
     },
-
     {
       path: "/viewnotifications",
       name: "ViewNotifications",
       component: ViewNotifications,
     },
-
     {
       path: "/viewbookedappointments",
       name: "ViewBookedAppointments",
       component: ViewBookedAppointments,
     },
-
     {
       path: "/viewbookedappointmentsassistant",
       name: "ViewBookedAppointmentsAssistant",
       component: ViewBookedAppointmentsAssistant,
     },
-    
-
   ],
 });
