@@ -12,8 +12,6 @@
 				</button>
 			</div>
 			<div class="assistant-dashboard-inside-container">
-				<button class="dashboard-button">Modify Appointment</button>
-				<div class="dashboard-spacer"></div>
 				<button class="dashboard-button">
 					Available Time Slots
 				</button>
