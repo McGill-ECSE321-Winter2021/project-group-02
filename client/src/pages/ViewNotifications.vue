@@ -6,28 +6,28 @@
 			>
 			<div
 				class="notification"
-				v-for="(appointment, index) in appointments"
+				v-for="(appointment, index) in this.appointments"
 				:key="index"
 				:id="appointment.appointmentId"
 			>
 				<label class="form-text">
-					{{ convertForDisplay(appointment.appointmentType) }}</label
+					{{ convertForDisplay(appointment.appointment.appointmentType) }}</label
 				><br />
 				<label
 					class="form-text"
-					v-if="timeslots[index].startDate === timeslots[index].endDate"
+					v-if="appointment.timeslot.startDate === appointment.timeslot.endDate"
 				>
-					{{ timeslots[index].startDate }}
+					{{ appointment.timeslot.startDate }}
 				</label>
 				<label
 					class="form-text"
-					v-if="timeslots[index].startDate !== timeslots[index].endDate"
+					v-else
 				>
-					{{ timeslots[index].startDate }}-{{ timeslots[index].endDate }}
+					{{ appointment.timeslot.startDate }}-{{ appointment.timeslot.endDate }}
 				</label>
 				<br />
 				<label class="form-text"
-					>{{ timeslots[index].startTime }} to {{ timeslots[index].endTime }}</label
+					>{{ appointment.timeslot.startTime }} to {{ appointment.timeslot.endTime }}</label
 				><br />
 			</div>
 			<span class="no-notifications" v-if="appointments.length === 0">
@@ -52,7 +52,6 @@
 		data() {
 			return {
 				appointments: [],
-				timeslots: [],
 			};
 		},
 		methods: {
@@ -87,6 +86,7 @@
 			},
 		},
 		async mounted() {
+			let tempArray1=[];
 			try {
 				let notificationResponse = await axios.get(
 					proxy.proxy +
@@ -94,24 +94,31 @@
 				);
 
 				if (notificationResponse.status !== 200) return;
+				tempArray1 = notificationResponse.data;
 
-				this.appointments = notificationResponse.data;
 			} catch (error) {
 				console.log(`${error}`);
 			}
-			var i;
-			for (i = 0; i < this.appointments.length; i++) {
+			let tempArray=[];
+
+
+			for (let i = 0; i < tempArray1.length; i++) {
 				try {
 					let timeslotResponse = await axios.get(
 						proxy.proxy +
-							`/api/appointment/getStartAndEnd/${this.appointments[i].appointmentId}`
+							`/api/appointment/getStartAndEnd/${tempArray1[i].appointmentId}`
 					);
-					if (timeslotResponse.status !== 200) return;
-					this.timeslots.push(timeslotResponse.data);
+					let appt = {
+						appointment:tempArray1[i],
+						timeslot:timeslotResponse.data,
+					}
+					tempArray.push(appt);
+
 				} catch (error) {
 					console.log(`${error}`);
 				}
 			}
+			this.appointments=tempArray;
 		},
 	};
 </script>
