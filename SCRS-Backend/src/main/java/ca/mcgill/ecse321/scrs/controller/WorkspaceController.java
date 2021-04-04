@@ -1,6 +1,5 @@
 package ca.mcgill.ecse321.scrs.controller;
 
-import ca.mcgill.ecse321.scrs.dto.CustomerDto;
 import ca.mcgill.ecse321.scrs.dto.TimeslotDto;
 import ca.mcgill.ecse321.scrs.dto.WorkspaceDto;
 import ca.mcgill.ecse321.scrs.model.Workspace;
