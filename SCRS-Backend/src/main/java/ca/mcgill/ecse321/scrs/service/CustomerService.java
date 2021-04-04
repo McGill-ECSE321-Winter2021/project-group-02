@@ -1,5 +1,6 @@
 package ca.mcgill.ecse321.scrs.service;
 
+import ca.mcgill.ecse321.scrs.controller.Helper;
 import ca.mcgill.ecse321.scrs.dao.CustomerRepository;
 import ca.mcgill.ecse321.scrs.model.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +69,10 @@ public class CustomerService
         if (customer.getPassword() == null || customer.getPassword().trim().length() == 0)
         {
             customer.setPassword(getCustomerByID(customer.getScrsUserId()).getPassword());
+        }
+        else
+        {
+            customer.setPassword(Helper.hash(customer.getPassword()));
         }
         customerRepository.save(customer);
         return customer;
