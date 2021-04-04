@@ -62,7 +62,7 @@ public class TechnicianService
     public Technician updateTechnicianInfo(Technician technician)
     {
         checkAccountInfoValidity(technician);
-        if(technician.getPassword() == null || technician.getPassword().trim().length() == 0)
+        if (technician.getPassword() == null || technician.getPassword().trim().length() == 0)
         {
             technician.setPassword(getTechnicianByID(technician.getScrsUserId()).getPassword());
         }

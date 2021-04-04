@@ -2,17 +2,16 @@ package ca.mcgill.ecse321.scrs.model;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import java.util.*;
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Entity
 public class Appointment
 {
-    public enum AppointmentType
-    {
-        CarWash, Maintenance, OilChange, TireChange, Towing, Inspection, RoadsideAssistance, Checkup, Other
-    }
-
+    @OneToMany(fetch = FetchType.EAGER) //0..1 to 1..*
+    private final List<Timeslot> timeslots;
     // Appointment Attributes
     @Id
     @GeneratedValue(generator = "increment")
@@ -24,12 +23,9 @@ public class Appointment
     private int rating;
     private String feedback;
     private boolean paid;
-
     // Appointment Associations
     @ManyToOne
     private Customer customer;
-    @OneToMany(fetch = FetchType.EAGER) //0..1 to 1..*
-    private List<Timeslot> timeslots;
     @ManyToOne
     private SCRS scrs;
 
@@ -304,8 +300,7 @@ public class Appointment
             timeslots.remove(aTimeslot);
             timeslots.add(index, aTimeslot);
             wasAdded = true;
-        }
-        else
+        } else
         {
             wasAdded = addTimeslotAt(aTimeslot, index);
         }
@@ -358,5 +353,10 @@ public class Appointment
                 + (getCustomer() != null ? Integer.toHexString(System.identityHashCode(getCustomer())) : "null")
                 + System.getProperties().getProperty("line.separator") + "  " + "scrs = "
                 + (getScrs() != null ? Integer.toHexString(System.identityHashCode(getScrs())) : "null");
+    }
+
+    public enum AppointmentType
+    {
+        CarWash, Maintenance, OilChange, TireChange, Towing, Inspection, RoadsideAssistance, Checkup, Other
     }
 }

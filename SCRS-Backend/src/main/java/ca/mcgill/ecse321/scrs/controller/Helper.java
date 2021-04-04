@@ -108,7 +108,7 @@ public class Helper
             throw new IllegalArgumentException("There is no such technician list!");
         }
         ArrayList<TechnicianDto> technicianDtos = new ArrayList<>();
-        for (Technician t: technicians)
+        for (Technician t : technicians)
         {
             technicianDtos.add(convertToDto(t));
         }
@@ -133,7 +133,7 @@ public class Helper
             throw new IllegalArgumentException("There is no such timeslot list!");
         }
         ArrayList<TimeslotDto> timeslotsDto = new ArrayList<>();
-        for (Timeslot timeslot: timeslots)
+        for (Timeslot timeslot : timeslots)
         {
             timeslotsDto.add(convertToDto(timeslot));
         }
@@ -158,7 +158,7 @@ public class Helper
             throw new IllegalArgumentException("There is no such workspace list!");
         }
         ArrayList<WorkspaceDto> workspaceDtos = new ArrayList<>();
-        for (Workspace w: workspaces)
+        for (Workspace w : workspaces)
         {
             workspaceDtos.add(convertToDto(w));
         }

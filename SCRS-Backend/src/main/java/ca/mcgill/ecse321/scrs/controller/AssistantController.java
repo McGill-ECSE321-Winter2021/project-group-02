@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static ca.mcgill.ecse321.scrs.controller.Helper.*;
+import static ca.mcgill.ecse321.scrs.controller.Helper.convertToDto;
+import static ca.mcgill.ecse321.scrs.controller.Helper.hash;
 
 @RestController
 @RequestMapping(path = "/api/assistant")
@@ -40,25 +41,12 @@ public class AssistantController
 
     @PutMapping(value = {"/update", "/update/"})
     @CrossOrigin(origins = "*")
-    public ResponseEntity<AssistantDto> updateAssistant(@RequestBody Assistant assistant, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    public ResponseEntity<AssistantDto> updateAssistant(@RequestBody Assistant assistant)
     {
-        int id = Integer.parseInt(ID);
-        if (id == -1)
-        {
-            // TODO handle no login error with cookies (uncomment next line)
-            //return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.UNAUTHORIZED);
-            // Please login to modify an assistant account.
-        }
         if (assistant == null)
         {
             return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.EXPECTATION_FAILED);
             // Invalid assistant
-        }
-        if (!isAdmin(scrsUserService.getSCRSUserByID(id))) //does not have permission to edit.
-        {
-            // TODO handle bad login error with cookies (uncomment next line)
-            //return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.UNAUTHORIZED);
-            // You do not have permission to edit an admin account.
         }
         if (assistantService.getAssistantByID(assistant.getScrsUserId()) == null)
         {
@@ -76,27 +64,14 @@ public class AssistantController
 
     @DeleteMapping(value = {"/delete/{id}", "/delete/{id}/"})
     @CrossOrigin(origins = "*")
-    public ResponseEntity<AssistantDto> deleteAssistant(@PathVariable String id, @CookieValue(value = "id", defaultValue = "-1") String ID)
+    public ResponseEntity<AssistantDto> deleteAssistant(@PathVariable String id)
     {
         int assistantID = Integer.parseInt(id);
-        int idCookie = Integer.parseInt(ID);
-        if (idCookie == -1)
-        {
-            // TODO handle no login error with cookies (uncomment next line)
-            //return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.UNAUTHORIZED);
-            //Please login to delete an assistant account.
-        }
         Assistant assistant = assistantService.getAssistantByID(assistantID);
         if (assistant == null)
         {
             return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.NOT_ACCEPTABLE);
             // Invalid assistant. Please submit a valid assistant account to be deleted.
-        }
-        if (!isAdmin(scrsUserService.getSCRSUserByID(idCookie))) //does not have permission to edit.
-        {
-            // TODO handle bad login error with cookies (uncomment next line)
-            //return new ResponseEntity<AssistantDto>(new AssistantDto(), HttpStatus.UNAUTHORIZED);
-            // You do not have permission to edit this account.
         }
         return new ResponseEntity<>(convertToDto(assistantService.deleteAssistant(assistant)), HttpStatus.OK);
     }

@@ -64,7 +64,7 @@ public class AssistantService
     public Assistant updateAssistantInfo(Assistant assistant)
     {
         checkAccountInfoValidity(assistant);
-        if(assistant.getPassword() == null || assistant.getPassword().trim().length() == 0)
+        if (assistant.getPassword() == null || assistant.getPassword().trim().length() == 0)
         {
             assistant.setPassword(getAssistantByID(assistant.getScrsUserId()).getPassword());
         }
