@@ -40,6 +40,24 @@ public class TimeslotController
         return new ResponseEntity<>(convertToDto(timeslots), HttpStatus.OK);
     }
 
+    @GetMapping(value = {"/getTimeslot/{id}","/getTimeslot/{id}/"})
+    @CrossOrigin(origins = "*")
+    public ResponseEntity<TimeslotDto> getAllAvailableTimeslotsById(@PathVariable("id") int timeslotId)
+    {
+        try {
+            Timeslot timeslot= timeslotService.getTimeslotById(timeslotId);
+            if(timeslot==null)
+            {
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            return new ResponseEntity<>(convertToDto(timeslotService.getTimeslotById(timeslotId)),HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+
     @GetMapping(value = {"/available/{startDate}", "/available/{startDate}/"})
     @CrossOrigin(origins = "*")
     public ResponseEntity<List<TimeslotDto>> getAvailableTimeslot(@PathVariable("startDate") String startDate)
