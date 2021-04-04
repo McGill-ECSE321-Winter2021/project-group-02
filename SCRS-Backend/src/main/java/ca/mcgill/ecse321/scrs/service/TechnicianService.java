@@ -1,5 +1,6 @@
 package ca.mcgill.ecse321.scrs.service;
 
+import ca.mcgill.ecse321.scrs.controller.Helper;
 import ca.mcgill.ecse321.scrs.dao.TechnicianRepository;
 import ca.mcgill.ecse321.scrs.model.Technician;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +66,10 @@ public class TechnicianService
         if (technician.getPassword() == null || technician.getPassword().trim().length() == 0)
         {
             technician.setPassword(getTechnicianByID(technician.getScrsUserId()).getPassword());
+        }
+        else
+        {
+            technician.setPassword(Helper.hash(technician.getPassword()));
         }
         technicianRepository.save(technician);
         return technician;

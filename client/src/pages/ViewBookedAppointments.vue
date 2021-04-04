@@ -59,9 +59,9 @@
 				<span class="no-appointments" v-if="appointments.length === 0">
 					No appointments
 				</span>
-				<button id="back-button" v-on:click="backViewDash()">Back</button>
 			</div>
-		</div>
+      <button id="back-button" v-on:click="backViewDash()">Back</button>
+    </div>
 	</div>
 </template>
 

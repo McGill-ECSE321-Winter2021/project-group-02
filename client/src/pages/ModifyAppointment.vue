@@ -11,27 +11,25 @@
 
 				<div id="modify-appointment-form-splitter">
 					<div class="modify-appointment-form-container">
-						<div id="service-container" v-if="this.upcomingAppointment">
+						<div id="service-container">
 							<label class="modify-appointment-label">Select a service:</label>
 							<select id="modify-appointment-type" v-model="appointmentType">
 								<option value="" selected disabled>Choose service</option>
-								<option value="carWash">Car Wash</option>
-								<option value="maintenance">Maintenance</option>
-								<option value="oilChange">Oil Change</option>
-								<option value="tireChange">Tire Change</option>
-								<option value="towing">Towing</option>
-								<option value="inspection">Inspection</option>
-								<option value="roadsideAssistance">Roadside Assistance</option>
-								<option value="checkup">Checkup</option>
-								<option value="other">Other</option>
+								<option value="CarWash">Car Wash</option>
+								<option value="Maintenance">Maintenance</option>
+								<option value="OilChange">Oil Change</option>
+								<option value="TireChange">Tire Change</option>
+								<option value="Towing">Towing</option>
+								<option value="Inspection">Inspection</option>
+								<option value="RoadsideAssistance">Roadside Assistance</option>
+								<option value="Checkup">Checkup</option>
+								<option value="Other">Other</option>
 							</select>
 						</div>
 
 						<input
 							class="modify-appointment-input"
-							v-if="
-								this.upcomingAppointment && this.appointmentType === 'other'
-							"
+							v-if="this.appointmentType === 'Other'"
 							v-model="service"
 							type="text"
 							placeholder="service"
@@ -39,7 +37,6 @@
 
 						<div
 							id="modify-appointment-rating-label-container"
-							v-if="!this.upcomingAppointment"
 						>
 							<input
 								class="modify-appointment-input"
@@ -55,7 +52,6 @@
 						</div>
 
 						<textarea
-							v-if="!this.upcomingAppointment"
 							class="modify-appointment-input"
 							id="modify-appointment-edit-feedback"
 							v-model="feedback"
@@ -66,7 +62,6 @@
 						<textarea
 							id="modify-appointment-note"
 							placeholder="Write notes to the mechanic..."
-							v-if="this.upcomingAppointment"
 							v-model="note"
 							wrap="soft"
 						/>
@@ -74,7 +69,6 @@
 
 					<div
 						class="modify-appointment-form-container"
-						v-if="this.upcomingAppointment"
 					>
 						<label class="modify-appointment-label">Timeslot:</label>
 						<div id="timeslot-container">
@@ -134,10 +128,9 @@
 				appt: null,
 				appointmentType: "",
 				service: "",
-				rating: -1,
+				rating: 0,
 				feedback: "",
 				note: "",
-				upcomingAppointment: true,
 				selectTimeslotId: [],
 				timeslots: [],
 			};
@@ -162,7 +155,6 @@
 					this.service = this.appt.service;
 					this.rating = this.appt.rating;
 					this.feedback = this.appt.feedback;
-					this.timeslots = this.appt.timeslotsId;
 				} catch (error) {
 					console.error(`${error}`);
 					document.getElementById("modify-appointment-error").innerHTML =
@@ -175,24 +167,6 @@
 						"Failed to find requested appointment to modify. Returning to dashboard"
 					);
 					this.$router.push("/dashboard");
-				}
-
-				// if an appointment exists on the backend, it is required to have at least one associated timeslot.
-				try {
-					// fetch data of appt with given ID
-					let response = await axios.get(
-						proxy.proxy + `/api/getTimeslot/${this.appt.timeslotsId[0]}`
-					);
-
-					let endDate = response.data.endDate;
-					let today = new Date();
-
-					this.upcomingAppointment = today < endDate;
-				} catch (error) {
-					console.error(`${error}`);
-					document.getElementById("modify-appointment-error").innerHTML =
-						"Unknown error, please try again later";
-					document.getElementById("modify-appointment-error").style.opacity = 1;
 				}
 			},
 			submitEdit: async function() {
@@ -207,7 +181,7 @@
 					}
 
 					let response = await axios.post(
-						proxy.proxy + `/api/appointment/modifyAppointment`,
+						proxy.proxy + "/api/appointment/modifyAppointment",
 						postData
 					);
 
@@ -257,7 +231,6 @@
 					this.timeslots = response.data;
 
 					if (
-						this.upcomingAppointment &&
 						this.timeslots.length === 0 &&
 						this.appt.timeslotsId.length !== 0
 					) {

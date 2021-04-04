@@ -1,5 +1,6 @@
 package ca.mcgill.ecse321.scrs.service;
 
+import ca.mcgill.ecse321.scrs.controller.Helper;
 import ca.mcgill.ecse321.scrs.dao.AssistantRepository;
 import ca.mcgill.ecse321.scrs.model.Assistant;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +68,10 @@ public class AssistantService
         if (assistant.getPassword() == null || assistant.getPassword().trim().length() == 0)
         {
             assistant.setPassword(getAssistantByID(assistant.getScrsUserId()).getPassword());
+        }
+        else
+        {
+            assistant.setPassword(Helper.hash(assistant.getPassword()));
         }
         assistantRepository.save(assistant);
         return assistant;

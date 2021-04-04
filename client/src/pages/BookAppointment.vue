@@ -14,22 +14,22 @@
 								v-model="selectAppointmentType"
 							>
 								<option value="" selected disabled>Choose service</option>
-								<option value="carWash">Car Wash</option>
-								<option value="maintenance">Maintenance</option>
-								<option value="oilChange">Oil Change</option>
-								<option value="tireChange">Tire Change</option>
-								<option value="towing">Towing</option>
-								<option value="inspection">Inspection</option>
-								<option value="roadsideAssistance">Roadside Assistance</option>
-								<option value="checkup">Checkup</option>
-								<option value="other">Other</option>
+								<option value="CarWash">Car Wash</option>
+								<option value="Maintenance">Maintenance</option>
+								<option value="OilChange">Oil Change</option>
+								<option value="TireChange">Tire Change</option>
+								<option value="Towing">Towing</option>
+								<option value="Inspection">Inspection</option>
+								<option value="RoadsideAssistance">Roadside Assistance</option>
+								<option value="Checkup">Checkup</option>
+								<option value="Other">Other</option>
 							</select>
 						</div>
 
 						<input
 							id="form-service"
 							class="form-text"
-							v-if="this.selectAppointmentType === 'other'"
+							v-if="this.selectAppointmentType === 'Other'"
 							type="text"
 							placeholder="service"
 							v-model="inputService"
