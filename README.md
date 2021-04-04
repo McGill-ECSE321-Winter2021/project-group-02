@@ -1,4 +1,4 @@
-# The Shrimp Car Repair System Wiki
+# The Shrimp Car Repair System
 This system helps a local car repair shop by hosting a website that supports their business. This system will allow customers to book appointments completely online, as opposed to the current method by phone. Additionally, customers can create a profile and pay for their appointments on the platform. The platform is designed such that the administrative assistant still creates and maintains the availabilities for appointments and the technician schedules. The system will also send notifications to customers to remind them to book regular appointments like oil changes, inspections and maintenance. The system shall consist of a web app as well as an android application.
    
 # Meet the Team!
@@ -39,7 +39,7 @@ If you haven't realized yet, there are only second year computer engineering stu
 # Deliverable 2
 ## Links
 * [Wiki Home Page](https://github.com/McGill-ECSE321-Winter2021/project-group-02/wiki)  
-* [Project Report](https://github.com/McGill-ECSE321-Winter2021/project-group-02/wiki/Deliverable-2-Project-Report)
+* [Meeting Minutes](https://github.com/McGill-ECSE321-Winter2021/project-group-02/wiki/Deliverable-2-Meeting-Minutes)
 * [RESTful Service Endpoints](https://github.com/McGill-ECSE321-Winter2021/project-group-02/wiki/RESTful-Service-Endpoints)
 * [Quality Assurance Plan](https://github.com/McGill-ECSE321-Winter2021/project-group-02/wiki/Software-Quality-Assurance-Plan)
 * [Updated Domain Model](https://github.com/McGill-ECSE321-Winter2021/project-group-02/wiki/Updated-Domain-Model-(Deliverable-2))
@@ -53,4 +53,21 @@ If you haven't realized yet, there are only second year computer engineering stu
 | Roey | ~17 | Service Creation, Route Creation, Integration testing, Code Validation, Insulting JavaScript Nonstop |
 | Simon | ~25 | Service Creation, Route Creation, Integration testing, Documentation, Code Validation |
 > Note: The team feels this division of work was very fair and equitable. Everyone is familiar with all facets of the deliverable, including those they have not worked on and a lot of the work was done in call together, which will probably not be reflected in the commit history.  
+
+***
+# Deliverable 3
+## Links
+* [Wiki Home Page](https://github.com/McGill-ECSE321-Winter2021/project-group-02/wiki)
+* [Meeting Minutes](https://github.com/McGill-ECSE321-Winter2021/project-group-02/wiki/Deliverable-3-Project-Report)
+* [Architecture Model](https://github.com/McGill-ECSE321-Winter2021/project-group-02/wiki/Architecture-Block-Diagram)
+
+## Effort Table (D3)
+| Team Member | Time Spent (h) | Responsibilities | 
+| --- | --- | --- |
+| Adel | ~35 | Front-End Page Design and Routing, Backend Route Updates, Documentation, Coaching/Debugging |
+| Alex | ~35 | Front-End Page Design and Routing, Backend Route Updates, Logo Design |
+| Alix | ~35 | Heroku Deployment, Firebase deployment, Vue and VueX Setup, Front-End Page Design and Routing |
+| Roey | ~35 | Front-End Page Design and Routing, Backend Route Updates |
+| Simon | ~35 | Front-End Page Design and Routing, Backend Route Updates, Documentation |
+> Note: The team feels this division of work was very fair and equitable, especially considering the large disparity in familiarity with VueJS and front-end development. Most of the work was done in call together, which will probably not be reflected in the commit history.  
 ***
