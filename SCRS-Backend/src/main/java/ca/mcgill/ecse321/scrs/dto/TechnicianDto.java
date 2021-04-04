@@ -6,6 +6,7 @@ public class TechnicianDto
     private String name;
     private String email;
     private String phone;
+
     public TechnicianDto()
     {
     }
@@ -39,14 +40,14 @@ public class TechnicianDto
         return email;
     }
 
-    public String getTechnicianPhone()
-    {
-        return phone;
-    }
-
     public void setTechnicianEmail(String email)
     {
         this.email = email;
+    }
+
+    public String getTechnicianPhone()
+    {
+        return phone;
     }
 
     public void setTechnicianPhone(String phone)

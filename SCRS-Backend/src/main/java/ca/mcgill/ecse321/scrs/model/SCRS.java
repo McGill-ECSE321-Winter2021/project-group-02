@@ -2,9 +2,9 @@ package ca.mcgill.ecse321.scrs.model;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import java.util.List;
-import java.util.ArrayList;
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class SCRS
@@ -161,8 +161,7 @@ public class SCRS
         if (isNewScrs)
         {
             aWorkspace.setScrs(this);
-        }
-        else
+        } else
         {
             workspaces.add(aWorkspace);
         }
@@ -220,8 +219,7 @@ public class SCRS
             workspaces.remove(aWorkspace);
             workspaces.add(index, aWorkspace);
             wasAdded = true;
-        }
-        else
+        } else
         {
             wasAdded = addWorkspaceAt(aWorkspace, index);
         }
@@ -240,8 +238,7 @@ public class SCRS
         if (isNewScrs)
         {
             aSCRSUser.setScrs(this);
-        }
-        else
+        } else
         {
             scrsUsers.add(aSCRSUser);
         }
@@ -298,8 +295,7 @@ public class SCRS
             scrsUsers.remove(aSCRSUser);
             scrsUsers.add(index, aSCRSUser);
             wasAdded = true;
-        }
-        else
+        } else
         {
             wasAdded = addUserAt(aSCRSUser, index);
         }
@@ -326,8 +322,7 @@ public class SCRS
         if (isNewScrs)
         {
             aAppointment.setScrs(this);
-        }
-        else
+        } else
         {
             appointments.add(aAppointment);
         }
@@ -384,8 +379,7 @@ public class SCRS
             appointments.remove(aAppointment);
             appointments.add(index, aAppointment);
             wasAdded = true;
-        }
-        else
+        } else
         {
             wasAdded = addAppointmentAt(aAppointment, index);
         }

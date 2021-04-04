@@ -1,9 +1,6 @@
 package ca.mcgill.ecse321.scrs.model;
 
-import java.util.*;
-
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 
 @Entity
 public class Customer extends SCRSUser

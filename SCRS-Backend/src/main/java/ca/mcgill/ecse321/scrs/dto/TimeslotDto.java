@@ -1,7 +1,6 @@
 package ca.mcgill.ecse321.scrs.dto;
 
 import ca.mcgill.ecse321.scrs.model.Technician;
-import ca.mcgill.ecse321.scrs.model.Timeslot;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -22,7 +21,8 @@ public class TimeslotDto
     {
     }
 
-    public TimeslotDto(int id, Date startDate, Date endDate, Time startTime, Time endTime, int workspaceId) {
+    public TimeslotDto(int id, Date startDate, Date endDate, Time startTime, Time endTime, int workspaceId)
+    {
         this(id, startDate, endDate, startTime, endTime, workspaceId, new ArrayList<Integer>());
     }
 
@@ -31,7 +31,7 @@ public class TimeslotDto
         timeslotId = id;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.startTime =startTime;
+        this.startTime = startTime;
         this.endTime = endTime;
         this.workspaceId = workspaceId;
         this.techniciansId = techniciansId;
@@ -77,7 +77,7 @@ public class TimeslotDto
         this.techniciansId = new ArrayList<Integer>();
         if (technicians != null)
         {
-            for (Technician technician: technicians)
+            for (Technician technician : technicians)
             {
                 techniciansId.add(technician.getScrsUserId());
             }

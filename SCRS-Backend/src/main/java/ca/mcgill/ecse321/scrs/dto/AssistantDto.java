@@ -39,14 +39,14 @@ public class AssistantDto
         return email;
     }
 
-    public String getAssistantPhone()
-    {
-        return phone;
-    }
-
     public void setAssistantEmail(String email)
     {
         this.email = email;
+    }
+
+    public String getAssistantPhone()
+    {
+        return phone;
     }
 
     public void setAssistantPhone(String phone)
