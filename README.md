@@ -1,5 +1,6 @@
 # The Shrimp Car Repair System
 This system helps a local car repair shop by hosting a website that supports their business. This system will allow customers to book appointments completely online, as opposed to the current method by phone. Additionally, customers can create a profile and pay for their appointments on the platform. The platform is designed such that the administrative assistant still creates and maintains the availabilities for appointments and the technician schedules. The system will also send notifications to customers to remind them to book regular appointments like oil changes, inspections and maintenance. The system shall consist of a web app as well as an android application.
+You can check out the deployed version of the web client at this web address: https://scrs-f86ed.web.app/ .
    
 # Meet the Team!
 
