@@ -26,16 +26,22 @@ public class Login extends Fragment {
         view.findViewById(R.id.button_back3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavHostFragment.findNavController(Login.this)
-                        .navigate(R.id.action_login_to_login_Signup);
+                if(Variables.customerType == "customer"){
+                    NavHostFragment.findNavController(Login.this)
+                            .navigate(R.id.action_login_to_login_Signup);
+                } else{
+                    NavHostFragment.findNavController(Login.this)
+                            .navigate(R.id.action_login_to_mainpage);
+                }
+
             }
         });
 
-        view.findViewById(R.id.button_customer).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.button_submit_login).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 NavHostFragment.findNavController(Login.this)
-                        .navigate(R.id.action_login_to_mainpage);
+                        .navigate(R.id.action_login_to_dashboard);
             }
         });
     }

@@ -35,7 +35,7 @@ public class Login_Signup extends Fragment {
             @Override
             public void onClick(View view) {
                 NavHostFragment.findNavController(Login_Signup.this)
-                        .navigate(R.id.action_mainpage_to_login);
+                        .navigate(R.id.action_login_Signup_to_signup);
             }
         });
 
