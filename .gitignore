@@ -1,0 +1,5 @@
+.gradle/
+.idea/
+.settings/
+.project
+client/package-lock.json
