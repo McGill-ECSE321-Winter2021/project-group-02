@@ -26,7 +26,7 @@ public class Mainpage extends Fragment {
         view.findViewById(R.id.button_customer).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Variables.customerType = "customer";
+                Variables.userType = "customer";
                 NavHostFragment.findNavController(Mainpage.this)
                         .navigate(R.id.action_mainpage_to_login_Signup);
             }
@@ -35,7 +35,7 @@ public class Mainpage extends Fragment {
         view.findViewById(R.id.button_technician).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Variables.customerType = "technician";
+                Variables.userType = "technician";
                 NavHostFragment.findNavController(Mainpage.this)
                         .navigate(R.id.action_mainpage_to_login);
             }
@@ -44,7 +44,7 @@ public class Mainpage extends Fragment {
         view.findViewById(R.id.button_assistant).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Variables.customerType = "assistant";
+                Variables.userType = "assistant";
                 NavHostFragment.findNavController(Mainpage.this)
                         .navigate(R.id.action_mainpage_to_login);
             }

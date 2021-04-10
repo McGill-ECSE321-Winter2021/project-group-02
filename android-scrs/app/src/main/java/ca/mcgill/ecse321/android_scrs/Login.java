@@ -1,13 +1,25 @@
 package ca.mcgill.ecse321.android_scrs;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import java.util.Arrays;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 public class Login extends Fragment {
 
@@ -23,13 +35,42 @@ public class Login extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //querying text
+        TextView error_warning = view.findViewById(R.id.error_warning_login);
+        TextView email_input = view.findViewById(R.id.login_email);
+        TextView password_input = view.findViewById(R.id.login_password);
+
+        //adding change event listners
+        TextView[] inputs = new TextView[] {email_input, password_input};
+
+        for(TextView input:inputs){
+            input.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    removeWarning(view);
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
+        }
+
+        //back button
         view.findViewById(R.id.button_back3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(Variables.customerType == "customer"){
+                if(Variables.userType.equals("customer")){
                     NavHostFragment.findNavController(Login.this)
                             .navigate(R.id.action_login_to_login_Signup);
                 } else{
+                    Variables.userType = null;
                     NavHostFragment.findNavController(Login.this)
                             .navigate(R.id.action_login_to_mainpage);
                 }
@@ -37,12 +78,48 @@ public class Login extends Fragment {
             }
         });
 
+        //login button
         view.findViewById(R.id.button_submit_login).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavHostFragment.findNavController(Login.this)
-                        .navigate(R.id.action_login_to_dashboard);
+
+                String email = email_input.getText().toString();
+                String password = password_input.getText().toString();
+
+                RequestParams params = new RequestParams();
+                params.put("email", email);
+                params.put("password", password);
+
+                AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                        int response = Integer.parseInt(new String(responseBody));
+                        if(statusCode == 200 && response != -1 && response != 0){
+                            Variables.userID = response;
+                            NavHostFragment.findNavController(Login.this)
+                                    .navigate(R.id.action_login_to_dashboard);
+                        } else{
+                            error_warning.setText("Wrong email or password.");
+                            error_warning.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                        error_warning.setText("An error occured. Please try again later.");
+                        error_warning.setVisibility(View.VISIBLE);
+                    }
+                };
+                Variables.client.post(Login.super.getContext(), Variables.getAbsoluteUrl("/api/login/" + Variables.userType), params, responseHandler);
+
             }
         });
+    }
+
+    //helper functions
+    public void removeWarning(@NonNull View view){
+        view.findViewById(R.id.error_warning_login).setVisibility(View.INVISIBLE);
     }
 }

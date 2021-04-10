@@ -42,6 +42,7 @@ public class Login_Signup extends Fragment {
         view.findViewById(R.id.button_back1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Variables.userType = null;
                 NavHostFragment.findNavController(Login_Signup.this)
                         .navigate(R.id.action_login_Signup_to_mainpage);
             }

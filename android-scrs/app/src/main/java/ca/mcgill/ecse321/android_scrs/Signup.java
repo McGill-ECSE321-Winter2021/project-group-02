@@ -50,6 +50,7 @@ public class Signup extends Fragment {
         TextView password_input = view.findViewById(R.id.signup_password);
         TextView repeat_password_input = view.findViewById(R.id.signup_repeat_password);
 
+        //adding change listeners
         TextView[] inputs = new TextView[] {name_input, email_input, tel_input, password_input, repeat_password_input};
 
         for(TextView input:inputs){
@@ -71,14 +72,15 @@ public class Signup extends Fragment {
             });
         }
 
+        //back click
         view.findViewById(R.id.button_back2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(Variables.customerType == "customer"){
+                if(Variables.userType.equals("customer")){
                     NavHostFragment.findNavController(Signup.this)
                             .navigate(R.id.action_signup_to_login_Signup);
                 } else{
-
+                    Variables.userType = null;
                     NavHostFragment.findNavController(Signup.this)
                             .navigate(R.id.action_login_Signup_to_mainpage);
                 }
@@ -86,6 +88,7 @@ public class Signup extends Fragment {
             }
         });
 
+        //signup click
         view.findViewById(R.id.button_submit_signup).setOnClickListener(new View.OnClickListener() {
             @SuppressLint("SetTextI18n")
             @Override
@@ -110,7 +113,7 @@ public class Signup extends Fragment {
                 try {
                     json.put("name", name);
                     json.put("email", email);
-                    json.put("tel", tel);
+                    json.put("phone", tel);
                     json.put("password", password);
                     params = new StringEntity(json.toString());
                 }catch(Exception e){
@@ -120,15 +123,19 @@ public class Signup extends Fragment {
                 AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                        System.out.println("success");
-                        NavHostFragment.findNavController(Signup.this)
-                                .navigate(R.id.action_signup_to_login);
+                        if(statusCode == 200){
+                            NavHostFragment.findNavController(Signup.this)
+                                    .navigate(R.id.action_signup_to_login);
+                        } else{
+                            error_warning.setText("An error occured. Please try again later.");
+                            error_warning.setVisibility(View.VISIBLE);
+                        }
+
                     }
 
                     @SuppressLint("SetTextI18n")
                     @Override
                     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                        System.out.println(statusCode);
                         error_warning.setText("An error occured. Please try again later.");
                         error_warning.setVisibility(View.VISIBLE);
                     }
