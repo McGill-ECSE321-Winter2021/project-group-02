@@ -8,7 +8,7 @@ public class Variables {
     public static String userType = null;
 
     //===== Http requests stuff =====
-    private static String baseUrl = "https://scrs-backend-1.herokuapp.com/";
+    private static final String baseUrl = "https://scrs-backend-1.herokuapp.com/";
     public static AsyncHttpClient client = new AsyncHttpClient();
 
     public static String getAbsoluteUrl(String relativeUrl) {

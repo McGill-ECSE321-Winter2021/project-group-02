@@ -96,11 +96,11 @@
         app:layout_constraintVertical_bias="0.584" />
 
     <TextView
-        android:id="@+id/error_warning_modify_account"
+        android:id="@+id/modify_account_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:text="@string/default_error_msg"
+        android:text="@string/err_unknown_error"
         android:textSize="18sp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -111,7 +111,7 @@
         app:layout_constraintVertical_bias="0.66" />
 
     <Button
-        android:id="@+id/button_submit_modify_account"
+        android:id="@+id/modify_account_submit_button"
         android:layout_width="190dp"
         android:layout_height="72dp"
         android:layout_marginBottom="152dp"
