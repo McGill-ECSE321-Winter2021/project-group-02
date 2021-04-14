@@ -41,6 +41,7 @@
     <string name="appointment_message">Appointment message:</string>
     <string name="timeslot">Timeslot:</string>
     <string name="create_appointment">Create Appointment</string>
+    <string name="note_to_mechanic">Write notes to the mechanic...</string>
 
     <!-- ERRORS -->
     <string name="err_non_matching_passwords">Passwords do not match.</string>
