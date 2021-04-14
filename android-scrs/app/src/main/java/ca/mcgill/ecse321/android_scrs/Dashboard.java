@@ -86,7 +86,7 @@ public class Dashboard extends Fragment {
         view.findViewById(R.id.dash_modify_account_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //NavHostFragment.findNavController(Dashboard.this).navigate(); TODO ADD ACTION WHEN BUTTON IS MAPPED
+                NavHostFragment.findNavController(Dashboard.this).navigate(R.id.action_dashboard_to_modifyAccount);
             }
         });
 
