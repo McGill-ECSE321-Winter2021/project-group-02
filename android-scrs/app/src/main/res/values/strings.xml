@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">android-scrs</string>
     <string name="action_settings">Settings</string>
+
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
@@ -9,6 +10,8 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+    <!-- BUTTON NAMES AND TAGS -->
     <string name="submit">Submit</string>
     <string name="back">Back</string>
     <string name="logout">Log Out</string>
@@ -17,10 +20,18 @@
     <string name="view_appts">View Booked Appointments</string>
     <string name="view_tech_sched">View Technician Schedule</string>
     <string name="modify_acc">Update Account Info</string>
-    <string name="default_error_msg">An error occurred. Please try again later.</string>
     <string name="name">Name</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="tel_number">Phone Number</string>
     <string name="repeat_password">Repeat Password</string>
+
+    <!-- ERRORS -->
+    <string name="err_non_matching_passwords">Passwords do not match.</string>
+    <string name="err_missing_values">Missing values in the form above</string>
+    <string name="err_unknown_error">An error occurred. Please try again later.</string>
+    <string name="err_fetch_acc_data_failed">Could not fetch account information.</string>
+
+    <!-- TECHNICALLY NOT ERRORS BUT WE'LL CALL THEM ERRORS -->
+    <string name="modify_acc_success">Successfully updated account information</string>
 </resources>
