@@ -31,6 +31,7 @@
     <string name="err_missing_values">Missing values in the form above</string>
     <string name="err_unknown_error">An error occurred. Please try again later.</string>
     <string name="err_fetch_acc_data_failed">Could not fetch account information.</string>
+    <string name="err_login_failed">Wrong email or password.</string>
 
     <!-- TECHNICALLY NOT ERRORS BUT WE'LL CALL THEM ERRORS -->
     <string name="modify_acc_success">Successfully updated account information</string>

@@ -1,6 +1,5 @@
 package ca.mcgill.ecse321.android_scrs;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.google.android.material.textfield.TextInputEditText;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.json.JSONException;
@@ -171,9 +169,10 @@ public class ModifyAccount extends Fragment
 
     /**
      * Fetches user data from the backend and sets the field values.
-     * @param nameField field in which to store the name.
-     * @param emailField field in which to store the email.
-     * @param phoneField field in which to store the phone number.
+     *
+     * @param nameField   field in which to store the name.
+     * @param emailField  field in which to store the email.
+     * @param phoneField  field in which to store the phone number.
      * @param modifyError field in which to display any errors.
      */
     private void fetchData(TextView nameField, TextView emailField, TextView phoneField, TextView modifyError)

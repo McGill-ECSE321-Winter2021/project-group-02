@@ -16,23 +16,23 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
-import java.util.Arrays;
-
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.entity.StringEntity;
 
-public class Login extends Fragment {
+public class Login extends Fragment
+{
 
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
-    ) {
+    )
+    {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.login, container, false);
     }
 
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState)
+    {
         super.onViewCreated(view, savedInstanceState);
 
         //querying text
@@ -40,36 +40,45 @@ public class Login extends Fragment {
         TextView email_input = view.findViewById(R.id.login_email);
         TextView password_input = view.findViewById(R.id.login_password);
 
-        //adding change event listners
-        TextView[] inputs = new TextView[] {email_input, password_input};
+        //adding change event listeners
+        TextView[] inputs = new TextView[]{email_input, password_input};
 
-        for(TextView input:inputs){
-            input.addTextChangedListener(new TextWatcher() {
+        for (TextView input : inputs)
+        {
+            input.addTextChangedListener(new TextWatcher()
+            {
                 @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                public void beforeTextChanged(CharSequence s, int start, int count, int after)
+                {
 
                 }
 
                 @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                public void onTextChanged(CharSequence s, int start, int before, int count)
+                {
                     removeWarning(view);
                 }
 
                 @Override
-                public void afterTextChanged(Editable s) {
+                public void afterTextChanged(Editable s)
+                {
 
                 }
             });
         }
 
-        //back button
-        view.findViewById(R.id.button_back3).setOnClickListener(new View.OnClickListener() {
+        // back button handling
+        view.findViewById(R.id.button_back3).setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
-                if(Variables.userType.equals("customer")){
+            public void onClick(View view)
+            {
+                if (Variables.userType.equals("customer"))
+                {
                     NavHostFragment.findNavController(Login.this)
                             .navigate(R.id.action_login_to_login_Signup);
-                } else{
+                } else
+                {
                     Variables.userType = null;
                     NavHostFragment.findNavController(Login.this)
                             .navigate(R.id.action_login_to_mainpage);
@@ -78,10 +87,12 @@ public class Login extends Fragment {
             }
         });
 
-        //login button
-        view.findViewById(R.id.button_submit_login).setOnClickListener(new View.OnClickListener() {
+        // login button handling
+        view.findViewById(R.id.button_submit_login).setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
 
                 String email = email_input.getText().toString();
                 String password = password_input.getText().toString();
@@ -90,25 +101,28 @@ public class Login extends Fragment {
                 params.put("email", email);
                 params.put("password", password);
 
-                AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
-                    @SuppressLint("SetTextI18n")
+                AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler()
+                {
                     @Override
-                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody)
+                    {
                         int response = Integer.parseInt(new String(responseBody));
-                        if(statusCode == 200 && response != -1 && response != 0){
+                        if (response != -1 && response != 0)
+                        {
                             Variables.userID = response;
                             NavHostFragment.findNavController(Login.this)
                                     .navigate(R.id.action_login_to_dashboard);
-                        } else{
-                            error_warning.setText("Wrong email or password.");
+                        } else
+                        {
+                            error_warning.setText(R.string.err_login_failed);
                             error_warning.setVisibility(View.VISIBLE);
                         }
                     }
 
-                    @SuppressLint("SetTextI18n")
                     @Override
-                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                        error_warning.setText("An error occured. Please try again later.");
+                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error)
+                    {
+                        error_warning.setText(R.string.err_unknown_error);
                         error_warning.setVisibility(View.VISIBLE);
                     }
                 };
@@ -118,8 +132,9 @@ public class Login extends Fragment {
         });
     }
 
-    //helper functions
-    public void removeWarning(@NonNull View view){
+    // helper function
+    public void removeWarning(@NonNull View view)
+    {
         view.findViewById(R.id.error_warning_login).setVisibility(View.INVISIBLE);
     }
 }
