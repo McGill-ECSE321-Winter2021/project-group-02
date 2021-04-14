@@ -40,6 +40,12 @@ public class ModifyAccount extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
 
+        // make sure a user is signed in at this point
+        if (Variables.userID == -1)
+        {
+            NavHostFragment.findNavController(ModifyAccount.this).navigate(R.id.action_modifyAccount_to_dashboard);
+        }
+
         // Inputs to query
         TextView nameField = view.findViewById(R.id.modify_account_name);
         TextView emailField = view.findViewById(R.id.modify_account_email);
@@ -48,7 +54,11 @@ public class ModifyAccount extends Fragment
         TextView repeatPasswordField = view.findViewById(R.id.modify_account_repeat_password);
         TextView modifyError = view.findViewById(R.id.modify_account_error);
 
-        // create iterator for listeners
+        // Populate fields with data
+        fetchData(nameField, emailField, phoneField, modifyError);
+
+
+        // Create iterator for listeners
         TextView[] inputs = {nameField, emailField, phoneField, password_field, repeatPasswordField, modifyError};
 
         for (TextView input : inputs)
@@ -79,7 +89,6 @@ public class ModifyAccount extends Fragment
             @Override
             public void onClick(View view)
             {
-                hideError(view);
                 NavHostFragment.findNavController(ModifyAccount.this).navigate(R.id.action_modifyAccount_to_dashboard);
             }
         });
@@ -109,7 +118,9 @@ public class ModifyAccount extends Fragment
                 {
                     modifyError.setText(R.string.err_missing_values);
                     modifyError.setVisibility(View.VISIBLE);
+                    return;
                 }
+
                 StringEntity params = null;
                 JSONObject json = new JSONObject();
                 try
@@ -118,6 +129,7 @@ public class ModifyAccount extends Fragment
                     json.put("email", email);
                     json.put("phone", tel);
                     json.put("password", password);
+                    json.put("scrsUserId", Variables.userID);
                     params = new StringEntity(json.toString());
                 } catch (JSONException | UnsupportedEncodingException e)
                 {
@@ -131,37 +143,15 @@ public class ModifyAccount extends Fragment
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody)
                     {
-                        if (statusCode == 200)
-                        {
-                            modifyError.setText(R.string.modify_acc_success);
-                            modifyError.setVisibility(View.VISIBLE);
-                            // hide the success message after 1.5s
-                            Thread timeout = new Thread(new Runnable()
-                            {
-                                @Override
-                                public void run()
-                                {
-                                    hideError(view);
-                                }
-                            });
-                            try
-                            {
-                                timeout.wait(1500);
-                            } catch (InterruptedException e)
-                            {
-                                e.printStackTrace();
-                            }
-                        } else
-                        {
-                            modifyError.setText(R.string.err_unknown_error);
-                            modifyError.setVisibility(View.VISIBLE);
-                        }
+                        modifyError.setText(R.string.modify_acc_success);
+                        modifyError.setVisibility(View.VISIBLE);
                     }
 
                     @Override
                     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error)
                     {
                         modifyError.setText(R.string.err_unknown_error);
+                        System.out.println(statusCode);
                         modifyError.setVisibility(View.VISIBLE);
                     }
                 };
@@ -173,9 +163,57 @@ public class ModifyAccount extends Fragment
         });
     }
 
-    //helper function
+    //Helper function
     public void hideError(@NonNull View view)
     {
         view.findViewById(R.id.modify_account_error).setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * Fetches user data from the backend and sets the field values.
+     * @param nameField field in which to store the name.
+     * @param emailField field in which to store the email.
+     * @param phoneField field in which to store the phone number.
+     * @param modifyError field in which to display any errors.
+     */
+    private void fetchData(TextView nameField, TextView emailField, TextView phoneField, TextView modifyError)
+    {
+        AsyncHttpResponseHandler firstResponseHandler = new AsyncHttpResponseHandler()
+        {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody)
+            {
+                String response = new String(responseBody);
+                try
+                {
+                    JSONObject jsonObject = new JSONObject(response);
+                    if (Variables.userType.equals("customer"))
+                    {
+                        nameField.setText(jsonObject.getString("customerName"));
+                        emailField.setText(jsonObject.getString("customerEmail"));
+                        phoneField.setText(jsonObject.getString("customerPhone"));
+                    } else
+                    {
+                        nameField.setText(jsonObject.getString("technicianName"));
+                        emailField.setText(jsonObject.getString("technicianEmail"));
+                        phoneField.setText(jsonObject.getString("technicianPhone"));
+                    }
+
+                } catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error)
+            {
+                modifyError.setText(R.string.err_fetch_acc_data_failed);
+                modifyError.setVisibility(View.VISIBLE);
+            }
+        };
+        // one-liner for the url for a customer OR technician
+        String url = Variables.userType.equals("customer") ? Variables.getAbsoluteUrl("/api/customer/getByID/" + Variables.userID) : Variables.getAbsoluteUrl("/api/technician/getByID/" + Variables.userID);
+        Variables.client.get(ModifyAccount.super.getContext(), url, null, "application/json", firstResponseHandler);
     }
 }
