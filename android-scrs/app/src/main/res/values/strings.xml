@@ -11,6 +11,12 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="submit">Submit</string>
     <string name="back">Back</string>
+    <string name="logout">Log Out</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="book_appt">Book New Appointment</string>
+    <string name="view_appts">View Booked Appointments</string>
+    <string name="view_tech_sched">View Technician Schedule</string>
+    <string name="modify_acc">Update Account Info</string>
     <string name="default_error_msg">An error occurred. Please try again later.</string>
     <string name="name">Name</string>
     <string name="email">Email</string>

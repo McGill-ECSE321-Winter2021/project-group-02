@@ -22,7 +22,83 @@ public class Dashboard extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (Variables.userType.equals("technician"))
+        {
+            view.findViewById(R.id.dash_book_appt_button).setVisibility(View.GONE);
+            view.findViewById(R.id.dash_view_appts_button).setVisibility(View.GONE);
+            view.findViewById(R.id.dash_view_sched_button).setVisibility(View.VISIBLE);
+        } else // must be a customer, hide the technician schedule button
+        {
+            view.findViewById(R.id.dash_book_appt_button).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.dash_view_appts_button).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.dash_view_sched_button).setVisibility(View.GONE);
+        }
 
+        // book new appointment button
+        view.findViewById(R.id.dash_book_appt_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                if(Variables.userType.equals("customer")){
+//                    NavHostFragment.findNavController(Dashboard.this).navigate(); TODO ADD ACTION WHEN BUTTON IS MAPPED
+//                } else{
+//                    Variables.userType = null;
+//                    Variables.userID = -1;
+//                    NavHostFragment.findNavController(Dashboard.this)
+//                            .navigate(R.id.action_dashboard_to_mainpage);
+//                }
+
+            }
+        });
+
+        // view booked appointments button
+        view.findViewById(R.id.dash_view_appts_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                if(Variables.userType.equals("customer")){
+//                    NavHostFragment.findNavController(Dashboard.this).navigate(); TODO ADD ACTION WHEN BUTTON IS MAPPED
+//                } else{
+//                    Variables.userType = null;
+//                    Variables.userID = -1;
+//                    NavHostFragment.findNavController(Dashboard.this)
+//                            .navigate(R.id.action_dashboard_to_mainpage);
+//                }
+
+            }
+        });
+
+        // view technician schedule button
+        view.findViewById(R.id.dash_view_sched_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                if(Variables.userType.equals("technician")){
+//                    NavHostFragment.findNavController(Dashboard.this).navigate(); TODO ADD ACTION WHEN BUTTON IS MAPPED
+//                } else{
+//                    Variables.userType = null;
+//                    Variables.userID = -1;
+//                    NavHostFragment.findNavController(Dashboard.this)
+//                            .navigate(R.id.action_dashboard_to_mainpage);
+//                }
+
+            }
+        });
+
+        // update account info button
+        view.findViewById(R.id.dash_modify_account_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //NavHostFragment.findNavController(Dashboard.this).navigate(); TODO ADD ACTION WHEN BUTTON IS MAPPED
+            }
+        });
+
+        // log out button
+        view.findViewById(R.id.dash_logout_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Variables.userType = null;
+                Variables.userID = -1;
+                NavHostFragment.findNavController(Dashboard.this).navigate(R.id.action_dashboard_to_mainpage);
+            }
+        });
 
     }
 }
