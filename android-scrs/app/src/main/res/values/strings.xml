@@ -25,6 +25,13 @@
     <string name="password">Password</string>
     <string name="tel_number">Phone Number</string>
     <string name="repeat_password">Repeat Password</string>
+    <string name="contact_email">marwan.kanaan@gov.ca.edu.ru.university.ca</string>
+    <string name="office_hours_title">Office Hours</string>
+    <string name="office_hours_text">1:30 to 3:30 PM on Thursdays</string>
+    <string name="customer">Customer</string>
+    <string name="technician">Technician</string>
+    <string name="contact_info">Contact Info</string>
+    <string name="contact_us">Contact Us</string>
 
     <!-- ERRORS -->
     <string name="err_non_matching_passwords">Passwords do not match.</string>

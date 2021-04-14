@@ -46,13 +46,12 @@ public class Mainpage extends Fragment
             }
         });
 
-        view.findViewById(R.id.button_assistant).setOnClickListener(new View.OnClickListener()
+        view.findViewById(R.id.shop_info_button).setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                Variables.userType = "assistant";
-                NavHostFragment.findNavController(Mainpage.this).navigate(R.id.action_mainpage_to_login);
+                NavHostFragment.findNavController(Mainpage.this).navigate(R.id.action_mainpage_to_shop_info);
             }
         });
     }
