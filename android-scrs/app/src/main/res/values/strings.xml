@@ -32,6 +32,8 @@
     <string name="technician">Technician</string>
     <string name="contact_info">Contact Info</string>
     <string name="contact_us">Contact Us</string>
+    <string name="schedule">Schedule</string>
+    <string name="schedule">Today\'s Schedule</string>
 
     <!-- ERRORS -->
     <string name="err_non_matching_passwords">Passwords do not match.</string>
