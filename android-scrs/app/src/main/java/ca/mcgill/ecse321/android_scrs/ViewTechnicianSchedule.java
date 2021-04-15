@@ -88,6 +88,7 @@ public class ViewTechnicianSchedule extends Fragment
                     e.printStackTrace();
                 }
 
+                // Hook the adapter into the RecyclerView
                 RecyclerView timeslotView = (RecyclerView)view.findViewById(R.id.view_technician_schedule_view);
                 TimeslotAdapter adapter = new TimeslotAdapter(timeslots);
                 timeslotView.setAdapter(adapter);
@@ -127,6 +128,7 @@ public class ViewTechnicianSchedule extends Fragment
                     e.printStackTrace();
                 }
 
+                // Send another request to get all the workspaces
                 String url = Variables.getAbsoluteUrl("/api/workspace/getall");
                 Variables.client.get(ViewTechnicianSchedule.super.getContext(), url, null, "application/json", workspaceResponseHandler);
             }
@@ -138,6 +140,7 @@ public class ViewTechnicianSchedule extends Fragment
             }
         };
 
+        // Get the current date in the format we need for the api
         final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
         Date date = Calendar.getInstance().getTime();
@@ -149,6 +152,7 @@ public class ViewTechnicianSchedule extends Fragment
         date = cal.getTime();
 
         final String tomorrowString = dateFormat.format(date);
+        // Send the get request for the schedule
         String url = Variables.getAbsoluteUrl(String.format(Locale.getDefault(), "/api/technician/viewschedule/%d/%s/%s", Variables.userID, nowString, tomorrowString));
         Variables.client.get(ViewTechnicianSchedule.super.getContext(), url, null, "application/json", timeslotResponseHandler);
     }
