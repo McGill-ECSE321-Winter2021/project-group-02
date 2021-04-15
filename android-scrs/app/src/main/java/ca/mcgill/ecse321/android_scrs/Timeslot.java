@@ -5,16 +5,17 @@ public class Timeslot {
     private final String endDate;
     private final String startTime;
     private final String endTime;
+    private final int workspaceId;
+    String workspaceName = "";
 
-    final private String displayString;
+    private String displayString;
 
-    public Timeslot(String startDate, String endDate, String startTime, String endTime) {
+    public Timeslot(String startDate, String endDate, String startTime, String endTime, int workspaceId) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.startTime = startTime;
         this.endTime = endTime;
-
-        displayString = String.format("%s - %s", startTime, endTime);
+        this.workspaceId = workspaceId;
     }
 
     public String getStartDate() {
@@ -31,6 +32,15 @@ public class Timeslot {
 
     public String getEndTime() {
         return endTime;
+    }
+
+    public int getWorkspaceId() { return workspaceId; }
+
+    public void setWorkspaceName(String workspaceName)
+    {
+        this.workspaceName = workspaceName;
+
+        displayString = String.format("%s:\t\t %s - %s", workspaceName, startTime, endTime);
     }
 
     public String toString()

@@ -19,9 +19,11 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -58,7 +60,7 @@ public class ViewTechnicianSchedule extends Fragment
             }
         });
 
-        AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler()
+        AsyncHttpResponseHandler workspaceResponseHandler = new AsyncHttpResponseHandler()
         {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody)
@@ -66,16 +68,19 @@ public class ViewTechnicianSchedule extends Fragment
                 final String response = new String(responseBody);
                 try
                 {
-                    final JSONArray jTimeslotList = new JSONArray(response);
-                    for (int i = 0; i < jTimeslotList.length(); ++i)
-                    {
-                        final JSONObject jTimeslot = jTimeslotList.getJSONObject(i);
-                        final String startDate = jTimeslot.getString("startDate");
-                        final String endDate = jTimeslot.getString("endDate");
-                        final String startTime = jTimeslot.getString("startTime");
-                        final String endTime = jTimeslot.getString("endTime");
+                    final JSONArray jWorkspaceList = new JSONArray(response);
 
-                        timeslots.add(new Timeslot(startDate, endDate, startTime, endTime));
+                    for (int i = 0; i < jWorkspaceList.length(); ++i)
+                    {
+                        final JSONObject jworkspace = jWorkspaceList.getJSONObject(i);
+                        final int workspaceId = jworkspace.getInt("workspaceId");
+                        for (Timeslot timeslot : timeslots)
+                        {
+                            if (workspaceId == timeslot.getWorkspaceId())
+                            {
+                                timeslot.setWorkspaceName(jworkspace.getString("spaceName"));
+                            }
+                        }
                     }
                 }
                 catch (JSONException e)
@@ -92,9 +97,44 @@ public class ViewTechnicianSchedule extends Fragment
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error)
             {
-                //modifyError.setText(R.string.err_unknown_error);
                 System.out.println(statusCode);
-               // modifyError.setVisibility(View.VISIBLE);
+            }
+        };
+
+        AsyncHttpResponseHandler timeslotResponseHandler = new AsyncHttpResponseHandler()
+        {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody)
+            {
+                final String response = new String(responseBody);
+                try
+                {
+                    final JSONArray jTimeslotList = new JSONArray(response);
+                    for (int i = 0; i < jTimeslotList.length(); ++i)
+                    {
+                        final JSONObject jTimeslot = jTimeslotList.getJSONObject(i);
+                        final String startDate = jTimeslot.getString("startDate");
+                        final String endDate = jTimeslot.getString("endDate");
+                        final String startTime = jTimeslot.getString("startTime");
+                        final String endTime = jTimeslot.getString("endTime");
+                        final int workspaceId = jTimeslot.getInt("workspaceId");
+
+                        timeslots.add(new Timeslot(startDate, endDate, startTime, endTime, workspaceId));
+                    }
+                }
+                catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+
+                String url = Variables.getAbsoluteUrl("/api/workspace/getall");
+                Variables.client.get(ViewTechnicianSchedule.super.getContext(), url, null, "application/json", workspaceResponseHandler);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error)
+            {
+                System.out.println(statusCode);
             }
         };
 
@@ -108,8 +148,8 @@ public class ViewTechnicianSchedule extends Fragment
         cal.add(Calendar.DATE, 1);
         date = cal.getTime();
 
-        final String nextWeekString = dateFormat.format(date);
-        String url = Variables.getAbsoluteUrl(String.format(Locale.getDefault(), "/api/technician/viewschedule/%d/%s/%s", Variables.userID, nowString, nextWeekString));
-        Variables.client.get(ViewTechnicianSchedule.super.getContext(), url, null, "application/json", responseHandler);
+        final String tomorrowString = dateFormat.format(date);
+        String url = Variables.getAbsoluteUrl(String.format(Locale.getDefault(), "/api/technician/viewschedule/%d/%s/%s", Variables.userID, nowString, tomorrowString));
+        Variables.client.get(ViewTechnicianSchedule.super.getContext(), url, null, "application/json", timeslotResponseHandler);
     }
 }
