@@ -43,6 +43,19 @@
     <string name="create_appointment">Create Appointment</string>
     <string name="note_to_mechanic">Write notes to the mechanic...</string>
 
+    <!-- Service List -->
+    <string-array name="service_arrays">
+        <item>Car Wash</item>
+        <item>Maintenance</item>
+        <item>Oil Change</item>
+        <item>Tire Change</item>
+        <item>Towing</item>
+        <item>Inspection</item>
+        <item>Roadside Assistance</item>
+        <item>Checkup</item>
+        <item>Other</item>
+    </string-array>
+
     <!-- ERRORS -->
     <string name="err_non_matching_passwords">Passwords do not match.</string>
     <string name="err_missing_values">Missing values in the form above</string>

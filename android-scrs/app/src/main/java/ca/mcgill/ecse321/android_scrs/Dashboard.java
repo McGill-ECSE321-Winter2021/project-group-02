@@ -38,15 +38,14 @@ public class Dashboard extends Fragment {
         view.findViewById(R.id.dash_book_appt_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                if(Variables.userType.equals("customer")){
-//                    NavHostFragment.findNavController(Dashboard.this).navigate(); TODO ADD ACTION WHEN BUTTON IS MAPPED
-//                } else{
-//                    Variables.userType = null;
-//                    Variables.userID = -1;
-//                    NavHostFragment.findNavController(Dashboard.this)
-//                            .navigate(R.id.action_dashboard_to_mainpage);
-//                }
-
+                if(Variables.userType.equals("customer")){
+                    NavHostFragment.findNavController(Dashboard.this).navigate(R.id.action_dashboard_to_bookAppointment);
+                } else{
+                    Variables.userType = null;
+                    Variables.userID = -1;
+                    NavHostFragment.findNavController(Dashboard.this)
+                            .navigate(R.id.action_dashboard_to_mainpage);
+                }
             }
         });
 
