@@ -11,9 +11,24 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.loopj.android.http.AsyncHttpResponseHandler;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 public class ViewTechnicianSchedule extends Fragment
 {
@@ -25,6 +40,7 @@ public class ViewTechnicianSchedule extends Fragment
             Bundle savedInstanceState
     )
     {
+        timeslots = new ArrayList<Timeslot>();
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.view_technician_schedule, container, false);
     }
@@ -42,19 +58,58 @@ public class ViewTechnicianSchedule extends Fragment
             }
         });
 
-        timeslots = new ArrayList<Timeslot>();
-        timeslots.add(new Timeslot("StartingTime", "Endtime", "", ""));
-        timeslots.add(new Timeslot("StartingTime", "Endtime", "", ""));
-        timeslots.add(new Timeslot("StartingTime", "Endtime", "", ""));
-        timeslots.add(new Timeslot("StartingTime", "Endtime", "", ""));
-        timeslots.add(new Timeslot("StartingTime", "Endtime", "", ""));
-        timeslots.add(new Timeslot("StartingTime", "Endtime", "", ""));
-        timeslots.add(new Timeslot("StartingTime", "Endtime", "", ""));
-        timeslots.add(new Timeslot("StartingTime", "Endtime", "", ""));
+        AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler()
+        {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody)
+            {
+                final String response = new String(responseBody);
+                try
+                {
+                    final JSONArray jTimeslotList = new JSONArray(response);
+                    for (int i = 0; i < jTimeslotList.length(); ++i)
+                    {
+                        final JSONObject jTimeslot = jTimeslotList.getJSONObject(i);
+                        final String startDate = jTimeslot.getString("startDate");
+                        final String endDate = jTimeslot.getString("endDate");
+                        final String startTime = jTimeslot.getString("startTime");
+                        final String endTime = jTimeslot.getString("endTime");
 
-        RecyclerView timeslotView = (RecyclerView)view.findViewById(R.id.view_technician_schedule_view);
-        TimeslotAdapter adapter = new TimeslotAdapter(timeslots);
-        timeslotView.setAdapter(adapter);
-        timeslotView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+                        timeslots.add(new Timeslot(startDate, endDate, startTime, endTime));
+                    }
+                }
+                catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+
+                RecyclerView timeslotView = (RecyclerView)view.findViewById(R.id.view_technician_schedule_view);
+                TimeslotAdapter adapter = new TimeslotAdapter(timeslots);
+                timeslotView.setAdapter(adapter);
+                timeslotView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error)
+            {
+                //modifyError.setText(R.string.err_unknown_error);
+                System.out.println(statusCode);
+               // modifyError.setVisibility(View.VISIBLE);
+            }
+        };
+
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+        Date date = Calendar.getInstance().getTime();
+        final Calendar cal = Calendar.getInstance();
+
+        final String nowString = dateFormat.format(date);
+
+        cal.add(Calendar.DATE, 1);
+        date = cal.getTime();
+
+        final String nextWeekString = dateFormat.format(date);
+        String url = Variables.getAbsoluteUrl(String.format(Locale.getDefault(), "/api/technician/viewschedule/%d/%s/%s", Variables.userID, nowString, nextWeekString));
+        Variables.client.get(ViewTechnicianSchedule.super.getContext(), url, null, "application/json", responseHandler);
     }
 }

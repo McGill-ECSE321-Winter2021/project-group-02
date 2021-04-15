@@ -1,10 +1,10 @@
 package ca.mcgill.ecse321.android_scrs;
 
 public class Timeslot {
-    private String startDate;
-    private String endDate;
-    private String startTime;
-    private String endTime;
+    private final String startDate;
+    private final String endDate;
+    private final String startTime;
+    private final String endTime;
 
     final private String displayString;
 
@@ -14,7 +14,7 @@ public class Timeslot {
         this.startTime = startTime;
         this.endTime = endTime;
 
-        displayString = String.format("%s - %s", startDate, endDate);
+        displayString = String.format("%s - %s", startTime, endTime);
     }
 
     public String getStartDate() {
