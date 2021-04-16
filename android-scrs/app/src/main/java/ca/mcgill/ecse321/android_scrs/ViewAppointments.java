@@ -26,7 +26,6 @@ public class ViewAppointments extends Fragment {
 
     List<Appointment> appointments;
     List<Timeslot> timeslots;
-    int appointmentId;
 
     @Override
     public View onCreateView(
@@ -48,55 +47,23 @@ public class ViewAppointments extends Fragment {
             }
         });
 
-        AsyncHttpResponseHandler appointmentResponseHandler = new AsyncHttpResponseHandler() {
+        AsyncHttpResponseHandler appointmentResponseHandler = new AsyncHttpResponseHandler()
+        {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 final String response = new String(responseBody);
                 try {
-                    final JSONArray jAppointmentList = new JSONArray(response);
 
+                    final JSONArray jAppointmentList = new JSONArray(response);
                     for (int i = 0; i < jAppointmentList.length(); ++i) {
 
                         final JSONObject jAppointment = jAppointmentList.getJSONObject(i);
 
-                        appointmentId = jAppointment.getInt("appointmentId");
+                        final int appointmentId = jAppointment.getInt("appointmentId");
                         final String appointmentType = jAppointment.getString("appointmentType");
 
-                        AsyncHttpResponseHandler timeslotResponseHandler = new AsyncHttpResponseHandler() {
-                            @Override
-                            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                                final String response = new String(responseBody);
-                                try {
-                                    final JSONArray jTimeslotList = new JSONArray(response);
-                                    for (int i = 0; i < jTimeslotList.length(); ++i) {
-                                        final JSONObject jTimeslot = jTimeslotList.getJSONObject(i);
-                                        final String startDate = jTimeslot.getString("startDate");
-                                        final String endDate = jTimeslot.getString("endDate");
-                                        final String startTime = jTimeslot.getString("startTime");
-                                        final String endTime = jTimeslot.getString("endTime");
+                        appointments.add(new Appointment(appointmentType,appointmentId));
 
-                                        appointments.add(new Appointment(appointmentType,startDate, endDate, startTime, endTime,appointmentId));
-
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-
-                                // Send another request to get all the workspaces
-                                String url = Variables.getAbsoluteUrl("/api/appointment/getStartAndEnd/"+ appointmentId);
-                                Variables.client.get(ViewAppointments.super.getContext(), url, null, "application/json", timeslotResponseHandler);
-                            }
-
-                            @Override
-                            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error)
-                            {
-                                System.out.println(statusCode);
-                            }
-                        };
-
-//                        appointment/getall/${this.$store.state.user}
-                        String url2 = Variables.getAbsoluteUrl("/api/appointment/getall/" + Variables.userID);
-                        Variables.client.get(ViewAppointments.super.getContext(), url2, null, "application/json", appointmentResponseHandler);
                     }
 
                 } catch (JSONException e) {
@@ -117,8 +84,7 @@ public class ViewAppointments extends Fragment {
             }
 
         };
-
-
+        
         // Back Button Handling
         view.findViewById(R.id.button_back_view_appointments).setOnClickListener(view1 -> {
             if (Variables.userType.equals("customer")) {
@@ -127,7 +93,8 @@ public class ViewAppointments extends Fragment {
             }
 
         });
-
+        String url = Variables.getAbsoluteUrl("/api/appointment/getall/" + Variables.userID);
+        Variables.client.get(ViewAppointments.super.getContext(), url, null, "application/json", appointmentResponseHandler);
 
     }
 
