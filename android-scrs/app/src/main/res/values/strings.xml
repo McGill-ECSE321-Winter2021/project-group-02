@@ -43,7 +43,7 @@
     <string name="appointment_message">Appointment message:</string>
     <string name="timeslot">Timeslot:</string>
     <string name="create_appointment">Create Appointment</string>
-    <string name="note_to_mechanic">Write notes to the mechanic...</string>
+    <string name="note_to_mechanic">Write notes to the mechanic…</string>
 
     <!-- Service List -->
     <string-array name="service_arrays">
