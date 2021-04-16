@@ -45,6 +45,7 @@
 
     <!-- Service List -->
     <string-array name="service_arrays">
+        <item>Choose service</item>
         <item>Car Wash</item>
         <item>Maintenance</item>
         <item>Oil Change</item>
@@ -65,4 +66,7 @@
 
     <!-- TECHNICALLY NOT ERRORS BUT WE'LL CALL THEM ERRORS -->
     <string name="modify_acc_success">Successfully updated account information</string>
+    <string name="err_service_select">Please select a service</string>
+    <string name="empty_service">Please specify a service</string>
+    <string name="unselected_timeslot">Select an appointment timeslot</string>
 </resources>

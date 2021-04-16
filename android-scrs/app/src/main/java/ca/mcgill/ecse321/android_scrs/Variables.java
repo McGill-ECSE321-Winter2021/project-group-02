@@ -6,6 +6,7 @@ public class Variables
 {
     public static int userID = -1;
     public static String userType = null;
+    public static int timeslotId = -1;
 
     // HTTP Request Constants
 
