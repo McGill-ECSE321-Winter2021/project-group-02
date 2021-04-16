@@ -1,0 +1,76 @@
+<resources>
+    <string name="app_name">android-scrs</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+    <!-- BUTTON NAMES AND TAGS -->
+    <string name="submit">Submit</string>
+    <string name="back">Back</string>
+    <string name="logout">Log Out</string>
+    <string name="login">Login</string>
+    <string name="signup">Sign Up</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="book_appt">Book New Appointment</string>
+    <string name="view_appts">View Booked Appointments</string>
+    <string name="view_tech_sched">View Technician Schedule</string>
+    <string name="modify_acc">Update Account Info</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="tel_number">Phone Number</string>
+    <string name="repeat_password">Repeat Password</string>
+    <string name="contact_email">marwan.kanaan@gov.ca.edu.ru.university.ca</string>
+    <string name="office_hours_title">Office Hours</string>
+    <string name="office_hours_text">1:30 to 3:30 PM on Thursdays</string>
+    <string name="customer">Customer</string>
+    <string name="technician">Technician</string>
+    <string name="contact_info">Contact Info</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="schedule">Schedule</string>
+    <string name="today_schedule">Today\'s Schedule</string>
+    <string name="bookedAppointments">Booked Appointments</string>
+
+    <string name="choose_service">Choose service</string>
+    <string name="book">Book</string>
+    <string name="select_a_service">Select a service:</string>
+    <string name="service">Service</string>
+    <string name="appointment_message">Appointment message:</string>
+    <string name="timeslot">Timeslot:</string>
+    <string name="create_appointment">Create Appointment</string>
+    <string name="note_to_mechanic">Write notes to the mechanic…</string>
+
+    <!-- Service List -->
+    <string-array name="service_arrays">
+        <item>Choose service</item>
+        <item>Car Wash</item>
+        <item>Maintenance</item>
+        <item>Oil Change</item>
+        <item>Tire Change</item>
+        <item>Towing</item>
+        <item>Inspection</item>
+        <item>Roadside Assistance</item>
+        <item>Checkup</item>
+        <item>Other</item>
+    </string-array>
+
+    <!-- ERRORS -->
+    <string name="err_non_matching_passwords">Passwords do not match.</string>
+    <string name="err_missing_values">Missing values in the form above</string>
+    <string name="err_unknown_error">An error occurred. Please try again later.</string>
+    <string name="err_fetch_acc_data_failed">Could not fetch account information.</string>
+    <string name="err_login_failed">Wrong email or password.</string>
+
+    <!-- TECHNICALLY NOT ERRORS BUT WE'LL CALL THEM ERRORS -->
+    <string name="modify_acc_success">Successfully updated account information</string>
+    <string name="err_service_select">Please select a service</string>
+    <string name="empty_service">Please specify a service</string>
+    <string name="unselected_timeslot">Select an appointment timeslot</string>
+</resources>
