@@ -74,6 +74,9 @@
         <action
             android:id="@+id/action_dashboard_to_viewAppointments"
             app:destination="@id/viewAppointments" />
+        <action
+            android:id="@+id/action_dashboard_to_bookAppointment"
+            app:destination="@id/bookAppointment" />
     </fragment>
     <fragment
         android:id="@+id/modifyAccount"
@@ -108,5 +111,12 @@
             app:destination="@id/dashboard" />
     </fragment>
 
-
+    <fragment
+        android:id="@+id/bookAppointment"
+        android:name="ca.mcgill.ecse321.android_scrs.BookAppointment"
+        android:label="BookAppointment" >
+        <action
+            android:id="@+id/action_bookAppointment_to_dashboard"
+            app:destination="@id/dashboard" />
+    </fragment>
 </navigation>
