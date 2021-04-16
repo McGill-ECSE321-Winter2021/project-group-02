@@ -93,7 +93,56 @@ public class ViewAppointments extends Fragment {
                                 break;
                         }
 
-                        appointments.add(new Appointment(appointmentTypeString,appointmentId));
+//                        appointments.add(new Appointment(appointmentTypeString,appointmentId));
+
+                        int currentAppointmentId=appointmentId;
+
+                        String finalAppointmentTypeString = appointmentTypeString;
+                        AsyncHttpResponseHandler timeslotResponseHandler = new AsyncHttpResponseHandler()
+                        {
+
+                            @Override
+                            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                                final String response = new String(responseBody);
+                                try{
+                                    final JSONObject jTimeslot = new JSONObject(response);
+//                                    for (int i = 0; i < jTimeslotList.length(); ++i){
+//                                        final JSONObject jTimeslot = jTimeslotList.getJSONObject(i);
+
+                                        final String startDate = jTimeslot.getString("startDate");
+                                        final String endDate = jTimeslot.getString("endDate");
+                                        final String startTime = jTimeslot.getString("startTime");
+                                        final String endTime = jTimeslot.getString("endTime");
+
+                                        appointments.add(new Appointment(finalAppointmentTypeString,startDate,endDate,startTime,endTime,appointmentId));
+
+
+//                                    }
+
+
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                                RecyclerView appointmentView = view.findViewById(R.id.view_appointments_view);
+                                AppointmentAdapter adapter = new AppointmentAdapter(appointments);
+                                appointmentView.setAdapter(adapter);
+                                appointmentView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+
+                            }
+
+                            @Override
+                            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+
+                            }
+                        };
+
+
+                        String url2 = Variables.getAbsoluteUrl("/api/appointment/getStartAndEnd/"+ currentAppointmentId);
+                        Variables.client.get(ViewAppointments.super.getContext(), url2, null, "application/json", timeslotResponseHandler);
+
+
 
                     }
 
@@ -101,10 +150,10 @@ public class ViewAppointments extends Fragment {
                     e.printStackTrace();
                 }
 
-                RecyclerView appointmentView = view.findViewById(R.id.view_appointments_view);
-                AppointmentAdapter adapter = new AppointmentAdapter(appointments);
-                appointmentView.setAdapter(adapter);
-                appointmentView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+//                RecyclerView appointmentView = view.findViewById(R.id.view_appointments_view);
+//                AppointmentAdapter adapter = new AppointmentAdapter(appointments);
+//                appointmentView.setAdapter(adapter);
+//                appointmentView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
             }
 
@@ -126,6 +175,7 @@ public class ViewAppointments extends Fragment {
         });
         String url = Variables.getAbsoluteUrl("/api/appointment/getall/" + Variables.userID);
         Variables.client.get(ViewAppointments.super.getContext(), url, null, "application/json", appointmentResponseHandler);
+
 
     }
 
