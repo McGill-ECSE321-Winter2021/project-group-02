@@ -34,6 +34,28 @@
     <string name="contact_us">Contact Us</string>
     <string name="schedule">Schedule</string>
     <string name="today_schedule">Today\'s Schedule</string>
+    <string name="choose_service">Choose service</string>
+    <string name="book">Book</string>
+    <string name="select_a_service">Select a service:</string>
+    <string name="service">Service</string>
+    <string name="appointment_message">Appointment message:</string>
+    <string name="timeslot">Timeslot:</string>
+    <string name="create_appointment">Create Appointment</string>
+    <string name="note_to_mechanic">Write notes to the mechanic...</string>
+
+    <!-- Service List -->
+    <string-array name="service_arrays">
+        <item>Choose service</item>
+        <item>Car Wash</item>
+        <item>Maintenance</item>
+        <item>Oil Change</item>
+        <item>Tire Change</item>
+        <item>Towing</item>
+        <item>Inspection</item>
+        <item>Roadside Assistance</item>
+        <item>Checkup</item>
+        <item>Other</item>
+    </string-array>
 
     <!-- ERRORS -->
     <string name="err_non_matching_passwords">Passwords do not match.</string>
@@ -44,4 +66,7 @@
 
     <!-- TECHNICALLY NOT ERRORS BUT WE'LL CALL THEM ERRORS -->
     <string name="modify_acc_success">Successfully updated account information</string>
+    <string name="err_service_select">Please select a service</string>
+    <string name="empty_service">Please specify a service</string>
+    <string name="unselected_timeslot">Select an appointment timeslot</string>
 </resources>
