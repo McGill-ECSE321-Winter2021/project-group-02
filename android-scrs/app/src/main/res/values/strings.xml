@@ -34,6 +34,8 @@
     <string name="contact_us">Contact Us</string>
     <string name="schedule">Schedule</string>
     <string name="today_schedule">Today\'s Schedule</string>
+    <string name="bookedAppointments">Booked Appointments</string>
+
     <string name="choose_service">Choose service</string>
     <string name="book">Book</string>
     <string name="select_a_service">Select a service:</string>
@@ -41,7 +43,7 @@
     <string name="appointment_message">Appointment message:</string>
     <string name="timeslot">Timeslot:</string>
     <string name="create_appointment">Create Appointment</string>
-    <string name="note_to_mechanic">Write notes to the mechanic...</string>
+    <string name="note_to_mechanic">Write notes to the mechanic…</string>
 
     <!-- Service List -->
     <string-array name="service_arrays">

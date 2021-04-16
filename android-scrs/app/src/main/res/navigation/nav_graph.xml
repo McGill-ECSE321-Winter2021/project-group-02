@@ -72,6 +72,9 @@
             android:id="@+id/action_dashboard_to_viewTechnicianSchedule"
             app:destination="@id/viewTechnicianSchedule" />
         <action
+            android:id="@+id/action_dashboard_to_viewAppointments"
+            app:destination="@id/viewAppointments" />
+        <action
             android:id="@+id/action_dashboard_to_bookAppointment"
             app:destination="@id/bookAppointment" />
     </fragment>
@@ -99,6 +102,15 @@
             android:id="@+id/action_viewTechnicianSchedule_to_dashboard"
             app:destination="@id/dashboard" />
     </fragment>
+    <fragment
+        android:id="@+id/viewAppointments"
+        android:name="ca.mcgill.ecse321.android_scrs.ViewAppointments"
+        android:label="ViewAppointments" >
+        <action
+            android:id="@+id/action_ViewAppointments_to_dashboard"
+            app:destination="@id/dashboard" />
+    </fragment>
+
     <fragment
         android:id="@+id/bookAppointment"
         android:name="ca.mcgill.ecse321.android_scrs.BookAppointment"
