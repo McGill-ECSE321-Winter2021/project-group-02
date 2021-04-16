@@ -60,9 +60,40 @@ public class ViewAppointments extends Fragment {
                         final JSONObject jAppointment = jAppointmentList.getJSONObject(i);
 
                         final int appointmentId = jAppointment.getInt("appointmentId");
-                        final String appointmentType = jAppointment.getString("appointmentType");
+                        String appointmentType = jAppointment.getString("appointmentType");
+                        String appointmentTypeString="";
 
-                        appointments.add(new Appointment(appointmentType,appointmentId));
+                        switch (appointmentType) {
+                            case "CarWash":
+                                appointmentTypeString= "Car Wash";
+                                break;
+                            case "Maintenance":
+                                appointmentTypeString= "Maintenance";
+                                break;
+                            case "OilChange":
+                                appointmentTypeString= "Oil Change";
+                                break;
+                            case "TireChange":
+                                appointmentTypeString= "Tire Change";
+                                break;
+                            case "Towing":
+                                appointmentTypeString= "Towing";
+                                break;
+                            case "Inspection":
+                                appointmentTypeString= "Inspection";
+                                break;
+                            case "RoadsideAssistance":
+                                appointmentTypeString= "Roadside Assistance";
+                                break;
+                            case "Checkup":
+                                appointmentTypeString= "Checkup";
+                                break;
+                            default:
+                                appointmentTypeString= "Other";
+                                break;
+                        }
+
+                        appointments.add(new Appointment(appointmentTypeString,appointmentId));
 
                     }
 
@@ -97,7 +128,6 @@ public class ViewAppointments extends Fragment {
         Variables.client.get(ViewAppointments.super.getContext(), url, null, "application/json", appointmentResponseHandler);
 
     }
-
 
     }
 
