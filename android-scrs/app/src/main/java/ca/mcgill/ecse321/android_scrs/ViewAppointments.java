@@ -25,14 +25,13 @@ import cz.msebera.android.httpclient.Header;
 public class ViewAppointments extends Fragment {
 
     List<Appointment> appointments;
-    List<Timeslot> timeslots;
 
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-        appointments=new ArrayList<Appointment>();
+        appointments = new ArrayList<Appointment>();
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.view_appointments, container, false);
     }
@@ -47,8 +46,7 @@ public class ViewAppointments extends Fragment {
             }
         });
 
-        AsyncHttpResponseHandler appointmentResponseHandler = new AsyncHttpResponseHandler()
-        {
+        AsyncHttpResponseHandler appointmentResponseHandler = new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 final String response = new String(responseBody);
@@ -59,67 +57,55 @@ public class ViewAppointments extends Fragment {
 
                         final JSONObject jAppointment = jAppointmentList.getJSONObject(i);
 
-                        final int appointmentId = jAppointment.getInt("appointmentId");
+                        final int appointmentId = jAppointment.getInt("appointmentId"); //Id used to get associated timeslot to know the date and time of the appointment
                         String appointmentType = jAppointment.getString("appointmentType");
-                        String appointmentTypeString="";
+                        String appointmentTypeString = "";
 
                         switch (appointmentType) {
                             case "CarWash":
-                                appointmentTypeString= "Car Wash";
+                                appointmentTypeString = "Car Wash";
                                 break;
                             case "Maintenance":
-                                appointmentTypeString= "Maintenance";
+                                appointmentTypeString = "Maintenance";
                                 break;
                             case "OilChange":
-                                appointmentTypeString= "Oil Change";
+                                appointmentTypeString = "Oil Change";
                                 break;
                             case "TireChange":
-                                appointmentTypeString= "Tire Change";
+                                appointmentTypeString = "Tire Change";
                                 break;
                             case "Towing":
-                                appointmentTypeString= "Towing";
+                                appointmentTypeString = "Towing";
                                 break;
                             case "Inspection":
-                                appointmentTypeString= "Inspection";
+                                appointmentTypeString = "Inspection";
                                 break;
                             case "RoadsideAssistance":
-                                appointmentTypeString= "Roadside Assistance";
+                                appointmentTypeString = "Roadside Assistance";
                                 break;
                             case "Checkup":
-                                appointmentTypeString= "Checkup";
+                                appointmentTypeString = "Checkup";
                                 break;
                             default:
-                                appointmentTypeString= "Other";
+                                appointmentTypeString = "Other";
                                 break;
                         }
 
-//                        appointments.add(new Appointment(appointmentTypeString,appointmentId));
-
-                        int currentAppointmentId=appointmentId;
-
                         String finalAppointmentTypeString = appointmentTypeString;
-                        AsyncHttpResponseHandler timeslotResponseHandler = new AsyncHttpResponseHandler()
-                        {
+                        AsyncHttpResponseHandler timeslotResponseHandler = new AsyncHttpResponseHandler() {
 
                             @Override
                             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                                 final String response = new String(responseBody);
-                                try{
+                                try {
                                     final JSONObject jTimeslot = new JSONObject(response);
-//                                    for (int i = 0; i < jTimeslotList.length(); ++i){
-//                                        final JSONObject jTimeslot = jTimeslotList.getJSONObject(i);
 
-                                        final String startDate = jTimeslot.getString("startDate");
-                                        final String endDate = jTimeslot.getString("endDate");
-                                        final String startTime = jTimeslot.getString("startTime");
-                                        final String endTime = jTimeslot.getString("endTime");
+                                    final String startDate = jTimeslot.getString("startDate");
+                                    final String endDate = jTimeslot.getString("endDate");
+                                    final String startTime = jTimeslot.getString("startTime");
+                                    final String endTime = jTimeslot.getString("endTime");
 
-                                        appointments.add(new Appointment(finalAppointmentTypeString,startDate,endDate,startTime,endTime,appointmentId));
-
-
-//                                    }
-
-
+                                    appointments.add(new Appointment(finalAppointmentTypeString, startDate, endDate, startTime, endTime, appointmentId));
 
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -138,11 +124,9 @@ public class ViewAppointments extends Fragment {
                             }
                         };
 
-
-                        String url2 = Variables.getAbsoluteUrl("/api/appointment/getStartAndEnd/"+ currentAppointmentId);
+                        String url2 = Variables.getAbsoluteUrl("/api/appointment/getStartAndEnd/" + appointmentId);
+                        //Get a JSON Object containing the date and time of a given appointment
                         Variables.client.get(ViewAppointments.super.getContext(), url2, null, "application/json", timeslotResponseHandler);
-
-
 
                     }
 
@@ -150,21 +134,15 @@ public class ViewAppointments extends Fragment {
                     e.printStackTrace();
                 }
 
-//                RecyclerView appointmentView = view.findViewById(R.id.view_appointments_view);
-//                AppointmentAdapter adapter = new AppointmentAdapter(appointments);
-//                appointmentView.setAdapter(adapter);
-//                appointmentView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error)
-            {
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 System.out.println(statusCode);
             }
 
         };
-        
+
         // Back Button Handling
         view.findViewById(R.id.button_back_view_appointments).setOnClickListener(view1 -> {
             if (Variables.userType.equals("customer")) {
@@ -173,11 +151,11 @@ public class ViewAppointments extends Fragment {
             }
 
         });
-        String url = Variables.getAbsoluteUrl("/api/appointment/getall/" + Variables.userID);
+        String url = Variables.getAbsoluteUrl("/api/appointment/getall/" + Variables.userID); //gets all the appointments of a user
         Variables.client.get(ViewAppointments.super.getContext(), url, null, "application/json", appointmentResponseHandler);
 
 
     }
 
-    }
+}
 
