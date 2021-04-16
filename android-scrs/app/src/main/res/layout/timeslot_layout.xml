@@ -8,10 +8,13 @@
 
     <TextView
         android:id="@+id/timeslot_entry"
-        android:background="@drawable/timeslot_back"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:background="@drawable/timeslot_back"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
         android:textAlignment="center"
+        android:textColor="@color/grey"
         android:textSize="18sp" />
 </LinearLayout>

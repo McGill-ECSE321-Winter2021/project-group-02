@@ -21,10 +21,6 @@ public class Timeslot {
         displayString = String.format("Date: %s\n Time: %s - %s", startDate, startTime.substring(0,5), endTime.substring(0,5));
     }
 
-    public Timeslot(String startDate, String endDate, String startTime, String endTime, int workspaceId) {
-        this(-1, startDate, endDate, startTime, endTime, workspaceId);
-    }
-
     public int getTimeslotId() { return timeslotId; }
 
     public String getStartDate() {

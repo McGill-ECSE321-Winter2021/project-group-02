@@ -175,7 +175,9 @@ public class BookAppointment extends Fragment
                     json.put("service", serviceText.getText().toString().trim());
                     json.put("note", apptMsg.getText().toString().trim());
                     json.put("customerId", Variables.userID);
-                    json.put("timeslotsId", Variables.timeslotId);
+                    JSONArray jTimeslotArray = new JSONArray();
+                    jTimeslotArray.put(Variables.timeslotId);
+                    json.put("timeslotsId", jTimeslotArray);
                     params = new StringEntity(json.toString());
                 } catch (JSONException | UnsupportedEncodingException e)
                 {
