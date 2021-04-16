@@ -13,7 +13,7 @@
         android:backgroundTint="@color/orange"
         android:shadowColor="@color/orange"
         android:text="@string/back"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/grey"
         android:visibility="visible"
         app:iconTint="@color/orange"
         app:layout_constraintBottom_toBottomOf="parent"
