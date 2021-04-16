@@ -8,7 +8,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -54,7 +53,8 @@ public class TimeslotAdapter extends RecyclerView.Adapter<TimeslotAdapter.ViewHo
     {
         Timeslot timeslot = timeslots.get(position);
 
-        if (isInteractive) {
+        if (isInteractive)
+        {
             Button button = holder.timeslotButton;
             button.setText(timeslot.toString());
             button.setOnClickListener(new View.OnClickListener()
@@ -62,7 +62,8 @@ public class TimeslotAdapter extends RecyclerView.Adapter<TimeslotAdapter.ViewHo
                 @Override
                 public void onClick(View view)
                 {
-                    if (selectedButton != null) {
+                    if (selectedButton != null)
+                    {
                         selectedButton.setEnabled(true);
                     }
                     Variables.timeslotId = timeslot.getTimeslotId();
@@ -70,7 +71,8 @@ public class TimeslotAdapter extends RecyclerView.Adapter<TimeslotAdapter.ViewHo
                     selectedButton = button;
                 }
             });
-        } else {
+        } else
+        {
             TextView textView = holder.timeslotTextView;
             textView.setText(timeslot.toString());
         }

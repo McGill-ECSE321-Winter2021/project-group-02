@@ -5,12 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -113,8 +111,7 @@ public class BookAppointment extends Fragment
 
                         timeslots.add(new Timeslot(timeslotId, startDate, endDate, startTime, endTime, workspaceId));
                     }
-                }
-                catch (JSONException e)
+                } catch (JSONException e)
                 {
                     e.printStackTrace();
                 }
@@ -161,7 +158,8 @@ public class BookAppointment extends Fragment
                     return;
                 }
                 // check for unselected timeslot
-                if (Variables.timeslotId == -1) {
+                if (Variables.timeslotId == -1)
+                {
                     errorMsg.setText(R.string.unselected_timeslot);
                     errorMsg.setVisibility(View.VISIBLE);
                     return;

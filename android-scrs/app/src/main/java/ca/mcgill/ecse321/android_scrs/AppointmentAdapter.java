@@ -11,7 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.ViewHolder> {
+public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.ViewHolder>
+{
     private List<Appointment> appointments;
 
     public AppointmentAdapter(List<Appointment> appointments)
@@ -41,7 +42,8 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     }
 
     @Override
-    public int getItemCount() {
+    public int getItemCount()
+    {
         return appointments.size();
     }
 
@@ -53,7 +55,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         {
             super(itemView);
 
-            appointmentTextView = (TextView)itemView.findViewById(R.id.appointment_entry);
+            appointmentTextView = (TextView) itemView.findViewById(R.id.appointment_entry);
         }
     }
 }

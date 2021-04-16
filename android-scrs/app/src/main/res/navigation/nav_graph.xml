@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/mainpage">
 
     <fragment
         android:id="@+id/mainpage"
         android:name="ca.mcgill.ecse321.android_scrs.Mainpage"
-        android:label="Mainpage" >
+        android:label="Mainpage">
         <action
             android:id="@+id/action_mainpage_to_login"
             app:destination="@id/login" />
@@ -22,7 +21,7 @@
     <fragment
         android:id="@+id/login"
         android:name="ca.mcgill.ecse321.android_scrs.Login"
-        android:label="Login" >
+        android:label="Login">
         <action
             android:id="@+id/action_login_to_mainpage"
             app:destination="@id/mainpage" />
@@ -36,7 +35,7 @@
     <fragment
         android:id="@+id/login_Signup"
         android:name="ca.mcgill.ecse321.android_scrs.Login_Signup"
-        android:label="Login_Signup" >
+        android:label="Login_Signup">
         <action
             android:id="@+id/action_login_Signup_to_mainpage"
             app:destination="@id/mainpage" />
@@ -50,7 +49,7 @@
     <fragment
         android:id="@+id/signup"
         android:name="ca.mcgill.ecse321.android_scrs.Signup"
-        android:label="Signup" >
+        android:label="Signup">
         <action
             android:id="@+id/action_signup_to_login_Signup"
             app:destination="@id/login_Signup" />
@@ -61,7 +60,7 @@
     <fragment
         android:id="@+id/dashboard"
         android:name="ca.mcgill.ecse321.android_scrs.Dashboard"
-        android:label="Dashboard" >
+        android:label="Dashboard">
         <action
             android:id="@+id/action_dashboard_to_mainpage"
             app:destination="@id/mainpage" />
@@ -81,7 +80,7 @@
     <fragment
         android:id="@+id/modifyAccount"
         android:name="ca.mcgill.ecse321.android_scrs.ModifyAccount"
-        android:label="ModifyAccount" >
+        android:label="ModifyAccount">
         <action
             android:id="@+id/action_modifyAccount_to_dashboard"
             app:destination="@id/dashboard" />
@@ -89,7 +88,7 @@
     <fragment
         android:id="@+id/shop_info"
         android:name="ca.mcgill.ecse321.android_scrs.ShopInfo"
-        android:label="ShopInfo" >
+        android:label="ShopInfo">
         <action
             android:id="@+id/action_shop_info_to_mainpage"
             app:destination="@id/mainpage" />
@@ -97,7 +96,7 @@
     <fragment
         android:id="@+id/viewTechnicianSchedule"
         android:name="ca.mcgill.ecse321.android_scrs.ViewTechnicianSchedule"
-        android:label="ViewTechnicianSchedule" >
+        android:label="ViewTechnicianSchedule">
         <action
             android:id="@+id/action_viewTechnicianSchedule_to_dashboard"
             app:destination="@id/dashboard" />
@@ -105,7 +104,7 @@
     <fragment
         android:id="@+id/viewAppointments"
         android:name="ca.mcgill.ecse321.android_scrs.ViewAppointments"
-        android:label="ViewAppointments" >
+        android:label="ViewAppointments">
         <action
             android:id="@+id/action_ViewAppointments_to_dashboard"
             app:destination="@id/dashboard" />
@@ -114,7 +113,7 @@
     <fragment
         android:id="@+id/bookAppointment"
         android:name="ca.mcgill.ecse321.android_scrs.BookAppointment"
-        android:label="BookAppointment" >
+        android:label="BookAppointment">
         <action
             android:id="@+id/action_bookAppointment_to_dashboard"
             app:destination="@id/dashboard" />

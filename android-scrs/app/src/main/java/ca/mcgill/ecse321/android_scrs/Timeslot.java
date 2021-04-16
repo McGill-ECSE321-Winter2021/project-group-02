@@ -1,6 +1,7 @@
 package ca.mcgill.ecse321.android_scrs;
 
-public class Timeslot {
+public class Timeslot
+{
     private final int timeslotId;
     private final String startDate;
     private final String endDate;
@@ -11,35 +12,46 @@ public class Timeslot {
 
     private String displayString;
 
-    public Timeslot(int timeslotId, String startDate, String endDate, String startTime, String endTime, int workspaceId) {
+    public Timeslot(int timeslotId, String startDate, String endDate, String startTime, String endTime, int workspaceId)
+    {
         this.timeslotId = timeslotId;
         this.startDate = startDate;
         this.endDate = endDate;
         this.startTime = startTime;
         this.endTime = endTime;
         this.workspaceId = workspaceId;
-        displayString = String.format("Date: %s\n Time: %s - %s", startDate, startTime.substring(0,5), endTime.substring(0,5));
+        displayString = String.format("Date: %s\n Time: %s - %s", startDate, startTime.substring(0, 5), endTime.substring(0, 5));
     }
 
-    public int getTimeslotId() { return timeslotId; }
+    public int getTimeslotId()
+    {
+        return timeslotId;
+    }
 
-    public String getStartDate() {
+    public String getStartDate()
+    {
         return startDate;
     }
 
-    public String getEndDate() {
+    public String getEndDate()
+    {
         return endDate;
     }
 
-    public String getStartTime() {
+    public String getStartTime()
+    {
         return startTime;
     }
 
-    public String getEndTime() {
+    public String getEndTime()
+    {
         return endTime;
     }
 
-    public int getWorkspaceId() { return workspaceId; }
+    public int getWorkspaceId()
+    {
+        return workspaceId;
+    }
 
     public void setWorkspaceName(String workspaceName)
     {

@@ -1,6 +1,5 @@
 package ca.mcgill.ecse321.android_scrs;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;

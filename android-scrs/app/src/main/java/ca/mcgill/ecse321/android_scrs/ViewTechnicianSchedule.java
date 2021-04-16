@@ -17,20 +17,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.entity.StringEntity;
 
 public class ViewTechnicianSchedule extends Fragment
 {
@@ -82,14 +76,13 @@ public class ViewTechnicianSchedule extends Fragment
                             }
                         }
                     }
-                }
-                catch (JSONException e)
+                } catch (JSONException e)
                 {
                     e.printStackTrace();
                 }
 
                 // Hook the adapter into the RecyclerView
-                RecyclerView timeslotView = (RecyclerView)view.findViewById(R.id.view_technician_schedule_view);
+                RecyclerView timeslotView = (RecyclerView) view.findViewById(R.id.view_technician_schedule_view);
                 TimeslotAdapter adapter = new TimeslotAdapter(timeslots);
                 timeslotView.setAdapter(adapter);
                 timeslotView.setLayoutManager(new LinearLayoutManager(view.getContext()));
@@ -123,8 +116,7 @@ public class ViewTechnicianSchedule extends Fragment
 
                         timeslots.add(new Timeslot(timeslotId, startDate, endDate, startTime, endTime, workspaceId));
                     }
-                }
-                catch (JSONException e)
+                } catch (JSONException e)
                 {
                     e.printStackTrace();
                 }

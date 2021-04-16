@@ -22,7 +22,8 @@ import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
-public class ViewAppointments extends Fragment {
+public class ViewAppointments extends Fragment
+{
 
     List<Appointment> appointments;
 
@@ -30,30 +31,38 @@ public class ViewAppointments extends Fragment {
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
-    ) {
+    )
+    {
         appointments = new ArrayList<Appointment>();
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.view_appointments, container, false);
     }
 
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState)
+    {
         super.onViewCreated(view, savedInstanceState);
 
-        view.findViewById(R.id.button_back_view_appointments).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.button_back_view_appointments).setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 NavHostFragment.findNavController(ViewAppointments.this).navigate(R.id.action_ViewAppointments_to_dashboard);
             }
         });
 
-        AsyncHttpResponseHandler appointmentResponseHandler = new AsyncHttpResponseHandler() {
+        AsyncHttpResponseHandler appointmentResponseHandler = new AsyncHttpResponseHandler()
+        {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody)
+            {
                 final String response = new String(responseBody);
-                try {
+                try
+                {
 
                     final JSONArray jAppointmentList = new JSONArray(response);
-                    for (int i = 0; i < jAppointmentList.length(); ++i) {
+                    for (int i = 0; i < jAppointmentList.length(); ++i)
+                    {
 
                         final JSONObject jAppointment = jAppointmentList.getJSONObject(i);
 
@@ -61,7 +70,8 @@ public class ViewAppointments extends Fragment {
                         String appointmentType = jAppointment.getString("appointmentType");
                         String appointmentTypeString = "";
 
-                        switch (appointmentType) {
+                        switch (appointmentType)
+                        {
                             case "CarWash":
                                 appointmentTypeString = "Car Wash";
                                 break;
@@ -92,12 +102,15 @@ public class ViewAppointments extends Fragment {
                         }
 
                         String finalAppointmentTypeString = appointmentTypeString;
-                        AsyncHttpResponseHandler timeslotResponseHandler = new AsyncHttpResponseHandler() {
+                        AsyncHttpResponseHandler timeslotResponseHandler = new AsyncHttpResponseHandler()
+                        {
 
                             @Override
-                            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody)
+                            {
                                 final String response = new String(responseBody);
-                                try {
+                                try
+                                {
                                     final JSONObject jTimeslot = new JSONObject(response);
 
                                     final String startDate = jTimeslot.getString("startDate");
@@ -107,7 +120,8 @@ public class ViewAppointments extends Fragment {
 
                                     appointments.add(new Appointment(finalAppointmentTypeString, startDate, endDate, startTime, endTime, appointmentId));
 
-                                } catch (Exception e) {
+                                } catch (Exception e)
+                                {
                                     e.printStackTrace();
                                 }
 
@@ -119,7 +133,8 @@ public class ViewAppointments extends Fragment {
                             }
 
                             @Override
-                            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error)
+                            {
 
                             }
                         };
@@ -130,14 +145,16 @@ public class ViewAppointments extends Fragment {
 
                     }
 
-                } catch (JSONException e) {
+                } catch (JSONException e)
+                {
                     e.printStackTrace();
                 }
 
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error)
+            {
                 System.out.println(statusCode);
             }
 
@@ -145,7 +162,8 @@ public class ViewAppointments extends Fragment {
 
         // Back Button Handling
         view.findViewById(R.id.button_back_view_appointments).setOnClickListener(view1 -> {
-            if (Variables.userType.equals("customer")) {
+            if (Variables.userType.equals("customer"))
+            {
                 NavHostFragment.findNavController(ViewAppointments.this)
                         .navigate(R.id.action_ViewAppointments_to_dashboard);
             }
