@@ -119,8 +119,9 @@ public class ViewTechnicianSchedule extends Fragment
                         final String startTime = jTimeslot.getString("startTime");
                         final String endTime = jTimeslot.getString("endTime");
                         final int workspaceId = jTimeslot.getInt("workspaceId");
+                        final int timeslotId = jTimeslot.getInt("timeslotId");
 
-                        timeslots.add(new Timeslot(startDate, endDate, startTime, endTime, workspaceId));
+                        timeslots.add(new Timeslot(timeslotId, startDate, endDate, startTime, endTime, workspaceId));
                     }
                 }
                 catch (JSONException e)
